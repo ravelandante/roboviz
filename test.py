@@ -1,1 +1,1 @@
-print('I am the main branch')
+print('git is cool and fun and i am learning :)')
