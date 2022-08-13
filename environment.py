@@ -1,5 +1,5 @@
 # TODO: add root (core) object somewhere so parent can always be set to it
-# EXTRA: toggle plane on/off, toggle colours on/off, bad orientation/slot warning + autocorrect option
+# EXTRA: toggle plane on/off, toggle colours on/off, bad orientation/slot warning + autocorrect option, move robots around with mouse
 
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import AmbientLight
@@ -10,18 +10,30 @@ from direct.gui.DirectGui import *
 from panda3d.core import TextNode
 
 
+SLOTS = {0: 180, 1: 90, 2: 0, 3: -90}
+
+
 def calcPos(src, dst, connection):
     src_pos = connection.src.pos
     src_min, src_max = src.getTightBounds()
     src_dims = (src_max - src_min)/2
 
-    #dst_min, dst_max = dst.getTightBounds()
-    #dst_dims = (dst_max - dst_min)/2
+    dst_min, dst_max = dst.getTightBounds()
+    dst_dims = (dst_max - dst_min)/2
     #orientation = connection.dst.orientation
 
-    #src.setHpr(heading, 0, 0)
+    heading = SLOTS[connection.src_slot] - SLOTS[connection.dst_slot]
+    src.setHpr(heading, 0, 0)
 
-    dst_pos = src_pos + LVector3f(0, src_dims[1], 0)
+    src_slot = connection.src_slot
+    if src_slot == 0:
+        dst_pos = src_pos + LVector3f(0, src_dims[1] + dst_dims[1], 0)
+    elif src_slot == 1:
+        dst_pos = src_pos + LVector3f(src_dims[0] + dst_dims[0], 0, 0)
+    elif src_slot == 2:
+        dst_pos = src_pos + LVector3f(0, -(src_dims[1] + dst_dims[1]), 0)
+    elif src_slot == 3:
+        dst_pos = src_pos + LVector3f(-(src_dims[0] + dst_dims[0]), 0, 0)
     return dst_pos
 
 
