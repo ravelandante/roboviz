@@ -6,7 +6,7 @@ from robot import Robot
 app = Environment()
 
 comp1 = RobotComp('comp1', 'Core_FDM', True, 0)
-comp2 = RobotComp('comp2', 'ActiveHinge_Frame', False, 0)
+comp2 = RobotComp('comp2', 'Connector2Bricks', False, 0)
 
 connections = []
 connections.append(Connection(comp1, comp2, 0, 0))
