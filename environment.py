@@ -1,4 +1,5 @@
 # TODO: add root (core) object somewhere so parent can always be set to it (currently set to self.render, if we want to move robots - won't work)
+#       add components that make up other components (servo holder/passive hinge etc. - inheritance maybe?)
 # EXTRA: toggle plane on/off, toggle colours on/off, bad orientation/slot warning + autocorrect option, move robots around with mouse, text showing component types etc.
 
 from direct.showbase.ShowBase import ShowBase
@@ -10,38 +11,42 @@ from direct.gui.DirectGui import *
 from panda3d.core import TextNode
 
 
-SLOTS = {0: 180, 1: 90, 2: 0, 3: -90}
+SRC_SLOTS = {0: 180, 1: 90, 2: 0, 3: 270}
+DST_SLOTS = {0: 0, 1: 90, 2: 180, 3: 270}
+#ORIENTATION = {0: 0, 90: 1, 180: 2, 270: 3}
 
 
 def calcPos(src, dst, connection):
     src_pos = connection.src.pos
     src_min, src_max = src.getTightBounds()
-    src_dims = (src_max - src_min)/2
+    src_dims = (src_max - src_min)/2                                    # get distance from centre of source model to edge
 
     dst_min, dst_max = dst.getTightBounds()
-    dst_dims = (dst_max - dst_min)/2
+    dst_dims = (dst_max - dst_min)/2                                    # get distance from centre of dest model to edge
     #orientation = connection.dst.orientation
 
-    heading = SLOTS[connection.src_slot] - SLOTS[connection.dst_slot]
+    heading = SRC_SLOTS[connection.src_slot] + DST_SLOTS[connection.dst_slot]   # heading of dst model, depending on src and dst slot
+    connection.dst.orientation = heading
+    print(heading)
+    # print(connection.src.orientation)
+    # print(connection.dst.orientation)
+    #roll = ORIENTATION[connection.dst.orientation]
     dst.setHpr(heading, 0, 0)
-    if SLOTS[connection.dst_slot] in [0, 180]:
+
+    if DST_SLOTS[connection.dst_slot] in [0, 180]:                          # which dims to use to calculate new pos
         src_dim, dst_dim = src_dims[1], dst_dims[1]
     else:
         src_dim, dst_dim = src_dims[0], dst_dims[0]
 
     src_slot = connection.src_slot
-    if src_slot == 0:
-        dst_pos = src_pos + LVector3f(0, src_dim + dst_dim, 0)
-        print('y+')
-    elif src_slot == 1:
-        dst_pos = src_pos + LVector3f(src_dim + dst_dim, 0, 0)
-        print('x+')
-    elif src_slot == 2:
+    if src_slot == 0:                                                   # use src slot to determine which side to place dest model
         dst_pos = src_pos + LVector3f(0, -(src_dim + dst_dim), 0)
-        print('y-')
-    elif src_slot == 3:
+    elif src_slot == 1:
         dst_pos = src_pos + LVector3f(-(src_dim + dst_dim), 0, 0)
-        print('x-')
+    elif src_slot == 2:
+        dst_pos = src_pos + LVector3f(0, src_dim + dst_dim, 0)
+    elif src_slot == 3:
+        dst_pos = src_pos + LVector3f(src_dim + dst_dim, 0, 0)
     return dst_pos
 
 
@@ -66,24 +71,28 @@ class Environment(ShowBase):
 
         # self.useDrive()                                               # enable use of arrow keys
 
-        bk_text = "RoboViz Prototype"                                           # add prototype text
+        bk_text = "RoboViz Prototype"                                   # add prototype text
         textObject = OnscreenText(text=bk_text, pos=(0.85, 0.85), scale=0.07,
                                   fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
 
     def traverseTree(self, robot):
+        cnt = 0
         for connection in robot.connections:
+            if cnt == 6:
+                break
             if connection.src.root:
-                src_path = "./models/BAM/" + connection.src.type + '.bam'   # get path of source model file
-                self.src = self.loader.loadModel(src_path)                  # load model of source component
-                # if component is root comp (core) set it's position to core position
+                src_path = "./models/BAM/" + connection.src.type + '.bam'       # get path of source model file
+                self.src = self.loader.loadModel(src_path)                      # load model of source component
+                # if component is root comp (core) set it's position to core position & place
                 connection.src.pos = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
 
-                self.src.setPos(connection.src.pos)                         # set position of source model
-                self.src.reparentTo(self.render)                            # set parent to render node
+                self.src.setPos(connection.src.pos)                             # set position of source model
+                self.src.reparentTo(self.render)                                # set parent to render node
 
-            dst_path = "./models/BAM/" + connection.dst.type + '.bam'   # get path of destination model file
-            self.dst = self.loader.loadModel(dst_path)                  # load model of source component
+            dst_path = "./models/BAM/" + connection.dst.type + '.bam'           # get path of destination model file
+            self.dst = self.loader.loadModel(dst_path)                          # load model of source component
 
-            connection.dst.pos = calcPos(self.src, self.dst, connection)          # calc position of dest comp based on source position
-            self.dst.setPos(connection.dst.pos)                         # set position of destination model
-            self.dst.reparentTo(self.render)                               # set parent to source node
+            connection.dst.pos = calcPos(self.src, self.dst, connection)        # calc position of dest comp based on source position
+            self.dst.setPos(connection.dst.pos)                                 # set position of destination model
+            self.dst.reparentTo(self.render)                                    # set parent to source node
+            cnt += 1
