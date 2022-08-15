@@ -11,9 +11,9 @@ from direct.gui.DirectGui import *
 from panda3d.core import TextNode
 
 
-SRC_SLOTS = {0: 180, 1: 90, 2: 0, 3: 270}
-DST_SLOTS = {0: 0, 1: 90, 2: 180, 3: 270}
-#ORIENTATION = {0: 0, 90: 1, 180: 2, 270: 3}
+SRC_SLOTS = {0: 180, 1: 90, 2: 0, 3: -90}
+DST_SLOTS = {0: 0, 1: 90, 2: 180, 3: -90}
+ORIENTATION = {0: 0, 360: 0, 90: 1, 180: 2, -90: 3, 270: 3}
 
 
 def calcPos(src, dst, connection):
@@ -23,14 +23,22 @@ def calcPos(src, dst, connection):
 
     dst_min, dst_max = dst.getTightBounds()
     dst_dims = (dst_max - dst_min)/2                                    # get distance from centre of dest model to edge
-    #orientation = connection.dst.orientation
 
-    heading = SRC_SLOTS[connection.src_slot] + DST_SLOTS[connection.dst_slot]   # heading of dst model, depending on src and dst slot
-    connection.dst.orientation = heading
-    print(heading)
-    # print(connection.src.orientation)
-    # print(connection.dst.orientation)
-    #roll = ORIENTATION[connection.dst.orientation]
+    src_slot = connection.src_slot + connection.src.orientation
+    while src_slot > 3:
+        src_slot -= 4
+    if connection.src.orientation != 0:
+        if src_slot == 0:
+            src_slot = 2
+        elif src_slot == 1:
+            src_slot = 3
+        elif src_slot == 2:
+            src_slot = 0
+        elif src_slot == 3:
+            src_slot = 1
+
+    heading = SRC_SLOTS[src_slot] + DST_SLOTS[connection.dst_slot]   # heading of dst model, depending on src and dst slot
+    connection.dst.orientation = ORIENTATION[heading]
     dst.setHpr(heading, 0, 0)
 
     if DST_SLOTS[connection.dst_slot] in [0, 180]:                          # which dims to use to calculate new pos
@@ -38,7 +46,7 @@ def calcPos(src, dst, connection):
     else:
         src_dim, dst_dim = src_dims[0], dst_dims[0]
 
-    src_slot = connection.src_slot
+    #src_slot = connection.src_slot
     if src_slot == 0:                                                   # use src slot to determine which side to place dest model
         dst_pos = src_pos + LVector3f(0, -(src_dim + dst_dim), 0)
     elif src_slot == 1:
@@ -78,7 +86,7 @@ class Environment(ShowBase):
     def traverseTree(self, robot):
         cnt = 0
         for connection in robot.connections:
-            if cnt == 6:
+            if cnt == -1:
                 break
             if connection.src.root:
                 src_path = "./models/BAM/" + connection.src.type + '.bam'       # get path of source model file
