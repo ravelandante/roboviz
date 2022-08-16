@@ -13,6 +13,7 @@ from panda3d.core import TextNode
 
 
 ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}
+BUFFER = LVector3f(1.5, 1.5, 0)
 
 
 def calcPos(src, dst, connection):
@@ -20,23 +21,28 @@ def calcPos(src, dst, connection):
     src_min, src_max = src.getTightBounds()
     src_dims = (src_max - src_min)/2                                    # get distance from centre of source model to edge
 
+    # if (connection.src.type in ['CoreComponent', 'FixedBrick']):        # buffer to slot hinges and bricks together
+    src_dims -= BUFFER
+
     dst_min, dst_max = dst.getTightBounds()
     dst_dims = (dst_max - dst_min)/2                                    # get distance from centre of dest model to edge
 
-    print(connection.src_slot, connection.src.orientation)
-
-    src_slot = connection.src_slot - connection.src.orientation
+    src_slot = connection.src_slot - connection.src.orientation         # get slot number relative to orientation of model
     if src_slot < 0:
         src_slot += 4
 
     heading = ORIENTATION[connection.dst.orientation]               # heading/orientation of dst model
     dst.setHpr(heading, 0, 0)
 
-    if connection.dst.orientation in [0, 2]:                          # which dims to use to calculate new pos
-        src_dim, dst_dim = src_dims[1], dst_dims[1]
+    if connection.src_slot in [0, 2]:                          # which dims to use to calculate new pos
+        src_dim = src_dims[1]
     else:
-        src_dim, dst_dim = src_dims[0], dst_dims[0]
-    print(src_slot, '\n')
+        src_dim = src_dims[0]
+    if connection.dst_slot in [0, 2]:
+        dst_dim = dst_dims[1]
+    else:
+        dst_dim = dst_dims[0]
+
     if src_slot == 0:                                                   # use src slot to determine which side to place dest model
         dst_pos = src_pos + LVector3f(0, -(src_dim + dst_dim), 0)
     elif src_slot == 1:
@@ -76,7 +82,7 @@ class Environment(ShowBase):
     def traverseTree(self, robot):
         cnt = 0
         for connection in robot.connections:
-            if cnt == 12:
+            if cnt == 21:
                 break
             if connection.src.root:
                 src_path = "./models/BAM/" + connection.src.type + '.bam'       # get path of source model file

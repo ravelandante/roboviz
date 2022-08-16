@@ -10,26 +10,25 @@ import sys
 
 positions = []  # this will store a bunch of smaller position arrays
 configuration = []  # this stores the x,y and z of the environment + the swarm size
-if(len(sys.argv) == 4):
+if(len(sys.argv) == 1):
     # Positions parsing BEGIN
     try:
-        # with open('robotPositions.txt', 'r') as f:
-        with open(sys.argv[1], 'r') as f:
+        with open('positions/robotPositions.txt', 'r') as f:
+            # with open(sys.argv[1], 'r') as f:
             for line in f:
                 robot_position = []
                 robot_position.append(int(line.split(' ')[0]))
                 robot_position.append(int(line.split(' ')[1]))
                 robot_position.append(int(line.split(' ')[2]))
                 positions.append(robot_position)
-        print(positions)
     except IOError:
         print("couldn't find robotPositions.txt")
         quit()
     # Positions parsing END
     # Configuration parsing BEGIN
     try:
-        # with open('config.txt', 'r') as f:
-        with open(sys.argv[2], 'r') as f:
+        with open('config/config.txt', 'r') as f:
+            # with open(sys.argv[2], 'r') as f:
             for line in f:
                 configuration.append(int(line))
     except IOError:
@@ -38,7 +37,7 @@ if(len(sys.argv) == 4):
     # Configuration parsing END
     # Robot JSON parsing BEGIN
     try:
-        with open(sys.argv[3], 'r') as f:
+        with open('json/robot_edit.json', 'r') as f:
             data = json.load(f)
 
         body = data["body"]
@@ -52,7 +51,6 @@ if(len(sys.argv) == 4):
             root = i['root']
             orient = i['orientation']
             newComp = RobotComp(id, type, root, orient)
-            # print(newComp)
             compArr.append(newComp)
 
         bodyConnect = body["connection"]
@@ -85,7 +83,6 @@ if(len(sys.argv) == 4):
                     srcSlot = j
 
             newCon = Connection(src, dest, srcSlot, destSlot)
-            # print(newCon)
             connArr.append(newCon)
 
     except IOError:
@@ -96,8 +93,9 @@ else:
     print("All files not listed")
     quit()
 
-robot = Robot(roboId, connArr, positions[0])    # create robot
 
 app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
-app.traverseTree(robot)
+for i in range(int(configuration[2])):
+    robot = Robot(i, connArr, positions[i])    # create robot
+    app.traverseTree(robot)
 app.run()
