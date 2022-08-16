@@ -21,7 +21,7 @@ def calcPos(src, dst, connection):
     src_min, src_max = src.getTightBounds()
     src_dims = (src_max - src_min)/2                                    # get distance from centre of source model to edge
 
-    # if (connection.src.type in ['CoreComponent', 'FixedBrick']):        # buffer to slot hinges and bricks together
+    # if (connection.src.type in ['CoreComponent', 'FixedBrick']):      # buffer to slot hinges and bricks together
     src_dims -= BUFFER
 
     dst_min, dst_max = dst.getTightBounds()
@@ -31,10 +31,10 @@ def calcPos(src, dst, connection):
     if src_slot < 0:
         src_slot += 4
 
-    heading = ORIENTATION[connection.dst.orientation]               # heading/orientation of dst model
+    heading = ORIENTATION[connection.dst.orientation]                   # heading/orientation of dst model
     dst.setHpr(heading, 0, 0)
 
-    if connection.src_slot in [0, 2]:                          # which dims to use to calculate new pos
+    if connection.src_slot in [0, 2]:                                   # which dims to use to calculate new pos
         src_dim = src_dims[1]
     else:
         src_dim = src_dims[0]
@@ -96,10 +96,11 @@ class Environment(ShowBase):
             dst_path = "./models/BAM/" + connection.dst.type + '.bam'           # get path of destination model file
             self.dst = self.loader.loadModel(dst_path)                          # load model of source component
 
-            if 'Hinge' in connection.src.type and connection.src_slot == 1:
+            if 'Hinge' in connection.src.type and connection.src_slot == 1:     # standardise hinge slots
                 connection.src_slot = 2
             if 'Hinge' in connection.dst.type and connection.dst_slot == 1:
                 connection.dst_slot = 2
+
             connection.dst.pos = calcPos(self.src, self.dst, connection)        # calc position of dest comp based on source position
 
             self.dst.setPos(connection.dst.pos)                                 # set position of destination model

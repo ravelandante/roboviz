@@ -10,7 +10,7 @@ import sys
 
 positions = []  # this will store a bunch of smaller position arrays
 configuration = []  # this stores the x,y and z of the environment + the swarm size
-if(len(sys.argv) == 1):
+if(len(sys.argv) == 4):
     # Positions parsing BEGIN
     try:
         with open('positions/robotPositions.txt', 'r') as f:
@@ -22,7 +22,7 @@ if(len(sys.argv) == 1):
                 robot_position.append(int(line.split(' ')[2]))
                 positions.append(robot_position)
     except IOError:
-        print("couldn't find robotPositions.txt")
+        print(f"Couldn't find positions file: {sys.argv[1]}")
         quit()
     # Positions parsing END
     # Configuration parsing BEGIN
@@ -32,12 +32,13 @@ if(len(sys.argv) == 1):
             for line in f:
                 configuration.append(int(line))
     except IOError:
-        print("couldn't find config.txt")
+        print(f"Couldn't find configuration file: {sys.argv[2]}")
         quit()
     # Configuration parsing END
     # Robot JSON parsing BEGIN
     try:
         with open('json/robot_edit.json', 'r') as f:
+            # with open(sys.argv[3], 'r') as f:
             data = json.load(f)
 
         body = data["body"]
@@ -86,16 +87,16 @@ if(len(sys.argv) == 1):
             connArr.append(newCon)
 
     except IOError:
-        print("couldn't find config.txt")
+        print(f"Couldn't find Robot JSON file: {sys.argv[3]}")
         quit()
     # Robot JSON parsing END
 else:
-    print("All files not listed")
+    print(f"Only {len(sys.argv) - 1}/3 filepaths entered")
     quit()
 
 
 app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
-for i in range(int(configuration[2])):
-    robot = Robot(i, connArr, positions[i])    # create robot
-    app.traverseTree(robot)
-app.run()
+for i in range(int(configuration[2])):                              # loop through robots in swarm
+    robot = Robot(i, connArr, positions[i])                         # create robot
+    app.traverseTree(robot)                                         # render robot
+app.run()                                                           # run visualiser
