@@ -5,4 +5,4 @@ class RobotComp:
         self.id = id
         self.type = type
         self.root = root
-        self.orientation = orientation
+        self.orientation = orientation  # global orientation
