@@ -1,6 +1,6 @@
-from distutils.command.config import config
 from environment import Environment
-from robotComp import RobotComp
+from hinge import Hinge
+from brick import Brick
 from connection import Connection
 from robot import Robot
 
@@ -10,16 +10,17 @@ import sys
 
 positions = []  # this will store a bunch of smaller position arrays
 configuration = []  # this stores the x,y and z of the environment + the swarm size
-if(len(sys.argv) == 4):
+if(len(sys.argv) == 1):
     # Positions parsing BEGIN
     try:
         with open('positions/robotPositions.txt', 'r') as f:
             # with open(sys.argv[1], 'r') as f:
             for line in f:
                 robot_position = []
-                robot_position.append(int(line.split(' ')[0]))
-                robot_position.append(int(line.split(' ')[1]))
-                robot_position.append(int(line.split(' ')[2]))
+                line = line.split(' ')
+                robot_position.append(int(line[0]))
+                robot_position.append(int(line[1]))
+                robot_position.append(int(line[2]))
                 positions.append(robot_position)
     except IOError:
         print(f"Couldn't find positions file: {sys.argv[1]}")
@@ -51,7 +52,10 @@ if(len(sys.argv) == 4):
             type = i['type']
             root = i['root']
             orient = i['orientation']
-            newComp = RobotComp(id, type, root, orient)
+            if 'Hinge' in type:
+                newComp = Hinge(id, type, root, orient)
+            else:
+                newComp = Brick(id, type, root, orient)
             compArr.append(newComp)
 
         bodyConnect = body["connection"]
