@@ -109,6 +109,8 @@ class Environment(ShowBase):
                 self.src.setPos(connection.src.pos)                             # set position of source model
                 self.src.reparentTo(self.render)                                # set parent to render node
 
+                self.displayLabel(str(robot.id), connection.src.pos)            # display robot id label text
+
             dst_path = "./models/BAM/" + connection.dst.type + '.bam'           # get path of destination model file
             self.dst = self.loader.loadModel(dst_path)                          # load model of source component
 
@@ -123,6 +125,8 @@ class Environment(ShowBase):
             self.dst.setColor(connection.dst.colour)                            # set model to relevant colour
             self.dst.reparentTo(self.render)                                    # set parent to source node
 
-            self.displayLabel(connection.dst.id, connection.dst.pos)            # display id label text
+            self.displayLabel(connection.dst.id, connection.dst.pos)            # display component id label text
+
+            print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 
             cnt += 1
