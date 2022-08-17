@@ -1,11 +1,13 @@
 # TODO: add root (core) object somewhere so parent can always be set to it (currently set to self.render, if we want to move robots - won't work)
 #       add components that make up other components (servo holder/passive hinge etc. - inheritance maybe?)
 #       LICENSING
-# EXTRA: toggle plane on/off, toggle colours on/off, bad orientation/slot warning + autocorrect option, move robots around with mouse, text showing component types etc.
+# EXTRA: toggle plane on/off, toggle colours on/off, bad orientation/slot warning + autocorrect option, move robots around with mouse
 
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import AmbientLight
 from panda3d.core import LVector3f
+from panda3d.core import Mat4
+from panda3d.core import ModelNode
 
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import *
@@ -21,7 +23,13 @@ class Environment(ShowBase):
     def __init__(self, x_length, y_length, swarm_size):
         ShowBase.__init__(self)
 
+        self.robot_pos = []                                             # positions of robot cores
+        self.focus_switch_counter = 0
+
         self.set_background_color(0.6, 0.6, 0.6, 1)                     # set background colour to a lighter grey
+        self.focus = NodePath('focus')                                  # create focus point (origin) of camera
+        self.focus.reparentTo(self.render)
+        self.camera.reparentTo(self.focus)
 
         self.x_length = x_length
         self.y_length = y_length
@@ -36,47 +44,64 @@ class Environment(ShowBase):
         alnp = self.render.attachNewNode(alight)
         self.render.setLight(alnp)
 
-        # self.useDrive()                                               # enable use of arrow keys
-
-        proto_text = "RoboViz Prototype"                                   # add prototype text
+        proto_text = "RoboViz Prototype"                                # add prototype text
         proto_textNode = OnscreenText(text=proto_text, pos=(0.85, 0.85), scale=0.07,
                                       fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
 
+        self.accept('c', self.switchFocus)                              # listen for 'c' keypress
+
+    def switchFocus(self):
+        self.focus_switch_counter += 1
+        while self.focus_switch_counter > self.swarm_size - 1:          # loop back around to start of list
+            self.focus_switch_counter -= self.swarm_size
+        print(f'Moving camera to robot {self.focus_switch_counter} at {self.robot_pos[self.focus_switch_counter]}')
+        self.moveCamera(self.robot_pos[self.focus_switch_counter])
+
+    def moveCamera(self, pos):
+        self.focus.setPos(pos)                                          # move focus of camera
+        self.disableMouse()
+        self.camera.setPos(LVector3f(0, 0, 400))                        # move camera relative to focus
+        self.camera.setHpr(0, -90, 0)
+
+        mat = Mat4(self.camera.getMat())
+        mat.invertInPlace()
+        self.mouseInterfaceNode.setMat(mat)
+        self.enableMouse()
+
     def displayLabel(self, text, pos):
-        label = TextNode('id_label')                                        # add text node
+        label = TextNode('id_label')                                    # add text node
         label.setText(text)
         label.setTextColor(1, 1, 1, 1)
         label.setAlign(TextNode.ACenter)
-        label.setCardColor(1, 1, 1, 0.3)                                    # add text frame
+        label.setCardColor(1, 1, 1, 0.3)                                # add text frame
         label.setCardAsMargin(0, 0, 0, 0)
         label.setCardDecal(True)
 
-        self.text3d = NodePath(label)                                       # add text to node
+        self.text3d = NodePath(label)                                   # add text to node
         self.text3d.setScale(3, 3, 3)
-        self.text3d.setPos(pos + LVector3f(0, 0, 20))                       # set pos above component model
+        self.text3d.setPos(pos + LVector3f(0, 0, 20))                   # set pos above component model
         self.text3d.setTwoSided(True)
-        self.text3d.setBillboardPointEye()                                  # make text billboard (move with camera)
+        self.text3d.setBillboardPointEye()                              # make text billboard (move with camera)
         self.text3d.reparentTo(self.render)
 
     def calcPos(self, src, dst, connection):
         src_pos = connection.src.pos
         src_min, src_max = src.getTightBounds()
-        src_dims = (src_max - src_min)/2                                    # get distance from centre of source model to edge
+        src_dims = (src_max - src_min)/2                                # get distance from centre of source model to edge
 
-        # if (connection.src.type in ['CoreComponent', 'FixedBrick']):      # buffer to slot hinges and bricks together
-        src_dims -= BUFFER
+        src_dims -= BUFFER                                              # buffer to slot hinges and bricks together
 
         dst_min, dst_max = dst.getTightBounds()
-        dst_dims = (dst_max - dst_min)/2                                    # get distance from centre of dest model to edge
+        dst_dims = (dst_max - dst_min)/2                                # get distance from centre of dest model to edge
 
-        src_slot = connection.src_slot - connection.src.orientation         # get slot number relative to orientation of model
+        src_slot = connection.src_slot - connection.src.orientation     # get slot number relative to orientation of model
         if src_slot < 0:
             src_slot += 4
 
-        heading = ORIENTATION[connection.dst.orientation]                   # heading/orientation of dst model
+        heading = ORIENTATION[connection.dst.orientation]               # heading/orientation of dst model
         dst.setHpr(heading, 0, 0)
 
-        if connection.src_slot in [0, 2]:                                   # which dims to use to calculate new pos
+        if connection.src_slot in [0, 2]:                               # which dims to use to calculate new pos
             src_dim = src_dims[1]
         else:
             src_dim = src_dims[0]
@@ -85,7 +110,7 @@ class Environment(ShowBase):
         else:
             dst_dim = dst_dims[0]
 
-        if src_slot == 0:                                                   # use src slot to determine which side to place dest model
+        if src_slot == 0:                                               # use src slot to determine which side to place dest model
             dst_pos = src_pos + LVector3f(0, -(src_dim + dst_dim), 0)
         elif src_slot == 1:
             dst_pos = src_pos + LVector3f(-(src_dim + dst_dim), 0, 0)
@@ -97,6 +122,8 @@ class Environment(ShowBase):
 
     def traverseTree(self, robot):
         cnt = 0
+        # add position of robot core to list
+        self.robot_pos.append(LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2]))
         for connection in robot.connections:
             if cnt == 21:
                 break
@@ -130,3 +157,4 @@ class Environment(ShowBase):
             print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 
             cnt += 1
+        self.moveCamera(self.robot_pos[self.focus_switch_counter])              # move camera to first robot loaded
