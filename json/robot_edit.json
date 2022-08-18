@@ -9,19 +9,7 @@
                 "orientation": 0
             },
             {
-                "id": "Hip1",
-                "type": "ActiveHinge",
-                "root": false,
-                "orientation": 2
-            },
-            {
-                "id": "myid1018",
-                "type": "ActiveHinge",
-                "root": false,
-                "orientation": 0
-            },
-            {
-                "id": "myid1001",
+                "id": "UpperHip1",
                 "type": "ActiveHinge",
                 "root": false,
                 "orientation": 2
@@ -33,43 +21,19 @@
                 "orientation": 2
             },
             {
-                "id": "myid1008",
-                "type": "PassiveHinge",
+                "id": "LowerHip1",
+                "type": "ActiveHinge",
                 "root": false,
-                "orientation": 3
+                "orientation": 2
             },
             {
                 "id": "LowerLeg1",
                 "type": "FixedBrick",
                 "root": false,
-                "orientation": 3
-            },
-            {
-                "id": "myid1015",
-                "type": "PassiveHinge",
-                "root": false,
-                "orientation": 1
-            },
-            {
-                "id": "myid1013",
-                "type": "PassiveHinge",
-                "root": false,
                 "orientation": 2
             },
             {
-                "id": "myid1014",
-                "type": "FixedBrick",
-                "root": false,
-                "orientation": 2
-            },
-            {
-                "id": "myid1002",
-                "type": "FixedBrick",
-                "root": false,
-                "orientation": 0
-            },
-            {
-                "id": "Hip2",
+                "id": "UpperHip2",
                 "type": "ActiveHinge",
                 "root": false,
                 "orientation": 1
@@ -81,221 +45,161 @@
                 "orientation": 1
             },
             {
-                "id": "myid1005",
-                "type": "FixedBrick",
-                "root": false,
-                "orientation": 2
-            },
-            {
-                "id": "myid1003",
-                "type": "ActiveHinge",
-                "root": false,
-                "orientation": 1
-            },
-            {
-                "id": "Knee2",
-                "type": "ActiveHinge",
-                "root": false,
-                "orientation": 1
-            },
-            {
-                "id": "myid1007",
-                "type": "ActiveHinge",
-                "root": false,
-                "orientation": 1
-            },
-            {
-                "id": "myid1016",
-                "type": "FixedBrick",
-                "root": false,
-                "orientation": 1
-            },
-            {
-                "id": "myid1009",
-                "type": "FixedBrick",
-                "root": false,
-                "orientation": 2
-            },
-            {
-                "id": "myid1010",
+                "id": "LowerHip2",
                 "type": "PassiveHinge",
                 "root": false,
-                "orientation": 3
-            },
-            {
-                "id": "myid1011",
-                "type": "FixedBrick",
-                "root": false,
-                "orientation": 3
-            },
-            {
-                "id": "myid1012",
-                "type": "PassiveHinge",
-                "root": false,
-                "orientation": 0
-            },
-            {
-                "id": "Hip3",
-                "type": "ActiveHinge",
-                "root": false,
                 "orientation": 1
-            },
-            {
-                "id": "myid1017",
-                "type": "PassiveHinge",
-                "root": false,
-                "orientation": 0
             },
             {
                 "id": "LowerLeg2",
                 "type": "FixedBrick",
                 "root": false,
-                "orientation": 2
+                "orientation": 1
+            },
+            {
+                "id": "UpperHip3",
+                "type": "ActiveHinge",
+                "root": false,
+                "orientation": 0
+            },
+            {
+                "id": "UpperLeg3",
+                "type": "FixedBrick",
+                "root": false,
+                "orientation": 0
+            },
+            {
+                "id": "LowerHip3",
+                "type": "ActiveHinge",
+                "root": false,
+                "orientation": 0
+            },
+            {
+                "id": "LowerLeg3",
+                "type": "FixedBrick",
+                "root": false,
+                "orientation": 0
+            },
+            {
+                "id": "UpperHip4",
+                "type": "ActiveHinge",
+                "root": false,
+                "orientation": 3
+            },
+            {
+                "id": "UpperLeg4",
+                "type": "FixedBrick",
+                "root": false,
+                "orientation": 3
+            },
+            {
+                "id": "LowerHip4",
+                "type": "PassiveHinge",
+                "root": false,
+                "orientation": 3
+            },
+            {
+                "id": "LowerLeg4",
+                "type": "FixedBrick",
+                "root": false,
+                "orientation": 3
             }
         ],
         "connection": [
             {
                 "src": "Core",
-                "dest": "Hip1",
+                "dest": "UpperHip1",
                 "srcSlot": 0,
                 "destSlot": 0
             },
             {
-                "src": "Hip1",
-                "dest": "myid1018",
-                "srcSlot": 1,
-                "destSlot": 0
-            },
-            {
-                "src": "myid1018",
-                "dest": "myid1001",
-                "srcSlot": 0,
-                "destSlot": 0
-            },
-            {
-                "src": "myid1001",
+                "src": "UpperHip1",
                 "dest": "UpperLeg1",
                 "srcSlot": 1,
                 "destSlot": 0
             },
             {
                 "src": "UpperLeg1",
-                "dest": "myid1008",
-                "srcSlot": 1,
+                "dest": "LowerHip1",
+                "srcSlot": 2,
                 "destSlot": 0
             },
             {
-                "src": "myid1008",
+                "src": "LowerHip1",
                 "dest": "LowerLeg1",
                 "srcSlot": 1,
                 "destSlot": 0
             },
             {
-                "src": "LowerLeg1",
-                "dest": "myid1015",
-                "srcSlot": 2,
-                "destSlot": 0
-            },
-            {
-                "src": "LowerLeg1",
-                "dest": "myid1013",
-                "srcSlot": 3,
-                "destSlot": 0
-            },
-            {
-                "src": "myid1013",
-                "dest": "myid1014",
-                "srcSlot": 1,
-                "destSlot": 0
-            },
-            {
-                "src": "UpperLeg1",
-                "dest": "myid1002",
-                "srcSlot": 2,
-                "destSlot": 0
-            },
-            {
                 "src": "Core",
-                "dest": "Hip2",
+                "dest": "UpperHip2",
                 "srcSlot": 1,
                 "destSlot": 0
             },
             {
-                "src": "Hip2",
+                "src": "UpperHip2",
                 "dest": "UpperLeg2",
                 "srcSlot": 1,
                 "destSlot": 0
             },
             {
                 "src": "UpperLeg2",
-                "dest": "myid1005",
-                "srcSlot": 1,
-                "destSlot": 0
-            },
-            {
-                "src": "myid1005",
-                "dest": "myid1003",
-                "srcSlot": 3,
-                "destSlot": 0
-            },
-            {
-                "src": "myid1003",
-                "dest": "Knee2",
-                "srcSlot": 1,
-                "destSlot": 0
-            },
-            {
-                "src": "Knee2",
-                "dest": "myid1007",
-                "srcSlot": 1,
-                "destSlot": 0
-            },
-            {
-                "src": "myid1007",
-                "dest": "myid1016",
-                "srcSlot": 1,
-                "destSlot": 0
-            },
-            {
-                "src": "myid1016",
-                "dest": "myid1009",
-                "srcSlot": 1,
-                "destSlot": 0
-            },
-            {
-                "src": "myid1009",
-                "dest": "myid1010",
-                "srcSlot": 1,
-                "destSlot": 0
-            },
-            {
-                "src": "myid1010",
-                "dest": "myid1011",
-                "srcSlot": 1,
-                "destSlot": 0
-            },
-            {
-                "src": "myid1011",
-                "dest": "myid1012",
-                "srcSlot": 3,
-                "destSlot": 0
-            },
-            {
-                "src": "Core",
-                "dest": "Hip3",
+                "dest": "LowerHip2",
                 "srcSlot": 2,
                 "destSlot": 0
             },
             {
-                "src": "Hip3",
-                "dest": "myid1017",
+                "src": "LowerHip2",
+                "dest": "LowerLeg2",
                 "srcSlot": 1,
                 "destSlot": 0
             },
             {
                 "src": "Core",
-                "dest": "LowerLeg2",
+                "dest": "UpperHip3",
+                "srcSlot": 2,
+                "destSlot": 0
+            },
+            {
+                "src": "UpperHip3",
+                "dest": "UpperLeg3",
+                "srcSlot": 1,
+                "destSlot": 0
+            },
+            {
+                "src": "UpperLeg3",
+                "dest": "LowerHip3",
+                "srcSlot": 2,
+                "destSlot": 0
+            },
+            {
+                "src": "LowerHip3",
+                "dest": "LowerLeg3",
+                "srcSlot": 1,
+                "destSlot": 0
+            },
+            {
+                "src": "Core",
+                "dest": "UpperHip4",
                 "srcSlot": 3,
+                "destSlot": 0
+            },
+            {
+                "src": "UpperHip4",
+                "dest": "UpperLeg4",
+                "srcSlot": 1,
+                "destSlot": 0
+            },
+            {
+                "src": "UpperLeg4",
+                "dest": "LowerHip4",
+                "srcSlot": 2,
+                "destSlot": 0
+            },
+            {
+                "src": "LowerHip4",
+                "dest": "LowerLeg4",
+                "srcSlot": 1,
                 "destSlot": 0
             }
         ]

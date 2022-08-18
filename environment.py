@@ -1,5 +1,11 @@
-# TODO: add root (core) object somewhere so parent can always be set to it (currently set to self.render, if we want to move robots - won't work)
-#       add components that make up other components (servo holder/passive hinge etc. - inheritance maybe?)
+# ----------------------------------------------------------------------------
+# Created By: GMLMOG016, FLDCLA001, YNGFYN001
+# Created Date: 13/08/22
+# ---------------------------------------------------------------------------
+"""Renders environment terrain and robot components"""
+
+# TODO: reparent components to core of robot (facilitates easy moving of robots)
+#       move calcPos to robotComp/hinge/brick objects
 #       LICENSING
 # EXTRA: toggle plane on/off, toggle colours on/off, bad orientation/slot warning + autocorrect option, move robots around with mouse
 
@@ -7,7 +13,6 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import AmbientLight
 from panda3d.core import LVector3f
 from panda3d.core import Mat4
-from panda3d.core import ModelNode
 
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import *
@@ -45,7 +50,7 @@ class Environment(ShowBase):
         self.render.setLight(alnp)
 
         proto_text = "RoboViz Prototype"                                # add prototype text
-        proto_textNode = OnscreenText(text=proto_text, pos=(0.85, 0.85), scale=0.07,
+        proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
                                       fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
 
         self.accept('c', self.switchFocus)                              # listen for 'c' keypress
@@ -121,12 +126,9 @@ class Environment(ShowBase):
         return dst_pos
 
     def traverseTree(self, robot):
-        cnt = 0
         # add position of robot core to list
         self.robot_pos.append(LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2]))
         for connection in robot.connections:
-            if cnt == 21:
-                break
             if connection.src.root:
                 src_path = "./models/BAM/" + connection.src.type + '.bam'       # get path of source model file
                 self.src = self.loader.loadModel(src_path)                      # load model of source component
@@ -156,5 +158,4 @@ class Environment(ShowBase):
 
             print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 
-            cnt += 1
         self.moveCamera(self.robot_pos[self.focus_switch_counter])              # move camera to first robot loaded
