@@ -20,7 +20,9 @@ from panda3d.core import TextNode
 from panda3d.core import NodePath
 
 
-ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}
+SRC_SLOTS = {0: 180, 1: 90, 2: 0, 3: 270}
+DST_SLOTS = {0: 0, 1: 90, 2: 180, 3: 270}
+DIRECTION = {0: 0, 90: 1, 180: 2, 270: 3}
 BUFFER = LVector3f(1.5, 1.5, 0)
 
 
@@ -99,11 +101,13 @@ class Environment(ShowBase):
         dst_min, dst_max = dst.getTightBounds()
         dst_dims = (dst_max - dst_min)/2                                # get distance from centre of dest model to edge
 
-        src_slot = connection.src_slot - connection.src.orientation     # get slot number relative to orientation of model
+        src_slot = connection.src_slot - connection.src.direction     # get slot number relative to orientation of model
         if src_slot < 0:
             src_slot += 4
 
-        heading = ORIENTATION[connection.dst.orientation]               # heading/orientation of dst model
+        # heading = ORIENTATION[connection.dst.orientation]               # heading/orientation of dst model
+        heading = SRC_SLOTS[src_slot] + DST_SLOTS[connection.dst_slot]   # heading of dst model, depending on src and dst slot
+        connection.dst.direction = DIRECTION[heading]
         dst.setHpr(heading, 0, 0)
 
         if connection.src_slot in [0, 2]:                               # which dims to use to calculate new pos
@@ -125,7 +129,9 @@ class Environment(ShowBase):
             dst_pos = src_pos + LVector3f(src_dim + dst_dim, 0, 0)
         return dst_pos
 
-    def traverseTree(self, robot):
+    def renderRobot(self, robot):
+        nodes = []
+        g_orientations = []
         # add position of robot core to list
         self.robot_pos.append(LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2]))
         for connection in robot.connections:
@@ -138,7 +144,9 @@ class Environment(ShowBase):
                 self.src.setPos(connection.src.pos)                             # set position of source model
                 self.src.reparentTo(self.render)                                # set parent to render node
 
-                self.displayLabel(str(robot.id), connection.src.pos)            # display robot id label text
+                # self.displayLabel(str(robot.id), connection.src.pos)            # display robot id label text
+                nodes.append(self.src)
+                g_orientations.append(connection.src.orientation)
 
             dst_path = "./models/BAM/" + connection.dst.type + '.bam'           # get path of destination model file
             self.dst = self.loader.loadModel(dst_path)                          # load model of source component
@@ -154,8 +162,27 @@ class Environment(ShowBase):
             self.dst.setColor(connection.dst.colour)                            # set model to relevant colour
             self.dst.reparentTo(self.render)                                    # set parent to source node
 
-            self.displayLabel(connection.dst.id, connection.dst.pos)            # display component id label text
+            # self.displayLabel(connection.dst.id, connection.dst.pos)            # display component id label text
 
-            print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
+            nodes.append(self.dst)
+            g_orientations.append(connection.dst.orientation)
+
+            #print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 
         self.moveCamera(self.robot_pos[self.focus_switch_counter])              # move camera to first robot loaded
+
+        prev_node = self.render
+        for i, node in enumerate(nodes):                                        # reorganise component nodes into robot tree
+            orig_pos = node.getPos()
+            orig_heading = node.getHpr()
+
+            node.reparentTo(prev_node)
+
+            node.setPos(self.render, orig_pos)
+            node.setHpr(self.render, orig_heading)
+            prev_node = node
+
+        prev_node = self.render
+        for i, node in enumerate(nodes):                                        # rotate nodes according to orientation
+            node.setHpr(node.getHpr()[0], 0, node.getHpr()[2] + DST_SLOTS[g_orientations[i]])
+            prev_node = node
