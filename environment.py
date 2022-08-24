@@ -9,15 +9,17 @@
 #       LICENSING
 # EXTRA: toggle plane on/off, toggle colours on/off, bad orientation/slot warning + autocorrect option, move robots around with mouse
 
-from direct.showbase.ShowBase import ShowBase
-from panda3d.core import AmbientLight
-from panda3d.core import LVector3f
-from panda3d.core import Mat4
-
-from direct.gui.OnscreenText import OnscreenText
-from direct.gui.DirectGui import *
-from panda3d.core import TextNode
 from panda3d.core import NodePath
+from panda3d.core import TextNode
+from direct.gui.DirectGui import *
+from direct.gui.OnscreenText import OnscreenText
+from panda3d.core import Mat4
+from panda3d.core import LVector3f
+from panda3d.core import AmbientLight
+from direct.showbase.ShowBase import ShowBase
+#from panda3d.core import loadPrcFileData
+# loadPrcFileData("", "want-directtools #t")
+# loadPrcFileData("", "want-tk #t")
 
 
 SRC_SLOTS = {0: 180, 1: 90, 2: 0, 3: 270}
@@ -92,13 +94,19 @@ class Environment(ShowBase):
         self.text3d.reparentTo(self.render)
 
     def calcPos(self, src, dst, connection):
-        src_pos = connection.src.pos
-        src_min, src_max = src.getTightBounds()
+        connection.dst.bounds = dst.getTightBounds()
+
+        if connection.src.root == True:
+            connection.src.bounds = src.getTightBounds()
+            connection.src.root = False
+
+        src_min, src_max = connection.src.bounds[0], connection.src.bounds[1]
         src_dims = (src_max - src_min)/2                                # get distance from centre of source model to edge
+        src_pos = connection.src.pos
 
         src_dims -= BUFFER                                              # buffer to slot hinges and bricks together
 
-        dst_min, dst_max = dst.getTightBounds()
+        dst_min, dst_max = connection.dst.bounds[0], connection.dst.bounds[1]
         dst_dims = (dst_max - dst_min)/2                                # get distance from centre of dest model to edge
 
         src_slot = connection.src_slot - connection.src.direction     # get slot number relative to orientation of model
@@ -127,15 +135,16 @@ class Environment(ShowBase):
             dst_pos = src_pos + LVector3f(0, src_dim + dst_dim, 0)
         elif src_slot == 3:
             dst_pos = src_pos + LVector3f(src_dim + dst_dim, 0, 0)
-        return dst_pos
+        return (dst_pos, heading)
 
     def renderRobot(self, robot):
         nodes = []
         g_orientations = []
         # add position of robot core to list
         self.robot_pos.append(LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2]))
-        for connection in robot.connections:
-            if connection.src.root:
+        robot.connections[0].src.root = True  # !!!!!CHANGE!!!!!
+        for i, connection in enumerate(robot.connections):
+            if connection.src.root and i == 0:
                 src_path = "./models/BAM/" + connection.src.type + '.bam'       # get path of source model file
                 self.src = self.loader.loadModel(src_path)                      # load model of source component
                 # if component is root comp (core) set it's position to core position & place
@@ -143,6 +152,7 @@ class Environment(ShowBase):
 
                 self.src.setPos(connection.src.pos)                             # set position of source model
                 self.src.reparentTo(self.render)                                # set parent to render node
+                self.src.setName(connection.src.id)
 
                 # self.displayLabel(str(robot.id), connection.src.pos)            # display robot id label text
                 nodes.append(self.src)
@@ -150,17 +160,22 @@ class Environment(ShowBase):
 
             dst_path = "./models/BAM/" + connection.dst.type + '.bam'           # get path of destination model file
             self.dst = self.loader.loadModel(dst_path)                          # load model of source component
+            self.dst.setName(connection.dst.id)
 
             if 'Hinge' in connection.src.type and connection.src_slot == 1:     # standardise hinge slots
                 connection.src_slot = 2
             if 'Hinge' in connection.dst.type and connection.dst_slot == 1:
                 connection.dst_slot = 2
 
-            connection.dst.pos = self.calcPos(self.src, self.dst, connection)   # calc position of dest comp based on source position
+            connection.dst.pos, heading = self.calcPos(self.src, self.dst, connection)   # calc position of dest comp based on source position
 
-            self.dst.setPos(connection.dst.pos)                                 # set position of destination model
             self.dst.setColor(connection.dst.colour)                            # set model to relevant colour
-            self.dst.reparentTo(self.render)                                    # set parent to source node
+            for i, node in enumerate(nodes):
+                if node.getName() == connection.src.id:
+                    self.dst.reparentTo(node)
+                    break
+            self.dst.setHpr(self.render, heading, 0, 0)
+            self.dst.setPos(self.render, connection.dst.pos)                                 # set position of destination model
 
             # self.displayLabel(connection.dst.id, connection.dst.pos)            # display component id label text
 
@@ -171,18 +186,5 @@ class Environment(ShowBase):
 
         self.moveCamera(self.robot_pos[self.focus_switch_counter])              # move camera to first robot loaded
 
-        prev_node = self.render
-        for i, node in enumerate(nodes):                                        # reorganise component nodes into robot tree
-            orig_pos = node.getPos()
-            orig_heading = node.getHpr()
-
-            node.reparentTo(prev_node)
-
-            node.setPos(self.render, orig_pos)
-            node.setHpr(self.render, orig_heading)
-            prev_node = node
-
-        prev_node = self.render
         for i, node in enumerate(nodes):                                        # rotate nodes according to orientation
             node.setHpr(node.getHpr()[0], 0, node.getHpr()[2] + DST_SLOTS[g_orientations[i]])
-            prev_node = node

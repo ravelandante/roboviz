@@ -2,7 +2,7 @@
 # Created By: GMLMOG016, FLDCLA001, YNGFYN001
 # Created Date: 13/08/22
 # ---------------------------------------------------------------------------
-"""Reads in configuration, roboton positions & robot JSON files. Creates environment object and runs application"""
+"""Reads in configuration, roboto positions & robot JSON files. Creates environment object and runs application"""
 
 from environment import Environment
 from hinge import Hinge
@@ -16,9 +16,10 @@ import sys
 
 positions = []  # stores smaller position arrays
 configuration = []  # stores the x,y and z of the environment + the swarm size
-if(len(sys.argv) == 4):
+if(len(sys.argv) == 1):
     try:                                                                    # Positions parsing BEGIN
-        with open(sys.argv[1], 'r') as f:
+        with open('positions/pos3.txt', 'r') as f:
+            # with open(sys.argv[1], 'r') as f:
             for line in f:
                 robot_position = []
                 line = line.split(' ')
@@ -30,14 +31,16 @@ if(len(sys.argv) == 4):
         print(f"Couldn't find positions file: {sys.argv[1]}")               # error if filepath invalid
         quit()                                                              # Positions parsing END
     try:                                                                    # Configuration parsing BEGIN
-        with open(sys.argv[2], 'r') as f:
+        # with open(sys.argv[2], 'r') as f:
+        with open('config/config3.txt', 'r') as f:
             for line in f:
                 configuration.append(int(line))
     except IOError:
         print(f"Couldn't find configuration file: {sys.argv[2]}")           # error if filepath invalid
         quit()                                                              # Configuration parsing END
     try:                                                                    # Robot JSON parsing BEGIN
-        with open(sys.argv[3], 'r') as f:
+        # with open(sys.argv[3], 'r') as f:
+        with open('json/robot.json', 'r') as f:
             data = json.load(f)
 
         body = data["body"]
@@ -99,5 +102,5 @@ else:
 app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
 for i in range(int(configuration[2])):                                      # loop through robots in swarm
     robot = Robot(i, connArr, positions[i])                                 # create robot
-    app.traverseTree(robot)                                                 # render robot
+    app.renderRobot(robot)                                                 # render robot
 app.run()                                                                   # run visualiser
