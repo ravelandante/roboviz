@@ -2,7 +2,7 @@
 # Created By: GMLMOG016, FLDCLA001, YNGFYN001
 # Created Date: 13/08/22
 # ---------------------------------------------------------------------------
-"""Reads in configuration, roboto positions & robot JSON files. Creates environment object and runs application"""
+"""Reads in configuration, robot positions & robot JSON files. Creates environment object and runs application"""
 
 from environment import Environment
 from hinge import Hinge

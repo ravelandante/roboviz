@@ -4,8 +4,8 @@
 # ---------------------------------------------------------------------------
 """Renders environment terrain and robot components"""
 
-# TODO: reparent components to core of robot (facilitates easy moving of robots)
-#       move calcPos to robotComp/hinge/brick objects
+# TODO: change 'root' workings
+#       physics/collision
 #       LICENSING
 # EXTRA: toggle plane on/off, bad orientation/slot warning + autocorrect option, move robots around with mouse, method docs
 
@@ -28,8 +28,8 @@ class Environment(ShowBase):
     def __init__(self, x_length, y_length, swarm_size):
         ShowBase.__init__(self)
 
-        self.labels = []
-        self.label_toggle = True
+        self.labels = []                                                # labels in scene
+        self.label_toggle = True                                        # whether labels are enabled or not
 
         self.robot_pos = []                                             # positions of robot cores
         self.focus_switch_counter = 0
@@ -73,6 +73,7 @@ class Environment(ShowBase):
         self.focus_switch_counter += 1
         while self.focus_switch_counter > self.swarm_size - 1:          # loop back around to start of list
             self.focus_switch_counter -= self.swarm_size
+
         print(f'Moving camera to robot {self.focus_switch_counter} at {self.robot_pos[self.focus_switch_counter]}')
         self.moveCamera(self.robot_pos[self.focus_switch_counter])      # move camera to next robot
 
@@ -109,12 +110,13 @@ class Environment(ShowBase):
         g_orientations = []                                                     # orientations of nodes in scene
         # add position of robot core to list
         self.robot_pos.append(LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2]))
+
         robot.connections[0].src.root = True  # !!!!!CHANGE!!!!!
-        for i, connection in enumerate(robot.connections):
-            if connection.src.root and i == 0:
+        for i, connection in enumerate(robot.connections):                      # loop through connections in robot
+            if connection.src.root and i == 0:                                  # if source is the core component
                 src_path = "./models/BAM/" + connection.src.type + '.bam'       # get path of source model file
                 self.src = self.loader.loadModel(src_path)                      # load model of source component
-                # if component is root comp (core) set it's position to core position & place
+                # set core's position to robot core_pos
                 connection.src.pos = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
 
                 self.src.setPos(connection.src.pos)                             # set position of source model
@@ -122,8 +124,8 @@ class Environment(ShowBase):
                 self.src.setName(connection.src.id)                             # set name of node to component ID
 
                 self.displayLabel(connection.src.pos, 'Robot ' + str(robot.id), self.src)  # display robot id label text
-                nodes.append(self.src)
-                g_orientations.append(connection.src.orientation)
+                nodes.append(self.src)                                          # add core to list of nodes
+                g_orientations.append(connection.src.orientation)               # add orientation to list
 
             dst_path = "./models/BAM/" + connection.dst.type + '.bam'           # get path of destination model file
             self.dst = self.loader.loadModel(dst_path)                          # load model of source component
@@ -144,7 +146,7 @@ class Environment(ShowBase):
                     self.dst.reparentTo(node)
                     break
 
-            self.dst.setHpr(self.render, heading, 0, 0)
+            self.dst.setHpr(self.render, heading, 0, 0)                         # set heading of destination model
             self.dst.setPos(self.render, connection.dst.pos)                    # set position of destination model
 
             nodes.append(self.dst)                                              # append component to node list
