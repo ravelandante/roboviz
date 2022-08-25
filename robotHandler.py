@@ -102,5 +102,5 @@ else:
 app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
 for i in range(int(configuration[2])):                                      # loop through robots in swarm
     robot = Robot(i, connArr, positions[i])                                 # create robot
-    app.renderRobot(robot)                                                 # render robot
+    app.renderRobot(robot)                                                  # render robot
 app.run()                                                                   # run visualiser

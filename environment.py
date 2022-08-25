@@ -7,7 +7,7 @@
 # TODO: reparent components to core of robot (facilitates easy moving of robots)
 #       move calcPos to robotComp/hinge/brick objects
 #       LICENSING
-# EXTRA: toggle plane on/off, toggle colours on/off, bad orientation/slot warning + autocorrect option, move robots around with mouse
+# EXTRA: toggle plane on/off, bad orientation/slot warning + autocorrect option, move robots around with mouse, method docs
 
 from panda3d.core import NodePath
 from panda3d.core import TextNode
@@ -31,6 +31,9 @@ BUFFER = LVector3f(1.5, 1.5, 0)
 class Environment(ShowBase):
     def __init__(self, x_length, y_length, swarm_size):
         ShowBase.__init__(self)
+
+        self.labels = []
+        self.label_toggle = True
 
         self.robot_pos = []                                             # positions of robot cores
         self.focus_switch_counter = 0
@@ -58,13 +61,24 @@ class Environment(ShowBase):
                                       fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
 
         self.accept('c', self.switchFocus)                              # listen for 'c' keypress
+        self.accept('l', self.toggleLabels)                             # listen for 'l' keypress
+
+    def toggleLabels(self):
+        if self.label_toggle == True:                                   # if labels are 'on'
+            for label in self.labels:
+                label.hide()                                            # hide labels
+            self.label_toggle = False                                   # set to 'off'
+        else:                                                           # if labels are 'off'
+            for label in self.labels:
+                label.show()                                            # show labels
+            self.label_toggle = True                                    # set to 'on'
 
     def switchFocus(self):
         self.focus_switch_counter += 1
         while self.focus_switch_counter > self.swarm_size - 1:          # loop back around to start of list
             self.focus_switch_counter -= self.swarm_size
         print(f'Moving camera to robot {self.focus_switch_counter} at {self.robot_pos[self.focus_switch_counter]}')
-        self.moveCamera(self.robot_pos[self.focus_switch_counter])
+        self.moveCamera(self.robot_pos[self.focus_switch_counter])      # move camera to next robot
 
     def moveCamera(self, pos):
         self.focus.setPos(pos)                                          # move focus of camera
@@ -77,7 +91,7 @@ class Environment(ShowBase):
         self.mouseInterfaceNode.setMat(mat)
         self.enableMouse()
 
-    def displayLabel(self, text, pos):
+    def displayLabel(self, pos, text, parent):
         label = TextNode('id_label')                                    # add text node
         label.setText(text)
         label.setTextColor(1, 1, 1, 1)
@@ -88,10 +102,11 @@ class Environment(ShowBase):
 
         self.text3d = NodePath(label)                                   # add text to node
         self.text3d.setScale(3, 3, 3)
-        self.text3d.setPos(pos + LVector3f(0, 0, 20))                   # set pos above component model
         self.text3d.setTwoSided(True)
         self.text3d.setBillboardPointEye()                              # make text billboard (move with camera)
-        self.text3d.reparentTo(self.render)
+        self.text3d.reparentTo(parent)
+        self.text3d.setPos(self.render, pos + LVector3f(0, 0, 20))      # set pos above component model
+        self.labels.append(self.text3d)
 
     def calcPos(self, src, dst, connection):
         connection.dst.bounds = dst.getTightBounds()
@@ -109,12 +124,11 @@ class Environment(ShowBase):
         dst_min, dst_max = connection.dst.bounds[0], connection.dst.bounds[1]
         dst_dims = (dst_max - dst_min)/2                                # get distance from centre of dest model to edge
 
-        src_slot = connection.src_slot - connection.src.direction     # get slot number relative to orientation of model
-        if src_slot < 0:
+        src_slot = connection.src_slot - connection.src.direction       # get slot number relative to orientation of model
+        if src_slot < 0:                                                # wrap slots around (4 -> 0 etc.)
             src_slot += 4
 
-        # heading = ORIENTATION[connection.dst.orientation]               # heading/orientation of dst model
-        heading = SRC_SLOTS[src_slot] + DST_SLOTS[connection.dst_slot]   # heading of dst model, depending on src and dst slot
+        heading = SRC_SLOTS[src_slot] + DST_SLOTS[connection.dst_slot]  # heading of dst model, depending on src and dst slot
         connection.dst.direction = DIRECTION[heading]
         dst.setHpr(heading, 0, 0)
 
@@ -138,8 +152,8 @@ class Environment(ShowBase):
         return (dst_pos, heading)
 
     def renderRobot(self, robot):
-        nodes = []
-        g_orientations = []
+        nodes = []                                                              # nodes in scene graph/tree
+        g_orientations = []                                                     # orientations of nodes in scene
         # add position of robot core to list
         self.robot_pos.append(LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2]))
         robot.connections[0].src.root = True  # !!!!!CHANGE!!!!!
@@ -152,9 +166,9 @@ class Environment(ShowBase):
 
                 self.src.setPos(connection.src.pos)                             # set position of source model
                 self.src.reparentTo(self.render)                                # set parent to render node
-                self.src.setName(connection.src.id)
+                self.src.setName(connection.src.id)                             # set name of node to component ID
 
-                # self.displayLabel(str(robot.id), connection.src.pos)            # display robot id label text
+                self.displayLabel(connection.src.pos, 'Robot ' + str(robot.id), self.src)  # display robot id label text
                 nodes.append(self.src)
                 g_orientations.append(connection.src.orientation)
 
@@ -167,24 +181,29 @@ class Environment(ShowBase):
             if 'Hinge' in connection.dst.type and connection.dst_slot == 1:
                 connection.dst_slot = 2
 
-            connection.dst.pos, heading = self.calcPos(self.src, self.dst, connection)   # calc position of dest comp based on source position
+            # calc position of dest comp based on source position
+            connection.dst.pos, heading = self.calcPos(self.src, self.dst, connection)
 
             self.dst.setColor(connection.dst.colour)                            # set model to relevant colour
-            for i, node in enumerate(nodes):
+
+            for i, node in enumerate(nodes):                                    # find src node in tree and reparent to
                 if node.getName() == connection.src.id:
                     self.dst.reparentTo(node)
                     break
+
             self.dst.setHpr(self.render, heading, 0, 0)
-            self.dst.setPos(self.render, connection.dst.pos)                                 # set position of destination model
+            self.dst.setPos(self.render, connection.dst.pos)                    # set position of destination model
 
-            # self.displayLabel(connection.dst.id, connection.dst.pos)            # display component id label text
-
-            nodes.append(self.dst)
-            g_orientations.append(connection.dst.orientation)
+            nodes.append(self.dst)                                              # append component to node list
+            g_orientations.append(connection.dst.orientation)                   # append orientation of comp to list
 
             #print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 
         self.moveCamera(self.robot_pos[self.focus_switch_counter])              # move camera to first robot loaded
 
-        for i, node in enumerate(nodes):                                        # rotate nodes according to orientation
+        for i, node in enumerate(nodes):
+            # rotate nodes according to orientation
             node.setHpr(node.getHpr()[0], 0, node.getHpr()[2] + DST_SLOTS[g_orientations[i]])
+            # display ID labels of components
+            if i > 0:
+                self.displayLabel(node.getPos(self.render), node.getName(), node)
