@@ -37,7 +37,7 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
         quit()                                                              # Positions parsing END
     try:                                                                    # Configuration parsing BEGIN
         # with open(sys.argv[2], 'r') as f:
-        with open('config/config3.txt', 'r') as f:
+        with open(window.getConfig(), 'r') as f:
             for line in f:
                 configuration.append(int(line))
     except IOError:
