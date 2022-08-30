@@ -152,7 +152,7 @@ class Environment(ShowBase):
             nodes.append(self.dst)                                              # append component to node list
             g_orientations.append(connection.dst.orientation)                   # append orientation of comp to list
 
-            #print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
+            print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 
         self.moveCamera(self.robot_pos[self.focus_switch_counter])              # move camera to first robot loaded
 
