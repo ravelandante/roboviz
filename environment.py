@@ -106,8 +106,8 @@ class Environment(ShowBase):
         self.labels.append(self.text3d)
 
     def renderRobot(self, robot):
-        nodes = []                                                              # nodes in scene graph/tree
-        g_orientations = []                                                     # orientations of nodes in scene
+        # nodes = []                                                              # nodes in scene graph/tree
+        # g_orientations = []                                                     # orientations of nodes in scene
         # add position of robot core to list
         self.robot_pos.append(LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2]))
 
@@ -123,9 +123,8 @@ class Environment(ShowBase):
                 self.src.reparentTo(self.render)                                # set parent to render node
                 self.src.setName(connection.src.id)                             # set name of node to component ID
 
-                self.displayLabel(connection.src.pos, 'Robot ' + str(robot.id), self.src)  # display robot id label text
-                nodes.append(self.src)                                          # add core to list of nodes
-                g_orientations.append(connection.src.orientation)               # add orientation to list
+                self.displayLabel(connection.src.pos, 'Robot ' + str(robot.id), self.src)   # display robot id label text
+                connection.src.node = self.src                                              # add Panda3D node to robotComp
 
             dst_path = "./models/BAM/" + connection.dst.type + '.bam'           # get path of destination model file
             self.dst = self.loader.loadModel(dst_path)                          # load model of source component
@@ -140,25 +139,29 @@ class Environment(ShowBase):
             connection.dst.pos, heading = connection.dst.calcPos(self.src, self.dst, connection)
 
             self.dst.setColor(connection.dst.colour)                            # set model to relevant colour
-
-            for i, node in enumerate(nodes):                                    # find src node in tree and reparent to
-                if node.getName() == connection.src.id:
-                    self.dst.reparentTo(node)
-                    break
+            self.dst.reparentTo(connection.src.node)                            # reparent dst node to src node (add to tree)
 
             self.dst.setHpr(self.render, heading, 0, 0)                         # set heading of destination model
             self.dst.setPos(self.render, connection.dst.pos)                    # set position of destination model
 
-            nodes.append(self.dst)                                              # append component to node list
-            g_orientations.append(connection.dst.orientation)                   # append orientation of comp to list
+            connection.dst.node = self.dst                                      # add Panda3D node to robotComp
 
             print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 
         self.moveCamera(self.robot_pos[self.focus_switch_counter])              # move camera to first robot loaded
 
-        for i, node in enumerate(nodes):
-            # rotate nodes according to orientation
-            node.setHpr(node.getHpr()[0], 0, node.getHpr()[2] + ORIENTATION[g_orientations[i]])
+        root = robot.connections[0].src
+        # rotate root node
+        root.node.setHpr(root.node.getHpr()[0], 0, root.node.getHpr()[2] + ORIENTATION[root.orientation])
+        for i, connection in enumerate(robot.connections):
+            node = connection.dst.node
+            # rotate child nodes according to orientation
+            node.setHpr(node.getHpr()[0], 0, node.getHpr()[2] + ORIENTATION[connection.dst.orientation])
             # display ID labels of components
             if i > 0:
                 self.displayLabel(node.getPos(self.render), node.getName(), node)
+
+            dst_min, dst_max = connection.src.bounds[0], connection.src.bounds[1]
+            dst_dims = (dst_max - dst_min)/2
+            if node.getPos(self.render):
+                pass
