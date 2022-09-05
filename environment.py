@@ -15,6 +15,7 @@ from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
 from panda3d.core import Mat4
 from panda3d.core import LVector3f
+from panda3d.core import LVector2f
 from panda3d.core import AmbientLight
 from direct.showbase.ShowBase import ShowBase
 #from panda3d.core import loadPrcFileData
@@ -106,8 +107,7 @@ class Environment(ShowBase):
         self.labels.append(self.text3d)
 
     def renderRobot(self, robot):
-        # nodes = []                                                              # nodes in scene graph/tree
-        # g_orientations = []                                                     # orientations of nodes in scene
+        out_of_bounds = []
         # add position of robot core to list
         self.robot_pos.append(LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2]))
 
@@ -146,7 +146,7 @@ class Environment(ShowBase):
 
             connection.dst.node = self.dst                                      # add Panda3D node to robotComp
 
-            print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
+            #print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 
         self.moveCamera(self.robot_pos[self.focus_switch_counter])              # move camera to first robot loaded
 
@@ -161,7 +161,21 @@ class Environment(ShowBase):
             if i > 0:
                 self.displayLabel(node.getPos(self.render), node.getName(), node)
 
+            # out of bounds checking
             dst_min, dst_max = connection.src.bounds[0], connection.src.bounds[1]
             dst_dims = (dst_max - dst_min)/2
-            if node.getPos(self.render):
-                pass
+
+            comp_bounds_pos = node.getPos(self.render) + dst_dims
+            comp_bounds_neg = node.getPos(self.render) - dst_dims
+            diff = LVector2f(0, 0)
+
+            if comp_bounds_pos[0] > self.x_length/2:                    # if over +x
+                diff[0] = int(comp_bounds_pos[0] - self.x_length/2)
+            elif comp_bounds_neg < -self.x_length/2:                    # if over -x
+                diff[0] = int(self.x_length/2 + comp_bounds_neg[0])
+            if comp_bounds_pos[1] > self.y_length/2:                    # if over +y
+                diff[1] = int(comp_bounds_pos[1] - self.y_length/2)
+            elif comp_bounds_neg[1] < -self.y_length/2:                 # if over -y
+                diff[1] = int(self.y_length/2 + comp_bounds_neg[1])
+            out_of_bounds.append([connection.dst.id, diff])             # add t out of bounds list for robot
+        return out_of_bounds
