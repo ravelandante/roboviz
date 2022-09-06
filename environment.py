@@ -16,7 +16,9 @@ from direct.gui.OnscreenText import OnscreenText
 from panda3d.core import Mat4
 from panda3d.core import LVector3f
 from panda3d.core import LVector2f
+from panda3d.core import LPoint3f
 from panda3d.core import AmbientLight
+from panda3d.core import BoundingBox
 from direct.showbase.ShowBase import ShowBase
 #from panda3d.core import loadPrcFileData
 # loadPrcFileData("", "want-directtools #t")
@@ -107,7 +109,6 @@ class Environment(ShowBase):
         self.labels.append(self.text3d)
 
     def renderRobot(self, robot):
-        out_of_bounds = []
         # add position of robot core to list
         self.robot_pos.append(LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2]))
 
@@ -161,21 +162,26 @@ class Environment(ShowBase):
             if i > 0:
                 self.displayLabel(node.getPos(self.render), node.getName(), node)
 
-            # out of bounds checking
-            dst_min, dst_max = connection.src.bounds[0], connection.src.bounds[1]
-            dst_dims = (dst_max - dst_min)/2
+        root_node = robot.connections[0].src.node
+        robot_min, robot_max = root_node.getTightBounds()
 
-            comp_bounds_pos = node.getPos(self.render) + dst_dims
-            comp_bounds_neg = node.getPos(self.render) - dst_dims
-            diff = LVector2f(0, 0)
+        box = BoundingBox(robot_min, robot_max)
+        vertices = box.getPoints()
 
-            if comp_bounds_pos[0] > self.x_length/2:                    # if over +x
-                diff[0] = int(comp_bounds_pos[0] - self.x_length/2)
-            elif comp_bounds_neg < -self.x_length/2:                    # if over -x
-                diff[0] = int(self.x_length/2 + comp_bounds_neg[0])
-            if comp_bounds_pos[1] > self.y_length/2:                    # if over +y
-                diff[1] = int(comp_bounds_pos[1] - self.y_length/2)
-            elif comp_bounds_neg[1] < -self.y_length/2:                 # if over -y
-                diff[1] = int(self.y_length/2 + comp_bounds_neg[1])
-            out_of_bounds.append([connection.dst.id, diff])             # add t out of bounds list for robot
-        return out_of_bounds
+        out = False
+        out_of_bounds = LVector2f(0, 0)
+        x_max, x_min, y_max, y_min = vertices[4][0], vertices[0][0], vertices[2][1], vertices[0][1]
+        if x_max > self.x_length/2:                    # if over +x
+            out_of_bounds[0] = int(x_max - self.x_length/2)
+            out = True
+        elif x_min < -self.x_length/2:                 # if over -x
+            out_of_bounds[0] = int(self.x_length/2 + x_min)
+            out = True
+        if y_max > self.y_length/2:                    # if over +y
+            out_of_bounds[1] = int(y_max - self.y_length/2)
+            out = True
+        elif y_min < -self.y_length/2:                 # if over -y
+            out_of_bounds[1] = int(self.y_length/2 + y_min)
+            out = True
+        if out == True:
+            return out_of_bounds

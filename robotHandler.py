@@ -21,10 +21,12 @@ window.startGUI()   # opens the GUI for the user to input files
 robotArr = []
 positions = []  # stores smaller position arrays
 configuration = []  # stores the x,y and z of the environment + the swarm size
-if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "")):
+collisions = []
+
+if((window.getPos() != "'") & (window.getConfig() != "'") & (window.getJSON() != "'")):
     try:                                                                    # Positions parsing BEGIN
-        # with open('robotPositions.txt', 'r') as f:
-        with open(window.getPos(), 'r') as f:
+        with open('positions/pos.txt', 'r') as f:
+            # with open(window.getPos(), 'r') as f:
             for line in f:
                 robot_position = []
                 line = line.split(' ')
@@ -36,16 +38,17 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
         print(f"Couldn't find positions file:", window.getPos())               # error if filepath invalid
         quit()                                                              # Positions parsing END
     try:                                                                    # Configuration parsing BEGIN
-        # with open(sys.argv[2], 'r') as f:
-        with open(window.getConfig(), 'r') as f:
+        with open('config/config.txt', 'r') as f:
+            # with open(window.getConfig(), 'r') as f:
             for line in f:
                 configuration.append(int(line))
     except IOError:
         print(f"Couldn't find configuration file:", window.getConfig())           # error if filepath invalid
         quit()                                                              # Configuration parsing END
     count = 0  # counting the positions
-    try:                                                                    # Robot JSON parsing BEGIN
-        with open(window.getJSON(), 'r') as f:
+    try:
+        with open('json/robot.json', 'r') as f:                                                                    # Robot JSON parsing BEGIN
+            # with open(window.getJSON(), 'r') as f:
             data = json.load(f)
         if("swarm" in data.keys()):
             swarm = data["swarm"]
@@ -107,7 +110,8 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
 
             app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
             for r in robotArr:
-                app.renderRobot(r)
+                out_of_bounds = app.renderRobot(r)                                  # render robot + get any out of bounds/collisions
+                collisions.append([r.id, out_of_bounds])
         else:
             roboId = data["id"]
             body = data["body"]
@@ -161,7 +165,8 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
             app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
             for i in range(int(configuration[2])):                                      # loop through robots in swarm
                 robot = Robot(i, connArr, positions[i])                                 # create robot
-                app.renderRobot(robot)
+                out_of_bounds = app.renderRobot(robot)                                  # render robot + get any out of bounds/collisions
+                collisions.append([i, out_of_bounds])
     except IOError:
         print("Couldn't find Robot JSON file:", window.getJSON())
         quit()
@@ -170,5 +175,6 @@ else:
     print("All files not listed")
     quit()
 f.close()
+print(collisions)
 
 app.run()
