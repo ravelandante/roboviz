@@ -16,7 +16,6 @@ from direct.gui.OnscreenText import OnscreenText
 from panda3d.core import Mat4
 from panda3d.core import LVector3f
 from panda3d.core import LVector2f
-from panda3d.core import LPoint3f
 from panda3d.core import AmbientLight
 from panda3d.core import BoundingBox
 from direct.showbase.ShowBase import ShowBase
@@ -30,6 +29,7 @@ class Environment(ShowBase):
 
         self.labels = []                                                # labels in scene
         self.label_toggle = True                                        # whether labels are enabled or not
+        self.help_toggle = True                                         # whether help text is shown or not
 
         self.robot_pos = []                                             # positions of robot cores
         self.focus_switch_counter = 0
@@ -56,8 +56,21 @@ class Environment(ShowBase):
         proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
                                       fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
 
+        help_text = "Controls:\nC - switch camera focus\nL - toggle component labels\nH - hide this help menu"  # add help text
+        self.help_textNode = OnscreenText(text=help_text, pos=(0.95, 0.8), scale=0.04,
+                                          fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=0)
+
         self.accept('c', self.switchFocus)                              # listen for 'c' keypress
         self.accept('l', self.toggleLabels)                             # listen for 'l' keypress
+        self.accept('h', self.toggleHelp)                             # listen for 'l' keypress
+
+    def toggleHelp(self):
+        if self.label_toggle == True:                                   # if text is 'on'
+            self.help_textNode.hide()                                   # hide text
+            self.label_toggle = False                                   # set to 'off'
+        else:                                                           # if text is 'off'
+            self.help_textNode.show()                                   # show text
+            self.label_toggle = True                                    # set to 'on'
 
     def toggleLabels(self):
         if self.label_toggle == True:                                   # if labels are 'on'
@@ -112,18 +125,35 @@ class Environment(ShowBase):
         box = BoundingBox(robot_min, robot_max)
         vertices = box.getPoints()
 
-        out = False
         out_of_bounds = LVector2f(0, 0)
-        x_max, x_min, y_max, y_min = vertices[4][0], vertices[0][0], vertices[2][1], vertices[0][1]     # get bounds of robot bounding box
-        if x_max > self.x_length/2:                             # if over +x
+        # get bounds of robot bounding box
+        x_max, x_min, y_max, y_min, z_max, z_min = vertices[4][0], vertices[0][0], vertices[2][1], vertices[0][1], vertices[1][2], vertices[2][2]
+        robot.bounds = [x_max, x_min, y_max, y_min, z_max, z_min]       # set bounds of robot
+        if x_max > self.x_length/2:                                     # if over +x
             out_of_bounds[0] = int(x_max - self.x_length/2)
-        elif x_min < -self.x_length/2:                          # if over -x
+        elif x_min < -self.x_length/2:                                  # if over -x
             out_of_bounds[0] = int(self.x_length/2 + x_min)
-        if y_max > self.y_length/2:                             # if over +y
+        if y_max > self.y_length/2:                                     # if over +y
             out_of_bounds[1] = int(y_max - self.y_length/2)
-        elif y_min < -self.y_length/2:                          # if over -y
+        elif y_min < -self.y_length/2:                                  # if over -y
             out_of_bounds[1] = int(self.y_length/2 + y_min)
-        return out_of_bounds
+        if out_of_bounds != LVector2f(0, 0):
+            return out_of_bounds
+        else:
+            return 'none'
+
+    def collisionDetect(self, robots):
+        collisions = []
+        for i, first_robot in enumerate(robots):
+            for second_robot in robots[i + 1:]:
+                # if robots cross each other's z bounds
+                if first_robot.bounds[4] >= second_robot.bounds[5] and first_robot.bounds[5] <= second_robot.bounds[4]:
+                    # if robots cross each other's x bounds
+                    if first_robot.bounds[0] >= second_robot.bounds[1] and first_robot.bounds[1] <= second_robot.bounds[0]:
+                        # if robots cross each other's y bounds
+                        if first_robot.bounds[2] >= second_robot.bounds[3] and first_robot.bounds[3] <= second_robot.bounds[2]:
+                            collisions.append([first_robot.id, second_robot.id])
+        return collisions
 
     def renderRobot(self, robot):
         # add position of robot core to list
@@ -164,7 +194,7 @@ class Environment(ShowBase):
 
             connection.dst.node = self.dst                                      # add Panda3D node to robotComp
 
-            #print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
+            # print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 
         self.moveCamera(self.robot_pos[self.focus_switch_counter])              # move camera to first robot loaded
 
@@ -178,7 +208,3 @@ class Environment(ShowBase):
             # display ID labels of components
             if i > 0:
                 self.displayLabel(node.getPos(self.render), node.getName(), node)
-
-        out_of_bounds = self.outOfBoundsDetect(robot)                           # check if robot is out of bounds
-        if out_of_bounds != LVector2f(0, 0):
-            return out_of_bounds

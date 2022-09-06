@@ -22,10 +22,11 @@ robotArr = []
 positions = []  # stores smaller position arrays
 configuration = []  # stores the x,y and z of the environment + the swarm size
 collisions = []
+out_of_bounds_all = []
 
 if((window.getPos() != "'") & (window.getConfig() != "'") & (window.getJSON() != "'")):
     try:                                                                    # Positions parsing BEGIN
-        with open('positions/pos.txt', 'r') as f:
+        with open('positions/pos4.txt', 'r') as f:
             # with open(window.getPos(), 'r') as f:
             for line in f:
                 robot_position = []
@@ -35,15 +36,15 @@ if((window.getPos() != "'") & (window.getConfig() != "'") & (window.getJSON() !=
                 robot_position.append(int(line[2]))                         # z value
                 positions.append(robot_position)
     except IOError:
-        print(f"Couldn't find positions file:", window.getPos())               # error if filepath invalid
+        print(f"Couldn't find positions file:", window.getPos())            # error if filepath invalid
         quit()                                                              # Positions parsing END
     try:                                                                    # Configuration parsing BEGIN
-        with open('config/config.txt', 'r') as f:
+        with open('config/config4.txt', 'r') as f:
             # with open(window.getConfig(), 'r') as f:
             for line in f:
                 configuration.append(int(line))
     except IOError:
-        print(f"Couldn't find configuration file:", window.getConfig())           # error if filepath invalid
+        print(f"Couldn't find configuration file:", window.getConfig())     # error if filepath invalid
         quit()                                                              # Configuration parsing END
     count = 0  # counting the positions
     try:
@@ -104,14 +105,17 @@ if((window.getPos() != "'") & (window.getConfig() != "'") & (window.getJSON() !=
                     connArr.append(newCon)                                          # add to list of connections
 
                 robot = Robot(roboId, connArr, positions[count - 1])
-                count = count+1
+                count = count + 1
                 print(robot)
                 robotArr.append(robot)
 
             app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
-            for r in robotArr:
-                out_of_bounds = app.renderRobot(r)                                  # render robot + get any out of bounds/collisions
-                collisions.append([r.id, out_of_bounds])
+            for robot in robotArr:
+                app.renderRobot(robot)                                  # render robot
+                out_of_bounds = app.outOfBoundsDetect(robot)            # get any out of bounds/collisions
+                if out_of_bounds != 'none':
+                    out_of_bounds_all.append([robot.id, out_of_bounds])
+            collisions = app.collisionDetect(robotArr)                  # get any possible collisions between robots
         else:
             roboId = data["id"]
             body = data["body"]
@@ -124,9 +128,9 @@ if((window.getPos() != "'") & (window.getConfig() != "'") & (window.getJSON() !=
                 root = i['root']
                 orient = i['orientation']
                 if 'Hinge' in type:
-                    newComp = Hinge(id, type, root, orient)                     # create new Hinge component
+                    newComp = Hinge(id, type, root, orient)         # create new Hinge component
                 else:
-                    newComp = Brick(id, type, root, orient)                     # create new Brick component
+                    newComp = Brick(id, type, root, orient)         # create new Brick component
                 compArr.append(newComp)
 
             bodyConnect = body["connection"]
@@ -163,10 +167,14 @@ if((window.getPos() != "'") & (window.getConfig() != "'") & (window.getJSON() !=
                 connArr.append(newCon)
 
             app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
-            for i in range(int(configuration[2])):                                      # loop through robots in swarm
-                robot = Robot(i, connArr, positions[i])                                 # create robot
-                out_of_bounds = app.renderRobot(robot)                                  # render robot + get any out of bounds/collisions
-                collisions.append([i, out_of_bounds])
+            for i in range(int(configuration[2])):                      # loop through robots in swarm
+                robot = Robot(i, connArr, positions[i])                 # create robot
+                app.renderRobot(robot)                                  # render robot
+                out_of_bounds = app.outOfBoundsDetect(robot)            # get any out of bounds/collisions
+                if out_of_bounds != 'none':
+                    out_of_bounds_all.append([i, out_of_bounds])
+                robotArr.append(robot)
+            collisions = app.collisionDetect(robotArr)                  # get any possible collisions between robots
     except IOError:
         print("Couldn't find Robot JSON file:", window.getJSON())
         quit()
@@ -175,6 +183,4 @@ else:
     print("All files not listed")
     quit()
 f.close()
-print(collisions)
-
 app.run()
