@@ -7,7 +7,7 @@
 # TODO: change 'root' workings
 #       physics/collision
 #       LICENSING
-# EXTRA: toggle plane on/off, bad orientation/slot warning + autocorrect option, move robots around with mouse, method docs
+# EXTRA: bad orientation/slot warning + autocorrect option, move robots around with mouse, method comments!
 
 from panda3d.core import NodePath
 from panda3d.core import TextNode
@@ -20,9 +20,6 @@ from panda3d.core import LPoint3f
 from panda3d.core import AmbientLight
 from panda3d.core import BoundingBox
 from direct.showbase.ShowBase import ShowBase
-#from panda3d.core import loadPrcFileData
-# loadPrcFileData("", "want-directtools #t")
-# loadPrcFileData("", "want-tk #t")
 
 ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}
 
@@ -108,6 +105,26 @@ class Environment(ShowBase):
         self.text3d.setPos(self.render, pos + LVector3f(0, 0, 20))      # set pos above component model
         self.labels.append(self.text3d)
 
+    def outOfBoundsDetect(self, robot):
+        root_node = robot.connections[0].src.node
+        robot_min, robot_max = root_node.getTightBounds()
+
+        box = BoundingBox(robot_min, robot_max)
+        vertices = box.getPoints()
+
+        out = False
+        out_of_bounds = LVector2f(0, 0)
+        x_max, x_min, y_max, y_min = vertices[4][0], vertices[0][0], vertices[2][1], vertices[0][1]     # get bounds of robot bounding box
+        if x_max > self.x_length/2:                             # if over +x
+            out_of_bounds[0] = int(x_max - self.x_length/2)
+        elif x_min < -self.x_length/2:                          # if over -x
+            out_of_bounds[0] = int(self.x_length/2 + x_min)
+        if y_max > self.y_length/2:                             # if over +y
+            out_of_bounds[1] = int(y_max - self.y_length/2)
+        elif y_min < -self.y_length/2:                          # if over -y
+            out_of_bounds[1] = int(self.y_length/2 + y_min)
+        return out_of_bounds
+
     def renderRobot(self, robot):
         # add position of robot core to list
         self.robot_pos.append(LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2]))
@@ -162,26 +179,6 @@ class Environment(ShowBase):
             if i > 0:
                 self.displayLabel(node.getPos(self.render), node.getName(), node)
 
-        root_node = robot.connections[0].src.node
-        robot_min, robot_max = root_node.getTightBounds()
-
-        box = BoundingBox(robot_min, robot_max)
-        vertices = box.getPoints()
-
-        out = False
-        out_of_bounds = LVector2f(0, 0)
-        x_max, x_min, y_max, y_min = vertices[4][0], vertices[0][0], vertices[2][1], vertices[0][1]
-        if x_max > self.x_length/2:                    # if over +x
-            out_of_bounds[0] = int(x_max - self.x_length/2)
-            out = True
-        elif x_min < -self.x_length/2:                 # if over -x
-            out_of_bounds[0] = int(self.x_length/2 + x_min)
-            out = True
-        if y_max > self.y_length/2:                    # if over +y
-            out_of_bounds[1] = int(y_max - self.y_length/2)
-            out = True
-        elif y_min < -self.y_length/2:                 # if over -y
-            out_of_bounds[1] = int(self.y_length/2 + y_min)
-            out = True
-        if out == True:
+        out_of_bounds = self.outOfBoundsDetect(robot)                           # check if robot is out of bounds
+        if out_of_bounds != LVector2f(0, 0):
             return out_of_bounds
