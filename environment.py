@@ -4,8 +4,8 @@
 # ---------------------------------------------------------------------------
 """Renders environment terrain and robot components"""
 
-# TODO: change 'root' workings
-#       physics/collision
+# TODO: reset robot core positions after moving
+#       camera direction-based movement of robots
 #       LICENSING
 # EXTRA: bad orientation/slot warning + autocorrect option, move robots around with mouse, method comments!
 
@@ -18,14 +18,25 @@ from panda3d.core import LVector3f
 from panda3d.core import LVector2f
 from panda3d.core import AmbientLight
 from panda3d.core import BoundingBox
+from panda3d.core import CollisionNode
+from panda3d.core import CollisionRay
+from panda3d.core import GeomNode
+from panda3d.core import CollisionHandlerQueue
+from panda3d.core import CollisionTraverser
 from direct.showbase.ShowBase import ShowBase
 
 ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}
+SHIFT = {'forward': LVector3f(0, 5, 0), 'back': LVector3f(0, -5, 0), 'left': LVector3f(-5, 0, 0),
+         'right': LVector3f(5, 0, 0), 'up': LVector3f(0, 0, 5), 'down': LVector3f(0, 0, -5), }
 
 
 class Environment(ShowBase):
     def __init__(self, x_length, y_length, swarm_size):
         ShowBase.__init__(self)
+
+        self.x_length = x_length
+        self.y_length = y_length
+        self.swarm_size = swarm_size
 
         self.labels = []                                                # labels in scene
         self.label_toggle = True                                        # whether labels are enabled or not
@@ -34,14 +45,20 @@ class Environment(ShowBase):
         self.robot_pos = []                                             # positions of robot cores
         self.focus_switch_counter = 0
 
+        self.myHandler = CollisionHandlerQueue()
+        self.myTraverser = CollisionTraverser()
+
+        pickerNode = CollisionNode('mouseRay')                          # for selecting robots
+        pickerNP = self.camera.attachNewNode(pickerNode)
+        pickerNode.setFromCollideMask(GeomNode.getDefaultCollideMask())
+        self.pickerRay = CollisionRay()
+        pickerNode.addSolid(self.pickerRay)
+        self.myTraverser.addCollider(pickerNP, self.myHandler)
+
         self.set_background_color(0.6, 0.6, 0.6, 1)                     # set background colour to a lighter grey
         self.focus = NodePath('focus')                                  # create focus point (origin) of camera
         self.focus.reparentTo(self.render)
         self.camera.reparentTo(self.focus)
-
-        self.x_length = x_length
-        self.y_length = y_length
-        self.swarm_size = swarm_size
 
         self.plane = self.loader.loadModel('./models/BAM/plane.bam')    # load 'terrain' plane
         self.plane.setScale(self.x_length, self.y_length, 0)            # scale up to specified dimensions
@@ -62,7 +79,24 @@ class Environment(ShowBase):
 
         self.accept('c', self.switchFocus)                              # listen for 'c' keypress
         self.accept('l', self.toggleLabels)                             # listen for 'l' keypress
-        self.accept('h', self.toggleHelp)                             # listen for 'l' keypress
+        self.accept('h', self.toggleHelp)                               # listen for 'l' keypress
+        self.accept('mouse1', self.select)                              # listen for 'mouse1' keypress
+
+        self.accept('arrow_up-repeat', self.moveRobot, ['forward'])
+        self.accept('arrow_up', self.moveRobot, ['forward'])
+        self.accept('arrow_down-repeat', self.moveRobot, ['back'])
+        self.accept('arrow_down', self.moveRobot, ['back'])
+        self.accept('arrow_left-repeat', self.moveRobot, ['left'])
+        self.accept('arrow_left', self.moveRobot, ['left'])
+        self.accept('arrow_right-repeat', self.moveRobot, ['right'])
+        self.accept('arrow_right', self.moveRobot, ['right'])
+        self.accept('control-arrow_up-repeat', self.moveRobot, ['up'])
+        self.accept('control-arrow_up', self.moveRobot, ['up'])
+        self.accept('control-arrow_down-repeat', self.moveRobot, ['down'])
+        self.accept('control-arrow_down', self.moveRobot, ['down'])
+
+        self.accept('control-arrow_left', self.rotateRobot, ['left'])
+        self.accept('control-arrow_right', self.rotateRobot, ['right'])
 
     def toggleHelp(self):
         if self.label_toggle == True:                                   # if text is 'on'
@@ -118,12 +152,41 @@ class Environment(ShowBase):
         self.text3d.setPos(self.render, pos + LVector3f(0, 0, 20))      # set pos above component model
         self.labels.append(self.text3d)
 
+    def select(self):
+        mpos = self.mouseWatcherNode.getMouse()
+        self.pickerRay.setFromLens(self.camNode, mpos.getX(), mpos.getY())
+
+        self.myTraverser.traverse(self.render)
+        if self.myHandler.getNumEntries() > 0:
+            self.myHandler.sortEntries()                                # get closest object to mouse click
+            pickedObj = self.myHandler.getEntry(0).getIntoNodePath()
+            pickedObj = pickedObj.findNetTag('robot')                   # find object by tag
+            if not pickedObj.isEmpty():
+                while True:
+                    if 'Core' not in pickedObj.getName():
+                        pickedObj = pickedObj.parent
+                    else:
+                        break
+                self.selected = pickedObj                               # set class attribute to selected robot core
+                print('Selected Robot', pickedObj.getName()[0])
+
+    def moveRobot(self, direction):
+        shift = SHIFT[direction]                                        # get direction of shift
+        self.selected.setPos(self.render, self.selected.getPos(self.render) + shift)
+
+    def rotateRobot(self, direction):
+        if direction == 'left':                                         # get direction of rotation
+            rotation = LVector3f(90, 0, 0)
+        elif direction == 'right':
+            rotation = LVector3f(-90, 0, 0)
+        self.selected.setHpr(self.render, self.selected.getHpr(self.render) + rotation)
+
     def outOfBoundsDetect(self, robot):
-        root_node = robot.connections[0].src.node
-        robot_min, robot_max = root_node.getTightBounds()
+        root_node = robot.connections[0].src.node                       # get root
+        robot_min, robot_max = root_node.getTightBounds()               # get bounds
 
         box = BoundingBox(robot_min, robot_max)
-        vertices = box.getPoints()
+        vertices = box.getPoints()                                      # get corners of bounding box
 
         out_of_bounds = LVector2f(0, 0)
         # get bounds of robot bounding box
@@ -169,7 +232,8 @@ class Environment(ShowBase):
 
                 self.src.setPos(connection.src.pos)                             # set position of source model
                 self.src.reparentTo(self.render)                                # set parent to render node
-                self.src.setName(connection.src.id)                             # set name of node to component ID
+                self.src.setName(str(robot.id) + connection.src.id)                             # set name of node to component ID
+                self.src.setTag('robot', str(robot.id) + connection.src.id)
 
                 self.displayLabel(connection.src.pos, 'Robot ' + str(robot.id), self.src)   # display robot id label text
                 connection.src.node = self.src                                              # add Panda3D node to robotComp
@@ -177,6 +241,7 @@ class Environment(ShowBase):
             dst_path = "./models/BAM/" + connection.dst.type + '.bam'           # get path of destination model file
             self.dst = self.loader.loadModel(dst_path)                          # load model of source component
             self.dst.setName(connection.dst.id)
+            self.dst.setTag('robot', connection.dst.id)
 
             if 'Hinge' in connection.src.type and connection.src_slot == 1:     # standardise hinge slots
                 connection.src_slot = 2
