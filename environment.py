@@ -5,14 +5,16 @@
 """Renders environment terrain and robot components"""
 
 # TODO: reset robot core positions after moving
-#       camera direction-based movement of robots
+#       selection outlines
+#       additional rotation dims
 #       LICENSING
 # EXTRA: bad orientation/slot warning + autocorrect option, move robots around with mouse, method comments!
 
-from panda3d.core import NodePath
-from panda3d.core import TextNode
 from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
+from direct.showbase.ShowBase import ShowBase
+from panda3d.core import NodePath
+from panda3d.core import TextNode
 from panda3d.core import Mat4
 from panda3d.core import LVector3f
 from panda3d.core import LVector2f
@@ -23,11 +25,10 @@ from panda3d.core import CollisionRay
 from panda3d.core import GeomNode
 from panda3d.core import CollisionHandlerQueue
 from panda3d.core import CollisionTraverser
-from direct.showbase.ShowBase import ShowBase
 
 ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}
-SHIFT = {'forward': LVector3f(0, 5, 0), 'back': LVector3f(0, -5, 0), 'left': LVector3f(-5, 0, 0),
-         'right': LVector3f(5, 0, 0), 'up': LVector3f(0, 0, 5), 'down': LVector3f(0, 0, -5), }
+SHIFT = {0: LVector3f(0, 5, 0), 2: LVector3f(0, -5, 0), 3: LVector3f(-5, 0, 0),
+         1: LVector3f(5, 0, 0), 4: LVector3f(0, 0, 5), 5: LVector3f(0, 0, -5), }
 
 
 class Environment(ShowBase):
@@ -82,19 +83,21 @@ class Environment(ShowBase):
         self.accept('h', self.toggleHelp)                               # listen for 'l' keypress
         self.accept('mouse1', self.select)                              # listen for 'mouse1' keypress
 
-        self.accept('arrow_up-repeat', self.moveRobot, ['forward'])
-        self.accept('arrow_up', self.moveRobot, ['forward'])
-        self.accept('arrow_down-repeat', self.moveRobot, ['back'])
-        self.accept('arrow_down', self.moveRobot, ['back'])
-        self.accept('arrow_left-repeat', self.moveRobot, ['left'])
-        self.accept('arrow_left', self.moveRobot, ['left'])
-        self.accept('arrow_right-repeat', self.moveRobot, ['right'])
-        self.accept('arrow_right', self.moveRobot, ['right'])
-        self.accept('control-arrow_up-repeat', self.moveRobot, ['up'])
-        self.accept('control-arrow_up', self.moveRobot, ['up'])
-        self.accept('control-arrow_down-repeat', self.moveRobot, ['down'])
-        self.accept('control-arrow_down', self.moveRobot, ['down'])
+        # keys for moving robots
+        self.accept('arrow_up-repeat', self.moveRobot, [0])
+        self.accept('arrow_up', self.moveRobot, [0])
+        self.accept('arrow_down-repeat', self.moveRobot, [2])
+        self.accept('arrow_down', self.moveRobot, [2])
+        self.accept('arrow_2-repeat', self.moveRobot, [3])
+        self.accept('arrow_left', self.moveRobot, [3])
+        self.accept('arrow_right-repeat', self.moveRobot, [1])
+        self.accept('arrow_right', self.moveRobot, [1])
+        self.accept('control-arrow_up-repeat', self.moveRobot, [4])
+        self.accept('control-arrow_up', self.moveRobot, [4])
+        self.accept('control-arrow_down-repeat', self.moveRobot, [5])
+        self.accept('control-arrow_down', self.moveRobot, [5])
 
+        # keys for rotating robots
         self.accept('control-arrow_left', self.rotateRobot, ['left'])
         self.accept('control-arrow_right', self.rotateRobot, ['right'])
 
@@ -118,7 +121,7 @@ class Environment(ShowBase):
 
     def switchFocus(self):
         self.focus_switch_counter += 1
-        while self.focus_switch_counter > self.swarm_size - 1:          # loop back around to start of list
+        while self.focus_switch_counter > self.swarm_size - 1:          # loop 1 around to start of list
             self.focus_switch_counter -= self.swarm_size
 
         print(f'Moving camera to robot {self.focus_switch_counter} at {self.robot_pos[self.focus_switch_counter]}')
@@ -171,7 +174,33 @@ class Environment(ShowBase):
                 print('Selected Robot', pickedObj.getName()[0])
 
     def moveRobot(self, direction):
-        shift = SHIFT[direction]                                        # get direction of shift
+        heading = int(self.camera.getHpr()[0])
+        rotation = int(self.camera.getHpr()[2])
+        if direction not in [4, 5]:                                     # if moving along xy plane
+            if heading in range(-45, 45):
+                heading = 0
+            elif heading in range(45, 135):
+                heading = 1
+            elif heading in range(135, 181) or heading in range(-180, -135):
+                heading = 2
+            elif heading in range(-135, -45):
+                heading = 3
+            if rotation in range(90, 181) or rotation in range(-180, -90):  # if camera is rotated around 180
+                if direction in [1, 3]:
+                    if direction == 1:
+                        direction = 3
+                    elif direction == 3:
+                        direction = 1
+            direction = int(direction) - heading
+            if direction < 0:
+                direction += 4
+        else:                                                               # if moving along z axis
+            if rotation in range(90, 181) or rotation in range(-180, -90):  # if camera is rotated around 180
+                if direction == 4:                                          # switch up and down
+                    direction = 5
+                elif direction == 5:
+                    direction = 4
+        shift = SHIFT[direction]                                            # get direction of shift
         self.selected.setPos(self.render, self.selected.getPos(self.render) + shift)
 
     def rotateRobot(self, direction):
@@ -181,6 +210,7 @@ class Environment(ShowBase):
             rotation = LVector3f(-90, 0, 0)
         self.selected.setHpr(self.render, self.selected.getHpr(self.render) + rotation)
 
+    # ! maybe move to Robot class !
     def outOfBoundsDetect(self, robot):
         root_node = robot.connections[0].src.node                       # get root
         robot_min, robot_max = root_node.getTightBounds()               # get bounds
@@ -205,6 +235,7 @@ class Environment(ShowBase):
         else:
             return 'none'
 
+    # ! maybe move to Robot class !
     def collisionDetect(self, robots):
         collisions = []
         for i, first_robot in enumerate(robots):
