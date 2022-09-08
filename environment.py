@@ -4,11 +4,10 @@
 # ---------------------------------------------------------------------------
 """Renders environment terrain and robot components"""
 
-# TODO: reset robot core positions after moving
-#       selection outlines
+# TODO: selection outlines
 #       additional rotation dims
 #       LICENSING
-# EXTRA: bad orientation/slot warning + autocorrect option, move robots around with mouse, method comments!
+# EXTRA: bad orientation/slot warning + autocorrect option, method comments!
 
 from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
@@ -26,9 +25,10 @@ from panda3d.core import GeomNode
 from panda3d.core import CollisionHandlerQueue
 from panda3d.core import CollisionTraverser
 
+SHIFT_VALUE = 5         # number of units robots will be moved by
 ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}
-SHIFT = {0: LVector3f(0, 5, 0), 2: LVector3f(0, -5, 0), 3: LVector3f(-5, 0, 0),
-         1: LVector3f(5, 0, 0), 4: LVector3f(0, 0, 5), 5: LVector3f(0, 0, -5), }
+SHIFT_DIRECTION = {0: LVector3f(0, SHIFT_VALUE, 0), 2: LVector3f(0, -SHIFT_VALUE, 0), 3: LVector3f(-SHIFT_VALUE, 0, 0),
+                   1: LVector3f(SHIFT_VALUE, 0, 0), 4: LVector3f(0, 0, SHIFT_VALUE), 5: LVector3f(0, 0, -SHIFT_VALUE), }
 
 
 class Environment(ShowBase):
@@ -43,7 +43,7 @@ class Environment(ShowBase):
         self.label_toggle = True                                        # whether labels are enabled or not
         self.help_toggle = True                                         # whether help text is shown or not
 
-        self.robot_pos = []                                             # positions of robot cores
+        self.robot_pos = {}                                             # positions of robot cores
         self.focus_switch_counter = 0
 
         self.myHandler = CollisionHandlerQueue()
@@ -123,9 +123,8 @@ class Environment(ShowBase):
         self.focus_switch_counter += 1
         while self.focus_switch_counter > self.swarm_size - 1:          # loop 1 around to start of list
             self.focus_switch_counter -= self.swarm_size
-
-        print(f'Moving camera to robot {self.focus_switch_counter} at {self.robot_pos[self.focus_switch_counter]}')
-        self.moveCamera(self.robot_pos[self.focus_switch_counter])      # move camera to next robot
+        print(f'Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}')
+        self.moveCamera(list(self.robot_pos.values())[self.focus_switch_counter])      # move camera to next robot
 
     def moveCamera(self, pos):
         self.focus.setPos(pos)                                          # move focus of camera
@@ -200,8 +199,9 @@ class Environment(ShowBase):
                     direction = 5
                 elif direction == 5:
                     direction = 4
-        shift = SHIFT[direction]                                            # get direction of shift
+        shift = SHIFT_DIRECTION[direction]                                            # get direction of shift
         self.selected.setPos(self.render, self.selected.getPos(self.render) + shift)
+        self.robot_pos[int(self.selected.getName()[0])] = self.selected.getPos(self.render)
 
     def rotateRobot(self, direction):
         if direction == 'left':                                         # get direction of rotation
@@ -251,7 +251,7 @@ class Environment(ShowBase):
 
     def renderRobot(self, robot):
         # add position of robot core to list
-        self.robot_pos.append(LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2]))
+        self.robot_pos[robot.id] = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
 
         robot.connections[0].src.root = True  # !!!!!CHANGE!!!!!
         for i, connection in enumerate(robot.connections):                      # loop through connections in robot
