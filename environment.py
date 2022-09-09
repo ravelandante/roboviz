@@ -39,6 +39,12 @@ class Environment(ShowBase):
     def __init__(self, x_length, y_length, swarm_size):
         ShowBase.__init__(self)
 
+        # DEBUG/PROTOTYPE OPTIONS
+        self.setFrameRateMeter(True)
+        proto_text = "RoboViz Prototype"                                # add prototype text
+        proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
+                                      fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
+
         self.x_length = x_length
         self.y_length = y_length
         self.swarm_size = swarm_size
@@ -76,10 +82,6 @@ class Environment(ShowBase):
         alight.setColor((0.2, 0.2, 0.2, 1))
         alnp = self.render.attachNewNode(alight)
         self.render.setLight(alnp)
-
-        proto_text = "RoboViz Prototype"                                # add prototype text
-        proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
-                                      fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
 
         help_text = "Controls:\nC - switch camera focus\nL - toggle component labels\nH - hide this help menu"  # add help text
         self.help_textNode = OnscreenText(text=help_text, pos=(0.95, 0.8), scale=0.04,
@@ -129,7 +131,7 @@ class Environment(ShowBase):
     def switchFocus(self):
         while self.focus_switch_counter > self.swarm_size - 1:          # loop 1 around to start of list
             self.focus_switch_counter -= self.swarm_size
-        print(f'Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}')
+        #print(f'Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}')
         self.moveCamera(list(self.robot_pos.values())[self.focus_switch_counter], 400)      # move camera to next robot
         self.focus_switch_counter += 1
 
@@ -177,7 +179,7 @@ class Environment(ShowBase):
                     else:
                         break
                 self.selected = pickedObj                               # set class attribute to selected robot core
-                print('Selected Robot', pickedObj.getName()[0])
+                #print('Selected Robot', pickedObj.getName()[0])
 
     def moveRobot(self, direction):
         heading = int(self.camera.getHpr()[0])
