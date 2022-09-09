@@ -6,8 +6,12 @@
 
 # TODO: selection outlines
 #       additional rotation dims
+#       labels only visible on current robot
 #       LICENSING
 # EXTRA: bad orientation/slot warning + autocorrect option, method comments!
+
+from numpy import deg2rad
+import math
 
 from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
@@ -65,6 +69,9 @@ class Environment(ShowBase):
         self.plane.setScale(self.x_length, self.y_length, 0)            # scale up to specified dimensions
         self.plane.reparentTo(self.render)
 
+        self.robotNode = NodePath('robotNode')
+        self.robotNode.reparentTo(self.render)
+
         alight = AmbientLight('alight')                                 # create ambient light
         alight.setColor((0.2, 0.2, 0.2, 1))
         alnp = self.render.attachNewNode(alight)
@@ -120,16 +127,16 @@ class Environment(ShowBase):
             self.label_toggle = True                                    # set to 'on'
 
     def switchFocus(self):
-        self.focus_switch_counter += 1
         while self.focus_switch_counter > self.swarm_size - 1:          # loop 1 around to start of list
             self.focus_switch_counter -= self.swarm_size
         print(f'Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}')
-        self.moveCamera(list(self.robot_pos.values())[self.focus_switch_counter])      # move camera to next robot
+        self.moveCamera(list(self.robot_pos.values())[self.focus_switch_counter], 400)      # move camera to next robot
+        self.focus_switch_counter += 1
 
-    def moveCamera(self, pos):
+    def moveCamera(self, pos, z_dist):
         self.focus.setPos(pos)                                          # move focus of camera
         self.disableMouse()
-        self.camera.setPos(LVector3f(0, 0, 400))                        # move camera relative to focus
+        self.camera.setPos(LVector3f(0, 0, z_dist))                     # move camera relative to focus
         self.camera.setHpr(0, -90, 0)
 
         mat = Mat4(self.camera.getMat())
@@ -262,7 +269,7 @@ class Environment(ShowBase):
                 connection.src.pos = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
 
                 self.src.setPos(connection.src.pos)                             # set position of source model
-                self.src.reparentTo(self.render)                                # set parent to render node
+                self.src.reparentTo(self.robotNode)                                # set parent to render node
                 self.src.setName(str(robot.id) + connection.src.id)                             # set name of node to component ID
                 self.src.setTag('robot', str(robot.id) + connection.src.id)
 
@@ -292,7 +299,12 @@ class Environment(ShowBase):
 
             # print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 
-        self.moveCamera(self.robot_pos[self.focus_switch_counter])              # move camera to first robot loaded
+        # move + zoom camera to overlook all robots
+        bounds = self.robotNode.getBounds()                                             # bounding box of all robots together
+        centre = bounds.getCenter()                                                     # centre of bounding box
+        fov = self.camLens.getFov()
+        distance = bounds.getRadius() / math.tan(deg2rad(min(fov[0], fov[1]) * 0.6))    # calc distance needed to see all robots
+        self.moveCamera(centre, distance)
 
         root = robot.connections[0].src
         # rotate root node
