@@ -33,7 +33,7 @@ class Environment(ShowBase):
 
         # DEBUG/PROTOTYPE OPTIONS
         self.setFrameRateMeter(True)
-        proto_text = "RoboViz Prototype"                                # add prototype text
+        proto_text = 'RoboViz Prototype'                                # add prototype text
         proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
                                       fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
 
@@ -43,7 +43,6 @@ class Environment(ShowBase):
 
         self.labels = []                                                # labels in scene
         self.label_toggle = True                                        # whether labels are enabled or not
-        self.help_toggle = True                                         # whether help text is shown or not
 
         self.robot_pos = {}                                             # positions of robot cores
         self.focus_switch_counter = 0
@@ -75,7 +74,7 @@ class Environment(ShowBase):
         alnp = self.render.attachNewNode(alight)
         self.render.setLight(alnp)
 
-        help_text = "Controls:\nC - switch camera focus\nL - toggle component labels\nH - hide this help menu"  # add help text
+        help_text = 'Controls:\nC - switch camera focus\nL - toggle component labels\nH - hide this help menu'  # add help text
         self.help_textNode = OnscreenText(text=help_text, pos=(0.95, 0.8), scale=0.04,
                                           fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=0)
 
@@ -103,12 +102,10 @@ class Environment(ShowBase):
         self.accept('control-arrow_right', self.rotateRobot, ['right'])
 
     def toggleHelp(self):
-        if self.label_toggle == True:                                   # if text is 'on'
-            self.help_textNode.hide()                                   # hide text
-            self.label_toggle = False                                   # set to 'off'
+        if self.help_textNode.isHidden():                                   # if text is 'on'
+            self.help_textNode.show()                                   # hide text
         else:                                                           # if text is 'off'
-            self.help_textNode.show()                                   # show text
-            self.label_toggle = True                                    # set to 'on'
+            self.help_textNode.hide()                                   # show text
 
     def toggleLabels(self):
         if self.label_toggle == True:                                   # if labels are 'on'
@@ -120,10 +117,20 @@ class Environment(ShowBase):
                 label.show()                                            # show labels
             self.label_toggle = True                                    # set to 'on'
 
+    def toggleBounding(self):
+        children = self.selected.getChildren()
+        for child in children:
+            if child.getName().split('/')[-1] == 'lines':
+                if child.isHidden():
+                    child.show()
+                else:
+                    child.hide()
+                break
+
     def switchFocus(self):
         while self.focus_switch_counter > self.swarm_size - 1:          # loop 1 around to start of list
             self.focus_switch_counter -= self.swarm_size
-        #print(f'Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}')
+        # print(f'Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}')
         self.moveCamera(list(self.robot_pos.values())[self.focus_switch_counter], 400)      # move camera to next robot
         self.focus_switch_counter += 1
 
@@ -165,13 +172,16 @@ class Environment(ShowBase):
             pickedObj = self.myHandler.getEntry(0).getIntoNodePath()
             pickedObj = pickedObj.findNetTag('robot')                   # find object by tag
             if not pickedObj.isEmpty():
+                if hasattr(self, 'selected'):
+                    self.toggleBounding()                                       # hide old selection box
                 while True:
                     if 'Core' not in pickedObj.getName():
                         pickedObj = pickedObj.parent
                     else:
                         break
                 self.selected = pickedObj                               # set class attribute to selected robot core
-                #print('Selected Robot', pickedObj.getName()[0])
+                self.toggleBounding()                                   # show new selection box
+                # print('Selected Robot', pickedObj.getName()[0])
 
     def moveRobot(self, direction):
         heading = int(self.camera.getHpr()[0])
@@ -218,7 +228,7 @@ class Environment(ShowBase):
         robot.connections[0].src.root = True  # !!!!!CHANGE!!!!!
         for i, connection in enumerate(robot.connections):                      # loop through connections in robot
             if connection.src.root and i == 0:                                  # if source is the core component
-                src_path = "./models/BAM/" + connection.src.type + '.bam'       # get path of source model file
+                src_path = './models/BAM/' + connection.src.type + '.bam'       # get path of source model file
                 self.src = self.loader.loadModel(src_path)                      # load model of source component
                 # set core's position to robot core_pos
                 connection.src.pos = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
@@ -231,7 +241,7 @@ class Environment(ShowBase):
                 self.displayLabel(connection.src.pos, 'Robot ' + str(robot.id), self.src)   # display robot id label text
                 connection.src.node = self.src                                              # add Panda3D node to robotComp
 
-            dst_path = "./models/BAM/" + connection.dst.type + '.bam'           # get path of destination model file
+            dst_path = './models/BAM/' + connection.dst.type + '.bam'           # get path of destination model file
             self.dst = self.loader.loadModel(dst_path)                          # load model of source component
             self.dst.setName(connection.dst.id)
             self.dst.setTag('robot', connection.dst.id)
@@ -271,3 +281,4 @@ class Environment(ShowBase):
             # display ID labels of components
             if i > 0:
                 self.displayLabel(node.getPos(self.render), node.getName(), node)
+        robot.drawBounds()
