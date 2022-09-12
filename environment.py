@@ -97,7 +97,7 @@ class Environment(ShowBase):
         self.accept('arrow_up', self.moveRobot, [0])
         self.accept('arrow_down-repeat', self.moveRobot, [2])
         self.accept('arrow_down', self.moveRobot, [2])
-        self.accept('arrow_2-repeat', self.moveRobot, [3])
+        self.accept('arrow_left-repeat', self.moveRobot, [3])
         self.accept('arrow_left', self.moveRobot, [3])
         self.accept('arrow_right-repeat', self.moveRobot, [1])
         self.accept('arrow_right', self.moveRobot, [1])
