@@ -12,35 +12,63 @@ class RobotGUI:
     def startGUI(self):
         working_directory = os.getcwd()
 
+        bgColour = "Black"
+
+        configError = sg.Text("Configuration file not included!!", visible=False, text_color='Red', background_color=bgColour)
+        posError = sg.Text("Positions file not included!!", visible=False, text_color='Red', background_color=bgColour)
+        jsonError = sg.Text("Robots file not included!!", visible=False, text_color='Red', background_color=bgColour)
+
         layout = [
-            [sg.Text("Choose a config file:")],
+            [sg.Text("Choose a config file:", background_color=bgColour)],
             [sg.InputText(key="-FILE_PATH-"),
-                sg.FileBrowse(initial_folder=working_directory, file_types=[("Configuration file", "*.txt")])],
-            [sg.Text("Choose a positions file:")],
+                sg.FileBrowse(initial_folder=working_directory, file_types=[("Configuration file", "*.txt")])], [configError],
+            [sg.Text("Choose a positions file:", background_color=bgColour)],
             [sg.InputText(key="-FILE_PATH-"),
-                sg.FileBrowse(initial_folder=working_directory, file_types=[("Position file", "*.txt")])],
-            [sg.Text("Choose a robots file:")],
+                sg.FileBrowse(initial_folder=working_directory, file_types=[("Position file", "*.txt")])], [posError],
+            [sg.Text("Choose a robots file:", background_color=bgColour)],
             [sg.InputText(key="-FILE_PATH-"),
-                sg.FileBrowse(initial_folder=working_directory, file_types=[("Robot file", "*.json")])],
-            [sg.Button('Submit'), sg.Exit()]
+                sg.FileBrowse(initial_folder=working_directory, file_types=[("Robot file", "*.json")])], [jsonError],
+            [sg.Button('Submit'), sg.Button('Help'), sg.Exit()]
         ]
 
-        window = sg.Window("Display config", layout)
+        sg.theme(bgColour)
+        window = sg.Window("ROBO-VIZ", layout)
 
         while True:
             event, values = window.read()
             if event in (sg.WIN_CLOSED, 'Exit'):
                 break
-            elif event == "Submit":
-                self.configPath = values["-FILE_PATH-"]
+            if(event == "Help"):
+                sg.popup("OK, So you need help using the Robo-Viz application, heres what you need to know: \n\nGAY ASS NAE NAE BABY!! \nthank you...", title="HELP")
 
+            if (event == "Submit" and values["-FILE_PATH-"] == ""):
+                #sg.popup("Configuration file not included!!")
+                configError.update(visible=True)
+            else:
+                configError.update(visible=False)
+
+            if (event == "Submit" and values["-FILE_PATH-0"] == ""):
+                #sg.popup("Positions file not included!!")
+                posError.update(visible=True)
+            else:
+                posError.update(visible=False)
+
+            if (event == "Submit" and values["-FILE_PATH-2"] == ""):
+                #sg.popup("Robots file not included!!")
+                jsonError.update(visible=True)
+            else:
+                jsonError.update(visible=False)
+
+            if (event == "Submit" and values["-FILE_PATH-"] != "" and values["-FILE_PATH-0"] != "" and values["-FILE_PATH-2"] != ""):
+                self.configPath = values["-FILE_PATH-"]
+                #self.configPath = values
                 #print("sorted \n NEXT FILE!!!!")
                 self.positionsPath = values["-FILE_PATH-0"]
 
                 #print("sorted \n NEXT FILE!!!!")
                 self.robotsPath = values["-FILE_PATH-2"]
-
-            window.close()
+                window.close()
+        window.close()
 
     def getConfig(self):
         return self.configPath
@@ -50,3 +78,12 @@ class RobotGUI:
 
     def getJSON(self):
         return self.robotsPath
+
+    def setConfig(self, configFile):
+        self.configPath = configFile
+
+    def setPos(self, posFile):
+        self.positionsPath = posFile
+
+    def setJSON(self, JSONFile):
+        self.robotsPath = JSONFile

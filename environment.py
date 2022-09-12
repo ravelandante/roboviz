@@ -4,12 +4,6 @@
 # ---------------------------------------------------------------------------
 """Renders environment terrain and robot components"""
 
-# TODO: selection outlines
-#       additional rotation dims
-#       labels only visible on current robot
-#       LICENSING
-# EXTRA: bad orientation/slot warning + autocorrect option, method comments!
-
 from numpy import deg2rad
 import math
 
@@ -20,9 +14,7 @@ from panda3d.core import NodePath
 from panda3d.core import TextNode
 from panda3d.core import Mat4
 from panda3d.core import LVector3f
-from panda3d.core import LVector2f
 from panda3d.core import AmbientLight
-from panda3d.core import BoundingBox
 from panda3d.core import CollisionNode
 from panda3d.core import CollisionRay
 from panda3d.core import GeomNode
@@ -218,45 +210,6 @@ class Environment(ShowBase):
         elif direction == 'right':
             rotation = LVector3f(-90, 0, 0)
         self.selected.setHpr(self.render, self.selected.getHpr(self.render) + rotation)
-
-    # ! maybe move to Robot class !
-    def outOfBoundsDetect(self, robot):
-        root_node = robot.connections[0].src.node                       # get root
-        robot_min, robot_max = root_node.getTightBounds()               # get bounds
-
-        box = BoundingBox(robot_min, robot_max)
-        vertices = box.getPoints()                                      # get corners of bounding box
-
-        out_of_bounds = LVector2f(0, 0)
-        # get bounds of robot bounding box
-        x_max, x_min, y_max, y_min, z_max, z_min = vertices[4][0], vertices[0][0], vertices[2][1], vertices[0][1], vertices[1][2], vertices[2][2]
-        robot.bounds = [x_max, x_min, y_max, y_min, z_max, z_min]       # set bounds of robot
-        if x_max > self.x_length/2:                                     # if over +x
-            out_of_bounds[0] = int(x_max - self.x_length/2)
-        elif x_min < -self.x_length/2:                                  # if over -x
-            out_of_bounds[0] = int(self.x_length/2 + x_min)
-        if y_max > self.y_length/2:                                     # if over +y
-            out_of_bounds[1] = int(y_max - self.y_length/2)
-        elif y_min < -self.y_length/2:                                  # if over -y
-            out_of_bounds[1] = int(self.y_length/2 + y_min)
-        if out_of_bounds != LVector2f(0, 0):
-            return out_of_bounds
-        else:
-            return 'none'
-
-    # ! maybe move to Robot class !
-    def collisionDetect(self, robots):
-        collisions = []
-        for i, first_robot in enumerate(robots):
-            for second_robot in robots[i + 1:]:
-                # if robots cross each other's z bounds
-                if first_robot.bounds[4] >= second_robot.bounds[5] and first_robot.bounds[5] <= second_robot.bounds[4]:
-                    # if robots cross each other's x bounds
-                    if first_robot.bounds[0] >= second_robot.bounds[1] and first_robot.bounds[1] <= second_robot.bounds[0]:
-                        # if robots cross each other's y bounds
-                        if first_robot.bounds[2] >= second_robot.bounds[3] and first_robot.bounds[3] <= second_robot.bounds[2]:
-                            collisions.append([first_robot.id, second_robot.id])
-        return collisions
 
     def renderRobot(self, robot):
         # add position of robot core to list
