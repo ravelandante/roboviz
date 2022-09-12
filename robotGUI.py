@@ -14,9 +14,9 @@ class RobotGUI:
 
         bgColour = "Black"
 
-        configError = sg.Text("Configuration file not included!!", visible=False, text_color='Red', background_color=bgColour)
-        posError = sg.Text("Positions file not included!!", visible=False, text_color='Red', background_color=bgColour)
-        jsonError = sg.Text("Robots file not included!!", visible=False, text_color='Red', background_color=bgColour)
+        configError = sg.Text("Configuration file not included!", visible=False, text_color='Red', background_color=bgColour)
+        posError = sg.Text("Positions file not included!", visible=False, text_color='Red', background_color=bgColour)
+        jsonError = sg.Text("Robots file not included!", visible=False, text_color='Red', background_color=bgColour)
 
         layout = [
             [sg.Text("Choose a config file:", background_color=bgColour)],
@@ -39,7 +39,7 @@ class RobotGUI:
             if event in (sg.WIN_CLOSED, 'Exit'):
                 break
             if(event == "Help"):
-                sg.popup("OK, So you need help using the Robo-Viz application, heres what you need to know: \n\nGAY ASS NAE NAE BABY!! \nthank you...", title="HELP")
+                sg.popup("some help info\nsome more help stuff ig\neven more help text wowow", title="HELP")
 
             if (event == "Submit" and values["-FILE_PATH-"] == ""):
                 #sg.popup("Configuration file not included!!")
