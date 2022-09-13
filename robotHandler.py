@@ -44,11 +44,11 @@ elif(len(sys.argv) == 4):
     window.setJSON(sys.argv[3])
     window.setPos(sys.argv[1])
 
-robotArr = []   # stores robots
-positions = []  # stores smaller position arrays
-configuration = []  # stores the x and y + the swarm size
-collisions = []
-out_of_bounds_all = []
+robotArr = []           # stores robots
+positions = []          # stores smaller position arrays
+configuration = []      # stores the x and y + the swarm size
+collisions = []         # stores collisions between robots
+out_of_bounds_all = []  # stores any robots that are out of bounds
 
 if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "") or (exists('LastRender.txt'))):
     PositionsPath = window.getPos()

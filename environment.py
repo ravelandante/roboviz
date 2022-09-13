@@ -155,13 +155,17 @@ class Environment(ShowBase):
         self.enableMouse()
 
     def enlargeLabel(self, pickedObj):
+        """Enlarges component label when component is selected
+        Args:
+            pickedObj (PandaNode): newly selected component
+        """
         for child in pickedObj.getChildren():
-            if child.getName() == 'id_label':
+            if child.getName() == 'id_label':                           # find label of newly selected component
                 child.setScale(6, 6, 6)
                 break
         if hasattr(self, 'selected_comp'):
             for child in self.selected_comp.getChildren():
-                if child.getName() == 'id_label':
+                if child.getName() == 'id_label':                       # find label of old selected component
                     child.setScale(3, 3, 3)
                     break
 
@@ -201,8 +205,10 @@ class Environment(ShowBase):
             if not pickedObj.isEmpty():
                 if hasattr(self, 'selected_robot'):
                     self.toggleBounding()                               # hide old selection box
+
                 self.enlargeLabel(pickedObj)
                 self.selected_comp = pickedObj
+
                 while True:
                     if 'Core' not in pickedObj.getName():
                         pickedObj = pickedObj.parent
