@@ -19,6 +19,10 @@ import sys
 
 
 def collisionDetect(robots):
+    """Determines if there are any possible collisions between robots in the scene
+        Args:
+            robots (List of Robot objects): list of all robots in the scene
+        """
     collisions = []
     for i, first_robot in enumerate(robots):
         for second_robot in robots[i + 1:]:

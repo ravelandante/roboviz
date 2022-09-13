@@ -21,6 +21,14 @@ class RobotComp:
         self.direction = direction
 
     def calcPos(self, src, dst, connection):
+        """Calculates the position that the component should be placed at in the scene based on the source's position
+        Args:
+            src (PandaNode): source Panda3D node in connection
+            dst (PandaNode): destination Panda3D node in connection
+            connection (Connection): the Connection in question
+        Returns:
+            LVector3f: position that component should be placed at in the scene
+        """
         connection.dst.bounds = dst.getTightBounds()
 
         if connection.src.root == True:

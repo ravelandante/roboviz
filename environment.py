@@ -21,7 +21,7 @@ from panda3d.core import GeomNode
 from panda3d.core import CollisionHandlerQueue
 from panda3d.core import CollisionTraverser
 
-SHIFT_VALUE = 5         # number of units robots will be moved by
+SHIFT_VALUE = 5     # number of units robots will be moved by
 ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}
 SHIFT_DIRECTION = {0: LVector3f(0, SHIFT_VALUE, 0), 2: LVector3f(0, -SHIFT_VALUE, 0), 3: LVector3f(-SHIFT_VALUE, 0, 0),
                    1: LVector3f(SHIFT_VALUE, 0, 0), 4: LVector3f(0, 0, SHIFT_VALUE), 5: LVector3f(0, 0, -SHIFT_VALUE), }
@@ -36,6 +36,8 @@ class Environment(ShowBase):
         proto_text = 'RoboViz Prototype'                                # add prototype text
         proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
                                       fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
+        self.robotNode = NodePath('robotNode')
+        self.robotNode.reparentTo(self.render)
 
         self.x_length = x_length
         self.y_length = y_length
@@ -66,9 +68,6 @@ class Environment(ShowBase):
         self.plane.setScale(self.x_length, self.y_length, 0)            # scale up to specified dimensions
         self.plane.reparentTo(self.render)
 
-        self.robotNode = NodePath('robotNode')
-        self.robotNode.reparentTo(self.render)
-
         alight = AmbientLight('alight')                                 # create ambient light
         alight.setColor((0.2, 0.2, 0.2, 1))
         alnp = self.render.attachNewNode(alight)
@@ -78,6 +77,7 @@ class Environment(ShowBase):
         self.help_textNode = OnscreenText(text=help_text, pos=(0.95, 0.8), scale=0.04,
                                           fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=0)
 
+        # KEYPRESSES
         self.accept('c', self.switchFocus)                              # listen for 'c' keypress
         self.accept('l', self.toggleLabels)                             # listen for 'l' keypress
         self.accept('h', self.toggleHelp)                               # listen for 'l' keypress
@@ -102,12 +102,14 @@ class Environment(ShowBase):
         self.accept('control-arrow_right', self.rotateRobot, ['right'])
 
     def toggleHelp(self):
-        if self.help_textNode.isHidden():                                   # if text is 'on'
+        """Toggles visibility of the help menu"""
+        if self.help_textNode.isHidden():                               # if text is 'on'
             self.help_textNode.show()                                   # hide text
         else:                                                           # if text is 'off'
             self.help_textNode.hide()                                   # show text
 
     def toggleLabels(self):
+        """Toggles visibility of component labels"""
         if self.label_toggle == True:                                   # if labels are 'on'
             for label in self.labels:
                 label.hide()                                            # hide labels
@@ -118,16 +120,18 @@ class Environment(ShowBase):
             self.label_toggle = True                                    # set to 'on'
 
     def toggleBounding(self):
+        """Toggles visibility of robot bounding box (selection box)"""
         children = self.selected.getChildren()
         for child in children:
-            if child.getName().split('/')[-1] == 'lines':
-                if child.isHidden():
+            if child.getName().split('/')[-1] == 'lines':               # find line node in children of root
+                if child.isHidden():                                    # if bounding box is hidden
                     child.show()
-                else:
+                else:                                                   # if bounding box is visible
                     child.hide()
                 break
 
     def switchFocus(self):
+        """Switches camera focus (origin) between robots in scene"""
         while self.focus_switch_counter > self.swarm_size - 1:          # loop 1 around to start of list
             self.focus_switch_counter -= self.swarm_size
         # print(f'Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}')
@@ -135,6 +139,11 @@ class Environment(ShowBase):
         self.focus_switch_counter += 1
 
     def moveCamera(self, pos, z_dist):
+        """Moves camera to point above pos in scene (looking down)
+        Args:
+            pos (LVector3f): position of camera
+            z_dist (int): distance above pos that camera is placed at
+        """
         self.focus.setPos(pos)                                          # move focus of camera
         self.disableMouse()
         self.camera.setPos(LVector3f(0, 0, z_dist))                     # move camera relative to focus
@@ -146,6 +155,12 @@ class Environment(ShowBase):
         self.enableMouse()
 
     def displayLabel(self, pos, text, parent):
+        """Displays a text label in the scene
+        Args:
+            pos (LVector3f): position of label
+            text (String): text of label
+            parent (NodePath): parent of label
+        """
         label = TextNode('id_label')                                    # add text node
         label.setText(text)
         label.setTextColor(1, 1, 1, 1)
@@ -163,6 +178,7 @@ class Environment(ShowBase):
         self.labels.append(self.text3d)
 
     def select(self):
+        """Determines which robot is selected (by mouse click), updates self.selected to represent this"""
         mpos = self.mouseWatcherNode.getMouse()
         self.pickerRay.setFromLens(self.camNode, mpos.getX(), mpos.getY())
 
@@ -173,7 +189,7 @@ class Environment(ShowBase):
             pickedObj = pickedObj.findNetTag('robot')                   # find object by tag
             if not pickedObj.isEmpty():
                 if hasattr(self, 'selected'):
-                    self.toggleBounding()                                       # hide old selection box
+                    self.toggleBounding()                               # hide old selection box
                 while True:
                     if 'Core' not in pickedObj.getName():
                         pickedObj = pickedObj.parent
@@ -184,9 +200,13 @@ class Environment(ShowBase):
                 # print('Selected Robot', pickedObj.getName()[0])
 
     def moveRobot(self, direction):
+        """Moves selected robot in the given direction relative to the camera view
+        Args:
+            direction (int): direction of robot movement (0:forward, 1:back, 2:left, 3:right, 4:up, 5:down)
+        """
         heading = int(self.camera.getHpr()[0])
         rotation = int(self.camera.getHpr()[2])
-        if direction not in [4, 5]:                                     # if moving along xy plane
+        if direction not in [4, 5]:                                         # if moving along xy plane
             if heading in range(-45, 45):
                 heading = 0
             elif heading in range(45, 135):
@@ -210,19 +230,27 @@ class Environment(ShowBase):
                     direction = 5
                 elif direction == 5:
                     direction = 4
-        shift = SHIFT_DIRECTION[direction]                                            # get direction of shift
+        shift = SHIFT_DIRECTION[direction]                                  # get direction of shift
         self.selected.setPos(self.render, self.selected.getPos(self.render) + shift)
         self.robot_pos[int(self.selected.getName()[0])] = self.selected.getPos(self.render)
 
     def rotateRobot(self, direction):
-        if direction == 'left':                                         # get direction of rotation
+        """Rotates selected robot in the given direction
+        Args:
+            direction (int): direction of rotation (left or right)
+        """
+        if direction == 'left':                                             # get direction of rotation
             rotation = LVector3f(90, 0, 0)
         elif direction == 'right':
             rotation = LVector3f(-90, 0, 0)
         self.selected.setHpr(self.render, self.selected.getHpr(self.render) + rotation)
 
     def renderRobot(self, robot):
-        # add position of robot core to list
+        """Renders 1 robot in the scene by iterating through its Connections
+        Args:
+            robot (Robot): robot object to render
+        """
+        # add position of robot core to list (for camera focus switching)
         self.robot_pos[robot.id] = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
 
         robot.connections[0].src.root = True  # !!!!!CHANGE!!!!!
@@ -234,8 +262,8 @@ class Environment(ShowBase):
                 connection.src.pos = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
 
                 self.src.setPos(connection.src.pos)                             # set position of source model
-                self.src.reparentTo(self.robotNode)                                # set parent to render node
-                self.src.setName(str(robot.id) + connection.src.id)                             # set name of node to component ID
+                self.src.reparentTo(self.robotNode)                             # set parent to render node
+                self.src.setName(str(robot.id) + connection.src.id)             # set name of node to component ID
                 self.src.setTag('robot', str(robot.id) + connection.src.id)
 
                 self.displayLabel(connection.src.pos, 'Robot ' + str(robot.id), self.src)   # display robot id label text

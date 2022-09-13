@@ -23,6 +23,7 @@ class Robot:
         self.ls.setColor(1, 1, 1, 1)
 
     def setBounds(self):
+        """Calculates and sets the bounds (bounding box) of the robot"""
         root_node = self.connections[0].src.node
 
         robot_min, robot_max = root_node.getTightBounds()
@@ -34,28 +35,36 @@ class Robot:
         self.bounds = [x_max, x_min, y_max, y_min, z_max, z_min]       # set bounds of robot
 
     def drawBounds(self):
-        root_node = self.connections[0].src.node
-        robot_min, robot_max = root_node.getTightBounds(root_node)
+        """Draws LineSegs between all points of the robot bounding box"""
+        root_node = self.connections[0].src.node                            # root node
+        robot_min, robot_max = root_node.getTightBounds(root_node)          # get bounds of robot
         box = BoundingBox(robot_min, robot_max)
-        vertices = box.getPoints()
+        vertices = box.getPoints()                                          # get points of robot bounding box
 
-        for z in range(0, len(vertices), 4):
+        for z in range(0, len(vertices), 4):                                # draw 'side' boxes
             self.ls.moveTo(vertices[z])
             self.ls.drawTo(vertices[z + 1])
             self.ls.drawTo(vertices[z + 3])
             self.ls.drawTo(vertices[z + 2])
             self.ls.drawTo(vertices[z])
 
-        for xy in range(0, len(vertices)//2):
+        for xy in range(0, len(vertices)//2):                               # draw 'top and bottom' boxes
             self.ls.moveTo(vertices[xy])
             self.ls.drawTo(vertices[xy + len(vertices)//2])
 
         bounds_node = self.ls.create()
         self.bounding_box = NodePath(bounds_node)
-        self.bounding_box.reparentTo(root_node)
-        self.bounding_box.hide()
+        self.bounding_box.reparentTo(root_node)                             # reparent bounding box to robot root
+        self.bounding_box.hide()                                            # hide bounding box
 
     def outOfBoundsDetect(self, x_length, y_length):
+        """Determines if robot exceeds the dimensions of the environment
+        Args:
+            x_length (int): x length of the environment
+            y_length (int): y length of the environment
+        Returns:
+            LVector2f: x and y values of how far the robot is out of bounds
+        """
         self.setBounds()                                                    # calc & set bounds of robot
 
         out_of_bounds = LVector2f(0, 0)
