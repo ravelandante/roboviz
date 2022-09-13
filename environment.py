@@ -121,7 +121,7 @@ class Environment(ShowBase):
 
     def toggleBounding(self):
         """Toggles visibility of robot bounding box (selection box)"""
-        children = self.selected.getChildren()
+        children = self.selected_robot.getChildren()
         for child in children:
             if child.getName().split('/')[-1] == 'lines':               # find line node in children of root
                 if child.isHidden():                                    # if bounding box is hidden
@@ -154,6 +154,17 @@ class Environment(ShowBase):
         self.mouseInterfaceNode.setMat(mat)
         self.enableMouse()
 
+    def enlargeLabel(self, pickedObj):
+        for child in pickedObj.getChildren():
+            if child.getName() == 'id_label':
+                child.setScale(6, 6, 6)
+                break
+        if hasattr(self, 'selected_comp'):
+            for child in self.selected_comp.getChildren():
+                if child.getName() == 'id_label':
+                    child.setScale(3, 3, 3)
+                    break
+
     def displayLabel(self, pos, text, parent):
         """Displays a text label in the scene
         Args:
@@ -178,7 +189,7 @@ class Environment(ShowBase):
         self.labels.append(self.text3d)
 
     def select(self):
-        """Determines which robot is selected (by mouse click), updates self.selected to represent this"""
+        """Determines which robot is selected (by mouse click), updates self.selected_robot to represent this"""
         mpos = self.mouseWatcherNode.getMouse()
         self.pickerRay.setFromLens(self.camNode, mpos.getX(), mpos.getY())
 
@@ -188,14 +199,16 @@ class Environment(ShowBase):
             pickedObj = self.myHandler.getEntry(0).getIntoNodePath()
             pickedObj = pickedObj.findNetTag('robot')                   # find object by tag
             if not pickedObj.isEmpty():
-                if hasattr(self, 'selected'):
+                if hasattr(self, 'selected_robot'):
                     self.toggleBounding()                               # hide old selection box
+                self.enlargeLabel(pickedObj)
+                self.selected_comp = pickedObj
                 while True:
                     if 'Core' not in pickedObj.getName():
                         pickedObj = pickedObj.parent
                     else:
                         break
-                self.selected = pickedObj                               # set class attribute to selected robot core
+                self.selected_robot = pickedObj                               # set class attribute to selected robot core
                 self.toggleBounding()                                   # show new selection box
                 # print('Selected Robot', pickedObj.getName()[0])
 
@@ -231,8 +244,8 @@ class Environment(ShowBase):
                 elif direction == 5:
                     direction = 4
         shift = SHIFT_DIRECTION[direction]                                  # get direction of shift
-        self.selected.setPos(self.render, self.selected.getPos(self.render) + shift)
-        self.robot_pos[int(self.selected.getName()[0])] = self.selected.getPos(self.render)
+        self.selected_robot.setPos(self.render, self.selected_robot.getPos(self.render) + shift)
+        self.robot_pos[int(self.selected_robot.getName()[0])] = self.selected_robot.getPos(self.render)
 
     def rotateRobot(self, direction):
         """Rotates selected robot in the given direction
@@ -243,7 +256,7 @@ class Environment(ShowBase):
             rotation = LVector3f(90, 0, 0)
         elif direction == 'right':
             rotation = LVector3f(-90, 0, 0)
-        self.selected.setHpr(self.render, self.selected.getHpr(self.render) + rotation)
+        self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + rotation)
 
     def renderRobot(self, robot):
         """Renders 1 robot in the scene by iterating through its Connections
