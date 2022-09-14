@@ -167,6 +167,7 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
                     if out_of_bounds != 'none':
                         out_of_bounds_all.append([i, out_of_bounds])
                     robotArr.append(robot)
+                app.initialView()
                 collisions = collisionDetect(robotArr)                  # get any possible collisions between robots
             else:
                 print("Contradicting swarm sizes!")
@@ -232,6 +233,7 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
                     if out_of_bounds != 'none':
                         out_of_bounds_all.append([i, out_of_bounds])
                     robotArr.append(robot)
+                app.initialView()
                 collisions = collisionDetect(robotArr)                  # get any possible collisions between robots
             else:
                 print("Contradicting swarm sizes!")

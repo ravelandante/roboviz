@@ -13,12 +13,12 @@ BUFFER = LVector3f(1.5, 1.5, 0)
 
 
 class RobotComp:
-    def __init__(self, id, type, root, orientation=0, direction=0):
+    def __init__(self, id, type, root, orientation):
         self.id = id
         self.type = type                # component type
         self.root = root                # component is the root of the robot component tree
         self.orientation = orientation  # global orientation
-        self.direction = direction
+        self.direction = 0
 
     def calcPos(self, src, dst, connection):
         """Calculates the position that the component should be placed at in the scene based on the source's position

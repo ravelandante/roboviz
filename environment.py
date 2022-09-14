@@ -6,18 +6,19 @@
 
 from numpy import deg2rad
 import math
+import copy
 
 from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import NodePath
 from panda3d.core import TextNode
+from panda3d.core import GeomNode
 from panda3d.core import Mat4
 from panda3d.core import LVector3f
 from panda3d.core import AmbientLight
 from panda3d.core import CollisionNode
 from panda3d.core import CollisionRay
-from panda3d.core import GeomNode
 from panda3d.core import CollisionHandlerQueue
 from panda3d.core import CollisionTraverser
 
@@ -36,6 +37,7 @@ class Environment(ShowBase):
         proto_text = 'RoboViz Prototype'                                # add prototype text
         proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
                                       fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
+
         self.robotNode = NodePath('robotNode')
         self.robotNode.reparentTo(self.render)
 
@@ -69,7 +71,7 @@ class Environment(ShowBase):
         self.plane.reparentTo(self.render)
 
         alight = AmbientLight('alight')                                 # create ambient light
-        alight.setColor((0.2, 0.2, 0.2, 1))
+        alight.setColor((0.4, 0.4, 0.4, 1))
         alnp = self.render.attachNewNode(alight)
         self.render.setLight(alnp)
 
@@ -264,6 +266,14 @@ class Environment(ShowBase):
             rotation = LVector3f(-90, 0, 0)
         self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + rotation)
 
+    def initialView(self):
+        # move + zoom camera to overlook all robots
+        bounds = self.robotNode.getBounds()                                             # bounding box of all robots together
+        centre = bounds.getCenter()                                                     # centre of bounding box
+        fov = self.camLens.getFov()
+        distance = bounds.getRadius() / math.tan(deg2rad(min(fov[0], fov[1]) * 0.6))    # calc distance needed to see all robots
+        self.moveCamera(centre, distance)
+
     def renderRobot(self, robot):
         """Renders 1 robot in the scene by iterating through its Connections
         Args:
@@ -281,7 +291,7 @@ class Environment(ShowBase):
                 connection.src.pos = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
 
                 self.src.setPos(connection.src.pos)                             # set position of source model
-                self.src.reparentTo(self.robotNode)                             # set parent to render node
+                self.src.reparentTo(self.robotNode)                             # set parent to robotNode
                 self.src.setName(str(robot.id) + connection.src.id)             # set name of node to component ID
                 self.src.setTag('robot', str(robot.id) + connection.src.id)
 
@@ -293,9 +303,9 @@ class Environment(ShowBase):
             self.dst.setName(connection.dst.id)
             self.dst.setTag('robot', connection.dst.id)
 
-            if 'Hinge' in connection.src.type and connection.src_slot == 1:     # standardise hinge slots
+            if 'Hinge' in connection.src.type and connection.src_slot == 1:     # standardise source hinge slots
                 connection.src_slot = 2
-            if 'Hinge' in connection.dst.type and connection.dst_slot == 1:
+            if 'Hinge' in connection.dst.type and connection.dst_slot == 1:     # standardise destination hinge slots
                 connection.dst_slot = 2
 
             # calc position of dest comp based on source position
@@ -311,13 +321,6 @@ class Environment(ShowBase):
 
             # print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 
-        # move + zoom camera to overlook all robots
-        bounds = self.robotNode.getBounds()                                             # bounding box of all robots together
-        centre = bounds.getCenter()                                                     # centre of bounding box
-        fov = self.camLens.getFov()
-        distance = bounds.getRadius() / math.tan(deg2rad(min(fov[0], fov[1]) * 0.6))    # calc distance needed to see all robots
-        self.moveCamera(centre, distance)
-
         root = robot.connections[0].src
         # rotate root node
         root.node.setHpr(root.node.getHpr()[0], 0, root.node.getHpr()[2] + ORIENTATION[root.orientation])
@@ -329,3 +332,4 @@ class Environment(ShowBase):
             if i > 0:
                 self.displayLabel(node.getPos(self.render), node.getName(), node)
         robot.drawBounds()
+        root.node.flattenStrong()
