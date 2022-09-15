@@ -80,12 +80,16 @@ class Environment(ShowBase):
                                           fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=0)
 
         # KEYPRESSES
-        self.accept('c', self.switchFocus)                              # listen for 'c' keypress
-        self.accept('l', self.toggleLabels)                             # listen for 'l' keypress
-        self.accept('h', self.toggleHelp)                               # listen for 'l' keypress
-        self.accept('mouse1', self.select)                              # listen for 'mouse1' keypress
+        self.accept('c', self.switchFocus)
+        self.accept('l', self.toggleLabels)
+        self.accept('h', lambda: self.help_textNode.show() if self.help_textNode.isHidden() else self.help_textNode.hide())
+        self.accept('mouse1', self.select)
 
-        # keys for moving robots
+        # zooming camera
+        self.accept('wheel_up', lambda: self.cam.setY(self.cam.getY() + 200))
+        self.accept('wheel_down', lambda: self.cam.setY(self.cam.getY() - 200))
+
+        # moving robots
         self.accept('arrow_up-repeat', self.moveRobot, [0])
         self.accept('arrow_up', self.moveRobot, [0])
         self.accept('arrow_down-repeat', self.moveRobot, [2])
@@ -99,9 +103,9 @@ class Environment(ShowBase):
         self.accept('control-arrow_down-repeat', self.moveRobot, [5])
         self.accept('control-arrow_down', self.moveRobot, [5])
 
-        # keys for rotating robots
-        self.accept('control-arrow_left', self.rotateRobot, ['left'])
-        self.accept('control-arrow_right', self.rotateRobot, ['right'])
+        # rotating robots
+        self.accept('control-arrow_left', lambda: self.selected_robot.setHpr(self.selected_robot.getHpr() + LVector3f(90, 0, 0)))
+        self.accept('control-arrow_right', lambda: self.selected_robot.setHpr(self.selected_robot.getHpr() + LVector3f(-90, 0, 0)))
 
     def toggleHelp(self):
         """Toggles visibility of the help menu"""
@@ -254,17 +258,6 @@ class Environment(ShowBase):
         shift = SHIFT_DIRECTION[direction]                                  # get direction of shift
         self.selected_robot.setPos(self.render, self.selected_robot.getPos(self.render) + shift)
         self.robot_pos[int(self.selected_robot.getName()[0])] = self.selected_robot.getPos(self.render)
-
-    def rotateRobot(self, direction):
-        """Rotates selected robot in the given direction
-        Args:
-            direction (int): direction of rotation (left or right)
-        """
-        if direction == 'left':                                             # get direction of rotation
-            rotation = LVector3f(90, 0, 0)
-        elif direction == 'right':
-            rotation = LVector3f(-90, 0, 0)
-        self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + rotation)
 
     def initialView(self):
         # move + zoom camera to overlook all robots
