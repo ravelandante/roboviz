@@ -6,7 +6,6 @@
 
 from numpy import deg2rad
 import math
-import copy
 
 from direct.gui.DirectGui import *
 from direct.gui.OnscreenText import OnscreenText
@@ -46,7 +45,7 @@ class Environment(ShowBase):
         self.swarm_size = swarm_size
 
         self.labels = []                                                # labels in scene
-        self.label_toggle = True                                        # whether labels are enabled or not
+        self.label_toggle = False                                       # whether labels are enabled or not
 
         self.robot_pos = {}                                             # positions of robot cores
         self.focus_switch_counter = 0
@@ -112,15 +111,14 @@ class Environment(ShowBase):
 
     def toggleLabels(self, first=False):
         """Toggles visibility of component labels"""
-        if self.label_toggle == True:                                   # if labels are 'on'
-            if first:
-                for label in self.labels:
-                    label.node().setTextColor(1, 1, 1, 1)               # set label colours after node flattening
-                    label.node().setCardColor(1, 1, 1, 0.3)
-                    label.hide()                                        # hide labels
-            else:
-                for label in self.labels:
-                    label.hide()                                        # hide labels
+        if first:
+            for label in self.labels:
+                label.node().setTextColor(1, 1, 1, 1)                   # set label colours after node flattening
+                label.node().setCardColor(1, 1, 1, 0.3)
+                label.hide()                                            # hide labels
+        elif self.label_toggle == True:                                 # if labels are 'on'
+            for label in self.labels:
+                label.hide()                                            # hide labels
             self.label_toggle = False                                   # set to 'off'
         else:                                                           # if labels are 'off'
             for label in self.labels:
