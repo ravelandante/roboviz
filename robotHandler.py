@@ -178,8 +178,8 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
             data = json.load(f)
         if("swarm" in data.keys()):
             swarm = data["swarm"]
-            neurons = swarm["neuron"]
-            brain = swarm["connection"]
+            #neurons = swarm["neuron"]
+            #brain = swarm["connection"]
 
             for robot in swarm:
                 roboId = robot["id"]
@@ -235,17 +235,16 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
                 robot = Robot(roboId, connArr, positions[count - 1])
                 count = count+1
                 robotArr.append(robot)
-                ANN = createBrain(neurons, brain, compArr)
+                #ANN = createBrain(neurons, brain, compArr)
 
             if((len(robotArr) == len(positions)) and (len(robotArr) == configuration[2])):
                 app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
-                for robot in robotArr:
+                for i, robot in enumerate(robotArr):
                     app.renderRobot(robot)
                     # get any out of bounds/collisions
                     out_of_bounds = robot.outOfBoundsDetect(int(configuration[0]), int(configuration[1]))
                     if out_of_bounds != 'none':
                         out_of_bounds_all.append([i, out_of_bounds])
-                    robotArr.append(robot)
                 app.initialView()
                 collisions = collisionDetect(robotArr)                  # get any possible collisions between robots
             else:
@@ -306,7 +305,7 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
                 newCon = Connection(src, dest, srcSlot, destSlot)
                 connArr.append(newCon)
             if(len(positions) == configuration[2]):
-                ANN = createBrain(neurons, brain, compArr)
+                #ANN = createBrain(neurons, brain, compArr)
                 app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
                 for i in range(int(configuration[2])):                                      # loop through robots in swarm
                     robot = Robot(i, connArr, positions[i])                 # create robot

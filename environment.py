@@ -4,6 +4,7 @@
 # ---------------------------------------------------------------------------
 """Renders environment terrain and robot components"""
 
+from sqlite3 import connect
 from numpy import deg2rad
 import math
 
@@ -266,6 +267,26 @@ class Environment(ShowBase):
         distance = bounds.getRadius() / math.tan(deg2rad(min(fov[0], fov[1]) * 0.6))    # calc distance needed to see all robots
         self.moveCamera(centre, distance)
 
+    def standardiseSlots(self, connection):
+        if 'Hinge' in connection.src.type and connection.src_slot == 1:     # standardise source hinge slots
+            connection.src_slot = 2
+        if 'Hinge' in connection.dst.type and connection.dst_slot == 1:     # standardise destination hinge slots
+            connection.dst_slot = 2
+        if connection.src.type == 'FixedBrick' or connection.src.type == 'CoreComponent':
+            if connection.src_slot == 3:
+                connection.src_slot = 1
+            elif connection.src_slot == 2:
+                connection.src_slot = 3
+            elif connection.src_slot == 1:
+                connection.src_slot = 2
+        if connection.dst.type == 'FixedBrick' or connection.dst.type == 'CoreComponent':
+            if connection.dst_slot == 3:
+                connection.dst_slot = 1
+            elif connection.dst_slot == 2:
+                connection.dst_slot = 3
+            elif connection.dst_slot == 1:
+                connection.dst_slot = 2
+
     def renderRobot(self, robot):
         """Renders 1 robot in the scene by iterating through its Connections
         Args:
@@ -295,10 +316,7 @@ class Environment(ShowBase):
             self.dst.setName(connection.dst.id)
             self.dst.setTag('robot', connection.dst.id)
 
-            if 'Hinge' in connection.src.type and connection.src_slot == 1:     # standardise source hinge slots
-                connection.src_slot = 2
-            if 'Hinge' in connection.dst.type and connection.dst_slot == 1:     # standardise destination hinge slots
-                connection.dst_slot = 2
+            self.standardiseSlots(connection)
 
             # calc position of dest comp based on source position
             connection.dst.pos, heading = connection.dst.calcPos(self.src, self.dst, connection)
@@ -308,21 +326,21 @@ class Environment(ShowBase):
 
             self.dst.setHpr(self.render, heading, 0, 0)                         # set heading of destination model
             self.dst.setPos(self.render, connection.dst.pos)                    # set position of destination model
+            if 'Hinge' in connection.dst.type:
+                connection.dst.orientation += connection.src.orientation
+                while connection.dst.orientation > 3:
+                    connection.dst.orientation -= 4
+                print(connection.dst.id, ORIENTATION[connection.dst.orientation])
+                self.dst.setR(self.render, ORIENTATION[connection.dst.orientation])
 
             connection.dst.node = self.dst                                      # add Panda3D node to robotComp
 
             # print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 
-        root = robot.connections[0].src
-        # rotate root node
-        root.node.setHpr(root.node.getHpr()[0], 0, root.node.getHpr()[2] + ORIENTATION[root.orientation])
         for i, connection in enumerate(robot.connections):
             node = connection.dst.node
-            # rotate child nodes according to orientation
-            node.setHpr(node.getHpr()[0], 0, node.getHpr()[2] + ORIENTATION[connection.dst.orientation])
-            # display ID labels of components
             if i > 0:
                 self.displayLabel(node.getPos(self.render), node.getName(), node)
         robot.drawBounds()
-        root.node.flattenStrong()                                               # hide labels and set colours after flattening
+        robot.connections[0].src.node.flattenStrong()                                               # hide labels and set colours after flattening
         self.toggleLabels(True)
