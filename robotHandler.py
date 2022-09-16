@@ -25,7 +25,7 @@ def collisionDetect(robots):
     """Determines if there are any possible collisions between robots in the scene
         Args:
             robots (List of Robot objects): list of all robots in the scene
-        """
+    """
     collisions = []
     for i, first_robot in enumerate(robots):
         for second_robot in robots[i + 1:]:
@@ -40,6 +40,12 @@ def collisionDetect(robots):
 
 
 def createBrain(neurons, brain, compArr):
+    """Creates list of neurons based on JSON file ANN inputs
+    Args:
+        neurons (List): list of neurons and their info from JSON file
+        brain (List): list of connections between neurons from JSON file
+        compArr (List of RobotComp objects): list of components that neurons are connected to
+    """
     inputNeurons = []
     outputNeurons = []
     other = []
@@ -115,8 +121,6 @@ elif(len(sys.argv) == 4):
     window.setJSON(sys.argv[3])
     window.setPos(sys.argv[1])
 
-if(window.exit):
-    quit()
 robotArr = []           # stores robots
 positions = []          # stores smaller position arrays
 configuration = []      # stores the x and y + the swarm size
