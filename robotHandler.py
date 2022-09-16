@@ -9,13 +9,16 @@ from hinge import Hinge
 from brick import Brick
 from connection import Connection
 from robot import Robot
+from brain import Neuron, Network
 from robotGUI import RobotGUI
+from robotComp import RobotComp
 
 from os.path import exists
 import os
 import subprocess
 import json
 import sys
+import numpy as np
 
 
 def collisionDetect(robots):
@@ -36,6 +39,74 @@ def collisionDetect(robots):
     return collisions
 
 
+def createBrain(neurons, brain, compArr):
+    inputNeurons = []
+    outputNeurons = []
+    other = []
+    for i in neurons:
+        id = i['id']
+        layer = i['layer']
+        type = i['type']
+        # read in json file
+        bodyPartId = i['bodyPartId']
+        for j in compArr:
+            if j.id == bodyPartId:
+                bodyPartId = j
+        # set the body part id to a specific component
+        ioId = i['ioId']
+        gain = i['gain']
+        if type == 'sigmoid':
+            bias = i['bias']
+            phaseOffset = 0
+            period = 0
+        elif type == 'oscillator':
+            phaseOffset = i['phaseOffset']
+            period = i['period']
+            bias = 0
+        else:
+            phaseOffset = 0
+            period = 0
+            bias = 0
+        neuron = Neuron(id, layer, type, bodyPartId, ioId, gain, bias, phaseOffset, period)
+        # create the neuron
+        if layer == 'input':
+            inputNeurons.append(neuron)
+        elif layer == 'output':
+            inputNeurons.append(neuron)
+        else:
+            other.append(neuron)
+            # in case there is a middle layer
+
+    # set up the weights & destination comps
+    for i in brain:
+        src = i['src']
+        dest = i['dest']
+        weight = i['weight']
+        w = 0
+        comp = RobotComp(0, 0, 0, 0)
+        for j in compArr:
+            if j.id in dest:
+                comp = j
+                w = weight
+                break
+        for j in inputNeurons:
+            if j.id in src:
+                j.setWeight(w)
+                j.setDestComp(comp)
+                break
+        for j in outputNeurons:
+            if j.id in src:
+                j.setWeight(w)
+                j.setDestComp(comp)
+                break
+
+    X_train = np.array([[0, 0, 1, 1], [0, 1, 0, 1]])  # dim x m
+    Y_train = np.array([[0, 1, 1, 0]])  # 1 x m
+    L, E = 0.15, 100
+    net = Network(inputNeurons, outputNeurons, X_train, Y_train, epochs=E, lr=L)
+    return net
+
+
 window = RobotGUI()
 if((not exists('LastRender.txt')) and (len(sys.argv) != 4)):  # checking to see if theres a saved render file so new JSON, positions and configuration files dont have to be entered
     window.startGUI()   # opens the GUI for the user to input files
@@ -44,6 +115,8 @@ elif(len(sys.argv) == 4):
     window.setJSON(sys.argv[3])
     window.setPos(sys.argv[1])
 
+if(window.exit):
+    quit()
 robotArr = []           # stores robots
 positions = []          # stores smaller position arrays
 configuration = []      # stores the x and y + the swarm size
@@ -101,6 +174,8 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
             data = json.load(f)
         if("swarm" in data.keys()):
             swarm = data["swarm"]
+            neurons = swarm["neuron"]
+            brain = swarm["connection"]
 
             for robot in swarm:
                 roboId = robot["id"]
@@ -155,8 +230,8 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
 
                 robot = Robot(roboId, connArr, positions[count - 1])
                 count = count+1
-                print(robot)
                 robotArr.append(robot)
+                ANN = createBrain(neurons, brain, compArr)
 
             if((len(robotArr) == len(positions)) and (len(robotArr) == configuration[2])):
                 app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
@@ -180,6 +255,9 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
             body = data["body"]
             bodyComp = body["part"]
             compArr = []
+            part2 = data["brain"]
+            neurons = part2["neuron"]
+            brain = part2["connection"]
 
             for i in bodyComp:
                 id = i['id']
@@ -224,6 +302,7 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
                 newCon = Connection(src, dest, srcSlot, destSlot)
                 connArr.append(newCon)
             if(len(positions) == configuration[2]):
+                ANN = createBrain(neurons, brain, compArr)
                 app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
                 for i in range(int(configuration[2])):                                      # loop through robots in swarm
                     robot = Robot(i, connArr, positions[i])                 # create robot
@@ -244,9 +323,6 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
         print("Couldn't find Robot JSON file:", JSONPath)
         quit()
     # Robot JSON parsing END
-else:
-    print("All files not listed")
-    quit()
 subprocess.check_call(["attrib", "+H", "LastRender.txt"])   # hide saved file paths file
 f.close()
 

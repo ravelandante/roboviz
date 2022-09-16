@@ -7,6 +7,7 @@ class RobotGUI:
         self.configPath = ""
         self.positionsPath = ""
         self.robotsPath = ""
+        self.exit = False
 
     def startGUI(self):
         working_directory = os.getcwd()
@@ -36,6 +37,7 @@ class RobotGUI:
         while True:
             event, values = window.read()
             if event in (sg.WIN_CLOSED, 'Exit'):
+                self.exit = True
                 break
             if(event == "Help"):
                 sg.popup("some help info\nsome more help stuff ig\neven more help text wowow", title="HELP")

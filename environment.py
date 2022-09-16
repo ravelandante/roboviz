@@ -75,10 +75,10 @@ class Environment(ShowBase):
         self.render.setLight(alnp)
 
         help_text = 'Controls:\nC - switch camera focus\nL - toggle component labels\nH - hide this help menu'  # add help text
-        self.help_textNode = OnscreenText(text=help_text, pos=(0.95, 0.8), scale=0.04,
+        self.help_textNode = OnscreenText(text=help_text, pos=(1, 0.7), scale=0.04,
                                           fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=0)
         sel_text = 'Selected Robot: none\nSelected Component: none'                                             # add selected text
-        self.sel_textNode = OnscreenText(text=sel_text, pos=(0.95, 0.6), scale=0.04,
+        self.sel_textNode = OnscreenText(text=sel_text, pos=(1, 0.8), scale=0.04,
                                          fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=1)
 
         # KEYPRESSES
@@ -216,7 +216,10 @@ class Environment(ShowBase):
                         break
                 self.selected_robot = pickedObj                         # set class attribute to selected robot core
                 self.toggleBounding()                                   # show new selection box
-                sel_text = 'Selected Robot: ' + self.selected_robot.getName()[0] + '\nSelected Component: ' + self.selected_comp.getName()
+                if self.selected_robot.getName()[0].isdigit() and self.selected_robot.getName()[1].isdigit():
+                    sel_text = 'Selected Robot: ' + self.selected_robot.getName()[0:2] + '\nSelected Component: ' + self.selected_comp.getName()
+                else:
+                    sel_text = 'Selected Robot: ' + self.selected_robot.getName()[0] + '\nSelected Component: ' + self.selected_comp.getName()
                 self.sel_textNode.setText(sel_text)
 
     def moveRobot(self, direction):
@@ -255,6 +258,7 @@ class Environment(ShowBase):
         self.robot_pos[int(self.selected_robot.getName()[0])] = self.selected_robot.getPos(self.render)
 
     def initialView(self):
+        """Moves and zooms camera so that all robots are initially placed in the camera's view"""
         # move + zoom camera to overlook all robots
         bounds = self.robotNode.getBounds()                                             # bounding box of all robots together
         centre = bounds.getCenter()                                                     # centre of bounding box
