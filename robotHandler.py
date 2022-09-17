@@ -114,7 +114,6 @@ def createBrain(neurons, brain, compArr):
 
 
 window = RobotGUI()
-# (not exists('LastRender.txt')) and
 if((len(sys.argv) != 4)):  # checking to see if theres a saved render file so new JSON, positions and configuration files dont have to be entered
     window.startGUI()   # opens the GUI for the user to input files
 elif(len(sys.argv) == 4):
@@ -153,92 +152,6 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
                 f.write(line)
                 f.write(' \n')
 
-    try:                                                                    # Positions parsing BEGIN
-        # with open('robotPositions.txt', 'r') as f:
-        with open(PositionsPath, 'r') as f:
-            for line in f:
-                robot_position = []
-                line = line.split(' ')
-                robot_position.append(int(line[0]))                         # x value
-                robot_position.append(int(line[1]))                         # y value
-                robot_position.append(int(line[2]))                         # z value
-                positions.append(robot_position)
-    except IOError:
-        print(f"Couldn't find positions file:", PositionsPath)               # error if filepath invalid
-        quit()                                                              # Positions parsing END
-    try:                                                                    # Configuration parsing BEGIN
-        # with open(sys.argv[2], 'r') as f:
-        with open(ConfigPath, 'r') as f:
-            for line in f:
-                configuration.append(int(line))
-    except IOError:
-        print(f"Couldn't find configuration file:", ConfigPath)           # error if filepath invalid
-        quit()                                                              # Configuration parsing END
-    count = 0  # counting the positions
-    try:                                                                    # Robot JSON parsing BEGIN
-        with open(JSONPath, 'r') as f:
-            data = json.load(f)
-        if("swarm" in data.keys()):
-            swarm = data["swarm"]
-            #neurons = swarm["neuron"]
-            #brain = swarm["connection"]
-
-            for robot in swarm:
-                roboId = robot["id"]
-                body = robot["body"]
-
-                bodyComp = body["part"]
-                compArr = []
-
-                for i in bodyComp:
-                    id = i['id']
-                    type = i['type']
-                    root = i['root']
-                    orient = i['orientation']
-                    if 'Hinge' in type:
-                        newComp = Hinge(id, type, root, orient)                     # create new Hinge component
-                    else:
-                        newComp = Brick(id, type, root, orient)                     # create new Brick component
-
-                    compArr.append(newComp)
-
-                bodyConnect = body["connection"]
-                connArr = []
-
-                for i in bodyConnect:
-                    src = i['src']
-                    # find the component that is the source
-                    for j in compArr:
-                        compare = j.id
-                        if src == compare:
-                            src = j
-
-                    dest = i['dest']
-                    # find the component that is the destination
-                    for j in compArr:
-                        if dest == (j.id):
-                            dest = j
-
-                    srcSlot = i['srcSlot']
-                    # find the component that is the source slot
-                    for j in compArr:
-                        if srcSlot == (j.id):
-                            srcSlot = j
-
-                    destSlot = i['destSlot']
-                    # find the component that is the destination slot
-                    for j in compArr:
-                        if destSlot == (j.id):
-                            srcSlot = j
-
-                    newCon = Connection(src, dest, srcSlot, destSlot)               # construct new connection
-                    connArr.append(newCon)                                          # add to list of connections
-
-                robot = Robot(roboId, connArr, positions[count - 1])
-                count = count+1
-                robotArr.append(robot)
-                #ANN = createBrain(neurons, brain, compArr)
-
             if((len(robotArr) == len(positions)) and (len(robotArr) == configuration[2])):
                 app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
                 for i, robot in enumerate(robotArr):
@@ -255,57 +168,6 @@ if((window.getPos() != "") & (window.getConfig() != "") & (window.getJSON() != "
                     os.remove('LastRender.txt')
                 quit()
 
-        else:
-            roboId = data["id"]
-            body = data["body"]
-            bodyComp = body["part"]
-            compArr = []
-            part2 = data["brain"]
-            neurons = part2["neuron"]
-            brain = part2["connection"]
-
-            for i in bodyComp:
-                id = i['id']
-                type = i['type']
-                root = i['root']
-                orient = i['orientation']
-                if 'Hinge' in type:
-                    newComp = Hinge(id, type, root, orient)                     # create new Hinge component
-                else:
-                    newComp = Brick(id, type, root, orient)                     # create new Brick component
-                compArr.append(newComp)
-
-            bodyConnect = body["connection"]
-            connArr = []
-
-            for i in bodyConnect:
-                src = i['src']
-                # find the component that is the source
-                for j in compArr:
-                    compare = j.id
-                    if src == compare:
-                        src = j
-
-                dest = i['dest']
-                # find the component that is the destination
-                for j in compArr:
-                    if dest == (j.id):
-                        dest = j
-
-                srcSlot = i['srcSlot']
-                # find the component that is the source slot
-                for j in compArr:
-                    if srcSlot == (j.id):
-                        srcSlot = j
-
-                destSlot = i['destSlot']
-                # find the component that is the destination slot
-                for j in compArr:
-                    if destSlot == (j.id):
-                        srcSlot = j
-
-                newCon = Connection(src, dest, srcSlot, destSlot)
-                connArr.append(newCon)
             if(len(positions) == configuration[2]):
                 #ANN = createBrain(neurons, brain, compArr)
                 app = Environment(int(configuration[0]), int(configuration[1]), int(configuration[2]))  # create environment
