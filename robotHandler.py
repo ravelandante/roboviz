@@ -114,13 +114,15 @@ def createBrain(neurons, brain, compArr):
 
 
 window = RobotGUI()
-if((not exists('LastRender.txt')) and (len(sys.argv) != 4)):  # checking to see if theres a saved render file so new JSON, positions and configuration files dont have to be entered
+# (not exists('LastRender.txt')) and
+if((len(sys.argv) != 4)):  # checking to see if theres a saved render file so new JSON, positions and configuration files dont have to be entered
     window.startGUI()   # opens the GUI for the user to input files
 elif(len(sys.argv) == 4):
     window.setConfig(sys.argv[2])
     window.setJSON(sys.argv[3])
     window.setPos(sys.argv[1])
-
+if(window.exit == True):
+    quit()
 robotArr = []           # stores robots
 positions = []          # stores smaller position arrays
 configuration = []      # stores the x and y + the swarm size

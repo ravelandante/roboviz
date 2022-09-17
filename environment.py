@@ -330,7 +330,6 @@ class Environment(ShowBase):
                 connection.dst.orientation += connection.src.orientation
                 while connection.dst.orientation > 3:
                     connection.dst.orientation -= 4
-                print(connection.dst.id, ORIENTATION[connection.dst.orientation])
                 self.dst.setR(self.render, ORIENTATION[connection.dst.orientation])
 
             connection.dst.node = self.dst                                      # add Panda3D node to robotComp
