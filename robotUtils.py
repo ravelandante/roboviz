@@ -1,3 +1,9 @@
+# ----------------------------------------------------------------------------
+# Created By: GMLMOG016, FLDCLA001, YNGFYN001
+# Created Date: 13/08/22
+# ---------------------------------------------------------------------------
+"""Contains various utility functions (such as file IO) for creating robots"""
+
 from hinge import Hinge
 from brick import Brick
 from connection import Connection

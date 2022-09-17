@@ -1,3 +1,9 @@
+# ----------------------------------------------------------------------------
+# Created By: GMLMOG016, FLDCLA001, YNGFYN001
+# Created Date: 13/08/22
+# ---------------------------------------------------------------------------
+"""Represents the robot's 'brain' as an ANN"""
+
 import numpy as np
 import sympy as sym
 import math

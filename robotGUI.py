@@ -1,3 +1,9 @@
+# ----------------------------------------------------------------------------
+# Created By: GMLMOG016, FLDCLA001, YNGFYN001
+# Created Date: 23/08/22
+# ---------------------------------------------------------------------------
+"""Initialises the GUI for inputting files and reporting errors"""
+
 import PySimpleGUI as sg
 import os
 from os.path import exists

@@ -2,9 +2,7 @@
 # Created By: GMLMOG016, FLDCLA001, YNGFYN001
 # Created Date: 13/08/22
 # ---------------------------------------------------------------------------
-"""Renders environment terrain and robot components"""
 
-from sqlite3 import connect
 from numpy import deg2rad
 import math
 
@@ -29,6 +27,8 @@ SHIFT_DIRECTION = {0: LVector3f(0, SHIFT_VALUE, 0), 2: LVector3f(0, -SHIFT_VALUE
 
 
 class Environment(ShowBase):
+    """Renders environment terrain and robot components"""
+
     def __init__(self, x_length, y_length, swarm_size):
         ShowBase.__init__(self)
 
@@ -224,9 +224,10 @@ class Environment(ShowBase):
                 self.sel_textNode.setText(sel_text)
 
     def moveRobot(self, direction):
-        """Moves selected robot in the given direction relative to the camera view
+        """Moves selected robot in the given direction for the given units relative to the camera view
         Args:
             direction (int): direction of robot movement (0:forward, 1:back, 2:left, 3:right, 4:up, 5:down)
+            units (int): number of units to move robot by
         """
         heading = int(self.camera.getHpr()[0])
         rotation = int(self.camera.getHpr()[2])
@@ -267,29 +268,9 @@ class Environment(ShowBase):
         distance = bounds.getRadius() / math.tan(deg2rad(min(fov[0], fov[1]) * 0.6))    # calc distance needed to see all robots
         self.moveCamera(centre, distance)
 
-    def standardiseSlots(self, connection):
-        if 'Hinge' in connection.src.type and connection.src_slot == 1:     # standardise source hinge slots
-            connection.src_slot = 2
-        if 'Hinge' in connection.dst.type and connection.dst_slot == 1:     # standardise destination hinge slots
-            connection.dst_slot = 2
-        if connection.src.type == 'FixedBrick' or connection.src.type == 'CoreComponent':
-            if connection.src_slot == 3:
-                connection.src_slot = 1
-            elif connection.src_slot == 2:
-                connection.src_slot = 3
-            elif connection.src_slot == 1:
-                connection.src_slot = 2
-        if connection.dst.type == 'FixedBrick' or connection.dst.type == 'CoreComponent':
-            if connection.dst_slot == 3:
-                connection.dst_slot = 1
-            elif connection.dst_slot == 2:
-                connection.dst_slot = 3
-            elif connection.dst_slot == 1:
-                connection.dst_slot = 2
-
     def renderRobot(self, robot):
         """Renders 1 robot in the scene by iterating through its Connections
-        Args:
+        :param
             robot (Robot): robot object to render
         """
         # add position of robot core to list (for camera focus switching)
@@ -316,7 +297,7 @@ class Environment(ShowBase):
             self.dst.setName(connection.dst.id)
             self.dst.setTag('robot', connection.dst.id)
 
-            self.standardiseSlots(connection)
+            connection.standardiseSlots()
 
             # calc position of dest comp based on source position
             connection.dst.pos, heading = connection.dst.calcPos(self.src, self.dst, connection)

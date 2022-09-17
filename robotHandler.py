@@ -2,16 +2,17 @@
 # Created By: GMLMOG016, FLDCLA001, YNGFYN001
 # Created Date: 13/08/22
 # ---------------------------------------------------------------------------
-"""Reads in configuration, robot positions & robot JSON files. Creates environment object and runs application"""
+"""Runs application in either GUI or command line mode"""
 
 from robotGUI import RobotGUI
 import sys
 
-
+# Command line mode
 if(len(sys.argv) > 1):
     window = RobotGUI(sys.argv[1], sys.argv[2], sys.argv[3])
     window.runSim()
 
+# GUI mode
 else:
     window = RobotGUI()
     window.startGUI()
