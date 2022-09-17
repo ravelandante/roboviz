@@ -1,27 +1,11 @@
 import PySimpleGUI as sg
 import os
 from os.path import exists
+import subprocess
+import threading
 
-from fileIO import FileIO
+from robotUtils import RobotUtils
 from environment import Environment
-
-
-def collisionDetect(robots):
-    """Determines if there are any possible collisions between robots in the scene
-        Args:
-            robots (List of Robot objects): list of all robots in the scene
-    """
-    collisions = []
-    for i, first_robot in enumerate(robots):
-        for second_robot in robots[i + 1:]:
-            # if robots cross each other's z bounds
-            if first_robot.bounds[4] >= second_robot.bounds[5] and first_robot.bounds[5] <= second_robot.bounds[4]:
-                # if robots cross each other's x bounds
-                if first_robot.bounds[0] >= second_robot.bounds[1] and first_robot.bounds[1] <= second_robot.bounds[0]:
-                    # if robots cross each other's y bounds
-                    if first_robot.bounds[2] >= second_robot.bounds[3] and first_robot.bounds[3] <= second_robot.bounds[2]:
-                        collisions.append([first_robot.id, second_robot.id])
-    return collisions
 
 
 def formatCollisions(collisions):
@@ -32,20 +16,23 @@ def formatCollisions(collisions):
 
 
 def formatOutOfBounds(out_of_bounds):
-    out_of_bounds_text = 'Robots out of bounds:\n'
+    out_of_bounds_text = ''
     for robot in out_of_bounds:
-        print(robot)
-        out_of_bounds_text += 'Robot {}:\nx-axis = {} units\ny-axis = {}\n'.format(robot, robot[1][0], robot[1][1])
+        out_of_bounds_text += 'Robot {}:\n'.format(robot[0])
+        if robot[1][0] != 0:
+            out_of_bounds_text += 'x-axis = {} units\n'.format(int(robot[1][0]))
+        if robot[1][1] != 0:
+            out_of_bounds_text += 'y-axis = {} units\n\n'.format(int(robot[1][1]))
+    return out_of_bounds_text
 
 
 class RobotGUI:
-    def __init__(self):
-        self.configPath = ""
-        self.positionsPath = ""
-        self.robotsPath = ""
+    def __init__(self, config_path='', pos_path='', robot_path=''):
+        self.config_path = config_path
+        self.pos_path = pos_path
+        self.robot_path = robot_path
         self.out_of_bounds_all = []
         self.collisions = []
-        self.exit = False
         self.bgColour = "Black"
 
     def error_window(self):
@@ -82,7 +69,7 @@ class RobotGUI:
         """Displays the GUI window"""
         working_directory = os.getcwd()
 
-        #LastRender = False
+        LastRender = False
         configError = sg.Text("Configuration file not included!", visible=False, text_color='Red', background_color=self.bgColour)
         posError = sg.Text("Positions file not included!", visible=False, text_color='Red', background_color=self.bgColour)
         jsonError = sg.Text("Robots file not included!", visible=False, text_color='Red', background_color=self.bgColour)
@@ -101,46 +88,41 @@ class RobotGUI:
                 [sg.Button('Submit'), sg.Button('Help'), sg.Exit()]
             ]
         else:
-            #LastRender = True
-            PositionsPath = ""
-            ConfigPath = ""
-            JSONPath = ""
+            LastRender = True
+            pos_path = ""
+            config_path = ""
+            robot_path = ""
             with open('LastRender.txt', 'r') as f:
                 i = 0
                 for line in f:
                     line = line.strip()
                     if i == 0:
-                        PositionsPath = line
+                        pos_path = line
                     elif i == 1:
-                        ConfigPath = line
+                        config_path = line
                     elif i == 2:
-                        JSONPath = line
+                        robot_path = line
                     i += 1
             layout = [
                 [sg.Text("Choose a config file:", background_color=self.bgColour)],
-                [sg.InputText(default_text=ConfigPath, key="-FILE_PATH-"),
+                [sg.InputText(default_text=config_path, key="-FILE_PATH-"),
                  sg.FileBrowse(initial_folder=working_directory, file_types=[("Configuration file", "*.txt")])], [configError],
                 [sg.Text("Choose a positions file:", background_color=self.bgColour)],
-                [sg.InputText(default_text=PositionsPath, key="-FILE_PATH-"),
+                [sg.InputText(default_text=pos_path, key="-FILE_PATH-"),
                  sg.FileBrowse(initial_folder=working_directory, file_types=[("Position file", "*.txt")])], [posError],
                 [sg.Text("Choose a robots file:", background_color=self.bgColour)],
-                [sg.InputText(default_text=JSONPath, key="-FILE_PATH-"),
+                [sg.InputText(default_text=robot_path, key="-FILE_PATH-"),
                  sg.FileBrowse(initial_folder=working_directory, file_types=[("Robot file", "*.json")])], [jsonError],
                 [sg.Button('Submit'), sg.Button('Help'), sg.Exit()]
             ]
 
         sg.theme(self.bgColour)
         window = sg.Window("RoboViz", layout)
-        # if(LastRender):
-        #    sg.popup("Last Robot Render Settings have been loaded!!!")
 
         # Main Program Loop
         while True:
             event, values = window.read()
-            if event == sg.WIN_CLOSED:
-                break
-            if (event == 'Exit'):
-                self.exit = True
+            if event == sg.WIN_CLOSED or event == 'Exit':
                 break
             if(event == "Help"):
                 sg.popup("some help info\nsome more help stuff ig\neven more help text wowow", title="HELP")
@@ -161,44 +143,46 @@ class RobotGUI:
                 jsonError.update(visible=False)
 
             if (event == "Submit" and values["-FILE_PATH-"] != "" and values["-FILE_PATH-0"] != "" and values["-FILE_PATH-2"] != ""):
-                fileio = FileIO(values["-FILE_PATH-"], values["-FILE_PATH-0"], values["-FILE_PATH-2"])
-                positions = fileio.posParse()
-                config = fileio.configParse()
-                robots = fileio.robotParse(int(config[2]), positions)
-                env = Environment(int(config[0]), int(config[1]), int(config[2]))
-                for i, robot in enumerate(robots):                                      # loop through robots in swarm
-                    env.renderRobot(robot)                                  # render robot
-                    # get any out of bounds/collisions
-                    out_of_bounds = robot.outOfBoundsDetect(int(config[0]), int(config[1]))
-                    if out_of_bounds != 'none':
-                        self.out_of_bounds_all.append([i, out_of_bounds])
-                env.initialView()
-                self.collisions = collisionDetect(robots)                  # get any possible collisions between robots
-                if len(self.collisions) > 0 or len(self.out_of_bounds_all) > 0:
-                    self.error_window()
+                self.config_path = values["-FILE_PATH-"]
+                self.pos_path = values["-FILE_PATH-0"]
+                self.robot_path = values["-FILE_PATH-2"]
 
-                # window.hide()
-                env.run()
-        window.close()
+                if (not LastRender):
+                    lines = [self.pos_path, self.config_path, self.robot_path]
+                    with open('LastRender.txt', 'w') as f:
+                        for line in lines:
+                            f.write(line)
+                            f.write(' \n')
+                subprocess.check_call(["attrib", "+H", "LastRender.txt"])   # hide saved file paths file
 
-    def getConfig(self):
-        return self.configPath
+                #x = threading.Thread(target=self.runSim)
+                # x.start()
+                # x.join()
 
-    def getPos(self):
-        return self.positionsPath
+                window.hide()
+                self.runSim()
 
-    def getJSON(self):
-        return self.robotsPath
+            window.close()
 
-    def setConfig(self, configFile):
-        self.configPath = configFile
+    def runSim(self):
+        utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
 
-    def setPos(self, posFile):
-        self.positionsPath = posFile
+        positions = utils.posParse()
+        config = utils.configParse()
+        robots = utils.robotParse(int(config[2]), positions)
 
-    def setJSON(self, JSONFile):
-        self.robotsPath = JSONFile
+        #ANN = createBrain(neurons, brain, compArr)
+        env = Environment(int(config[0]), int(config[1]), int(config[2]))
+        for i, robot in enumerate(robots):                                      # loop through robots in swarm
+            env.renderRobot(robot)                                  # render robot
+            # get any out of bounds/collisions
+            out_of_bounds = robot.outOfBoundsDetect(int(config[0]), int(config[1]))
+            if out_of_bounds != 'none':
+                self.out_of_bounds_all.append([i, out_of_bounds])
+        env.initialView()
+        self.collisions = utils.collisionDetect(robots)                  # get any possible collisions between robots
 
+        if len(self.collisions) > 0 or len(self.out_of_bounds_all) > 0:
+            self.error_window()
 
-window = RobotGUI()
-window.startGUI()
+        env.run()
