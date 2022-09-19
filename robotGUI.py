@@ -123,7 +123,7 @@ class RobotGUI:
             ]
 
         sg.theme(self.bgColour)
-        window = sg.Window("RoboViz", layout)
+        window = sg.Window("RoboViz", layout, icon='resources/r_icon.ico')
 
         # Main Program Loop
         while True:

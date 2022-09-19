@@ -3,22 +3,24 @@
 # Created Date: 13/08/22
 # ---------------------------------------------------------------------------
 
+from panda3d.core import CollisionTraverser
+from panda3d.core import CollisionHandlerQueue
+from panda3d.core import CollisionRay
+from panda3d.core import CollisionNode
+from panda3d.core import AmbientLight
+from panda3d.core import LVector3f
+from panda3d.core import Mat4
+from panda3d.core import GeomNode
+from panda3d.core import TextNode
+from panda3d.core import NodePath
+from panda3d.core import WindowProperties
+from direct.showbase.ShowBase import ShowBase
+from direct.gui.OnscreenText import OnscreenText
+from direct.gui.DirectGui import *
+
 from numpy import deg2rad
 import math
 
-from direct.gui.DirectGui import *
-from direct.gui.OnscreenText import OnscreenText
-from direct.showbase.ShowBase import ShowBase
-from panda3d.core import NodePath
-from panda3d.core import TextNode
-from panda3d.core import GeomNode
-from panda3d.core import Mat4
-from panda3d.core import LVector3f
-from panda3d.core import AmbientLight
-from panda3d.core import CollisionNode
-from panda3d.core import CollisionRay
-from panda3d.core import CollisionHandlerQueue
-from panda3d.core import CollisionTraverser
 
 SHIFT_VALUE = 5     # number of units robots will be moved by
 ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}
@@ -37,6 +39,12 @@ class Environment(ShowBase):
         proto_text = 'RoboViz Prototype'                                # add prototype text
         proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
                                       fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
+
+        props = WindowProperties()
+        props.setTitle('RoboViz')
+        #props.setSize(1200, 780)
+        props.setIconFilename('resources/r_icon.ico')
+        self.win.requestProperties(props)
 
         self.robotNode = NodePath('robotNode')
         self.robotNode.reparentTo(self.render)
@@ -138,7 +146,7 @@ class Environment(ShowBase):
         while self.focus_switch_counter > self.swarm_size - 1:          # loop 1 around to start of list
             self.focus_switch_counter -= self.swarm_size
         # print(f'Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}')
-        self.moveCamera(list(self.robot_pos.values())[self.focus_switch_counter], 400)      # move camera to next robot
+        self.moveCamera(pos=list(self.robot_pos.values())[self.focus_switch_counter], z_dist=400)      # move camera to next robot
         self.focus_switch_counter += 1
 
     def moveCamera(self, pos, z_dist):
@@ -266,7 +274,7 @@ class Environment(ShowBase):
         centre = bounds.getCenter()                                                     # centre of bounding box
         fov = self.camLens.getFov()
         distance = bounds.getRadius() / math.tan(deg2rad(min(fov[0], fov[1]) * 0.6))    # calc distance needed to see all robots
-        self.moveCamera(centre, distance)
+        self.moveCamera(pos=centre, z_dist=distance)
 
     def renderRobot(self, robot):
         """Renders 1 robot in the scene by iterating through its Connections
@@ -289,7 +297,7 @@ class Environment(ShowBase):
                 self.src.setName(str(robot.id) + connection.src.id)             # set name of node to component ID
                 self.src.setTag('robot', str(robot.id) + connection.src.id)
 
-                self.displayLabel(connection.src.pos, 'Robot ' + str(robot.id), self.src)   # display robot id label text
+                self.displayLabel(pos=connection.src.pos, text='Robot ' + str(robot.id), parent=self.src)   # display robot id label text
                 connection.src.node = self.src                                              # add Panda3D node to robotComp
 
             dst_path = './models/BAM/' + connection.dst.type + '.bam'           # get path of destination model file
@@ -320,7 +328,7 @@ class Environment(ShowBase):
         for i, connection in enumerate(robot.connections):
             node = connection.dst.node
             if i > 0:
-                self.displayLabel(node.getPos(self.render), node.getName(), node)
+                self.displayLabel(pos=node.getPos(self.render), text=node.getName(), parent=node)
         robot.drawBounds()
         robot.connections[0].src.node.flattenStrong()                                               # hide labels and set colours after flattening
-        self.toggleLabels(True)
+        self.toggleLabels(first=True)
