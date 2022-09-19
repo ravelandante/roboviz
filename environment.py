@@ -115,7 +115,10 @@ class Environment(ShowBase):
         self.accept('control-arrow_right', lambda: self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + LVector3f(-90, 0, 0)))
 
     def toggleLabels(self, first=False):
-        """Toggles visibility of component labels"""
+        """Toggles visibility of component labels
+        Args:
+            `first`: first display of labels or not (Boolean)
+        """
         if first:
             for label in self.labels:
                 label.node().setTextColor(1, 1, 1, 1)                   # set label colours after node flattening
@@ -152,8 +155,8 @@ class Environment(ShowBase):
     def moveCamera(self, pos, z_dist):
         """Moves camera to point above pos in scene (looking down)
         Args:
-            pos (LVector3f): position of camera
-            z_dist (int): distance above pos that camera is placed at
+            `pos`: position of camera (LVector3f)
+            `z_dist`: distance above pos that camera is placed at (int)
         """
         self.focus.setPos(pos)                                          # move focus of camera
         self.disableMouse()
@@ -168,7 +171,7 @@ class Environment(ShowBase):
     def enlargeLabel(self, pickedObj):
         """Enlarges component label when component is selected
         Args:
-            pickedObj (PandaNode): newly selected component
+            `pickedObj`: newly selected component (PandaNode)
         """
         for child in pickedObj.getChildren():
             if child.getName() == 'id_label':                           # find label of newly selected component
@@ -183,9 +186,9 @@ class Environment(ShowBase):
     def displayLabel(self, pos, text, parent):
         """Displays a text label in the scene
         Args:
-            pos (LVector3f): position of label
-            text (String): text of label
-            parent (NodePath): parent of label
+            `pos`: position of label (LVector3f)
+            `text`: text of label (String)
+            `parent`: parent of label (NodePath)
         """
         label = TextNode('id_label')                                    # add text node
         label.setText(text)
@@ -234,8 +237,8 @@ class Environment(ShowBase):
     def moveRobot(self, direction):
         """Moves selected robot in the given direction for the given units relative to the camera view
         Args:
-            direction (int): direction of robot movement (0:forward, 1:back, 2:left, 3:right, 4:up, 5:down)
-            units (int): number of units to move robot by
+            `direction`: direction of robot movement (0:forward, 1:back, 2:left, 3:right, 4:up, 5:down) (int)
+            `units`: number of units to move robot by (int)
         """
         heading = int(self.camera.getHpr()[0])
         rotation = int(self.camera.getHpr()[2])
@@ -278,8 +281,8 @@ class Environment(ShowBase):
 
     def renderRobot(self, robot):
         """Renders 1 robot in the scene by iterating through its Connections
-        :param
-            robot (Robot): robot object to render
+        Args:
+            `robot`: robot object to render (Robot)
         """
         # add position of robot core to list (for camera focus switching)
         self.robot_pos[robot.id] = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
