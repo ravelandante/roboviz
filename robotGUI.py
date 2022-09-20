@@ -84,12 +84,13 @@ class RobotGUI:
         parent = core
         treedata.insert(parent='', key=core.id, text=core.id, values=['CoreComponent', core.orientation])
         layout = [[sg.Button('+', size=3), sg.Button('-', size=3), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key='-C_COMBO-'),
-                   sg.InputText(key='-COMP_ID-', size=20, default_text='defaultID'), sg.Text('Orientation'),
-                   sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-O_COMBO-'),
-                   sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-SRC_COMBO-'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-DST_COMBO-')],
+                   sg.InputText(key='-COMP_ID-', size=20, default_text='defaultID'),
+                   sg.Text('Orientation:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-O_COMBO-'),
+                   sg.Text('SRC Slot:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-SRC_COMBO-'),
+                   sg.Text('DST Slot:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-DST_COMBO-')],
                   [sg.Text('Components')],
                   [sg.Tree(data=treedata, key="-COMP_TREE-", auto_size_columns=True, num_rows=20,
-                           headings=['Type', 'Orientation'], col0_width=30)],
+                           headings=['Type', 'Orientation'], col0_width=30, expand_x=True)],
                   [sg.Button('Submit'), sg.Button('Help'), sg.Button('File'), sg.Exit(), sg.Checkbox('Write to file')]]
         window = sg.Window("Build a Robot", layout, modal=True)
         while True:
@@ -100,8 +101,15 @@ class RobotGUI:
                 break
             if event == 'Help':
                 sg.popup("some help info\nsome more help stuff ig\neven more help text wowow", title="Help")
+            if event == '-':
+                # delete selected component
+                pass
             if event == '+':
-                if len(values['-COMP_TREE-']) == 0:
+                # add new component
+                if values['-COMP_ID-'] in treedata.tree_dict:                           # if component id already exists in tree
+                    sg.popup("Component {} already exists".format(values['-COMP_ID-']))
+                    continue
+                if len(values['-COMP_TREE-']) == 0:                                     # if nothing selected, parent is tree root
                     sel_comp = ''
                 else:
                     sel_comp = values['-COMP_TREE-'][0]
