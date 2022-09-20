@@ -12,6 +12,12 @@ import threading
 
 from robotUtils import RobotUtils
 from environment import Environment
+from hinge import Hinge
+from brick import Brick
+from connection import Connection
+from robot import Robot
+
+COMPONENTS = ['FixedBrick', 'ActiveHinge', 'PassiveHinge']
 
 
 def formatCollisions(collisions):
@@ -63,11 +69,62 @@ class RobotGUI:
 
         window = sg.Window("Errors", layout, modal=True)
         while True:
-            event, values = window.read()
+            event, _ = window.read()
             if event == "Continue" or event == sg.WIN_CLOSED:
                 break
             if event == "Cancel":
                 quit()
+
+        window.close()
+
+    def build_window(self):
+        connections = []
+        treedata = sg.TreeData()
+        core = Brick('Core', 'CoreComponent', True, 0)
+        parent = core
+        treedata.insert(parent='', key=core.id, text=core.id, values=['CoreComponent', core.orientation])
+        layout = [[sg.Button('+', size=3), sg.Button('-', size=3), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key='-C_COMBO-'),
+                   sg.InputText(key='-COMP_ID-', size=20, default_text='defaultID'), sg.Text('Orientation'),
+                   sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-O_COMBO-'),
+                   sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-SRC_COMBO-'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-DST_COMBO-')],
+                  [sg.Text('Components')],
+                  [sg.Tree(data=treedata, key="-COMP_TREE-", auto_size_columns=True, num_rows=20,
+                           headings=['Type', 'Orientation'], col0_width=30)],
+                  [sg.Button('Submit'), sg.Button('Help'), sg.Button('File'), sg.Exit(), sg.Checkbox('Write to file')]]
+        window = sg.Window("Build a Robot", layout, modal=True)
+        while True:
+            event, values = window.read()
+            if event == sg.WIN_CLOSED or event == 'Exit':
+                quit()
+            if event == 'File':
+                break
+            if event == 'Help':
+                sg.popup("some help info\nsome more help stuff ig\neven more help text wowow", title="Help")
+            if event == '+':
+                if len(values['-COMP_TREE-']) == 0:
+                    sel_comp = ''
+                else:
+                    sel_comp = values['-COMP_TREE-'][0]
+
+                id = values['-COMP_ID-']
+                type = values['-C_COMBO-']
+                orientation = values['-O_COMBO-']
+                src_slot = values['-SRC_COMBO-']
+                dst_slot = values['-DST_COMBO-']
+
+                treedata.Insert(parent=sel_comp, key=id, text=id, values=[type, orientation])
+                window.Element('-COMP_TREE-').update(treedata)
+
+                if 'Hinge' in type:
+                    comp = Hinge(id, type, False, orientation)
+                else:
+                    comp = Brick(id, type, False, orientation)
+                connections.append(Connection(parent, comp, src_slot, dst_slot))
+                parent = comp
+            if event == 'Submit':
+                robot = Robot(0, connections, [0, 0, 0])
+                config = [1000, 1000, 1]
+                self.runSim(config, [robot], file=False)
 
         window.close()
 
@@ -91,7 +148,7 @@ class RobotGUI:
                 [sg.Text("Choose a robots file:", background_color=self.bgColour)],
                 [sg.InputText(key="-FILE_PATH-"),
                  sg.FileBrowse(initial_folder=working_directory, file_types=[("Robot file", "*.json")])], [jsonError],
-                [sg.Button('Submit'), sg.Button('Help'), sg.Exit()]
+                [sg.Button('Submit'), sg.Button('Help'), sg.Button('Build'), sg.Exit()]
             ]
         else:
             LastRender = True
@@ -119,7 +176,7 @@ class RobotGUI:
                 [sg.Text("Choose a robots file:", background_color=self.bgColour)],
                 [sg.InputText(default_text=robot_path, key="-FILE_PATH-"),
                  sg.FileBrowse(initial_folder=working_directory, file_types=[("Robot file", "*.json")])], [jsonError],
-                [sg.Button('Submit'), sg.Button('Help'), sg.Exit()]
+                [sg.Button('Submit'), sg.Button('Help'), sg.Button('Build'), sg.Exit()]
             ]
 
         sg.theme(self.bgColour)
@@ -130,8 +187,12 @@ class RobotGUI:
             event, values = window.read()
             if event == sg.WIN_CLOSED or event == 'Exit':
                 break
-            if(event == "Help"):
-                sg.popup("some help info\nsome more help stuff ig\neven more help text wowow", title="HELP")
+            if (event == "Help"):
+                sg.popup("some help info\nsome more help stuff ig\neven more help text wowow", title="Help")
+            if (event == "Build"):
+                window.hide()
+                self.build_window()
+                window.UnHide()
 
             if (event == "Submit" and values["-FILE_PATH-"] == ""):
                 configError.update(visible=True)
@@ -161,23 +222,23 @@ class RobotGUI:
                             f.write(' \n')
                 subprocess.check_call(["attrib", "+H", "LastRender.txt"])   # hide saved file paths file
 
-                #x = threading.Thread(target=self.runSim)
+                # x = threading.Thread(target=self.runSim)
                 # x.start()
                 # x.join()
 
-                window.hide()
+                # window.hide()
                 self.runSim()
 
-            window.close()
+        window.close()
 
-    def runSim(self):
+    def runSim(self, config='', robots='', file=True):
         utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
+        if file:
+            positions = utils.posParse()
+            config = utils.configParse()
+            robots = utils.robotParse(int(config[2]), positions)
 
-        positions = utils.posParse()
-        config = utils.configParse()
-        robots = utils.robotParse(int(config[2]), positions)
-
-        #ANN = createBrain(neurons, brain, compArr)
+        # ANN = createBrain(neurons, brain, compArr)
         env = Environment(int(config[0]), int(config[1]), int(config[2]))
         for i, robot in enumerate(robots):                                      # loop through robots in swarm
             env.renderRobot(robot)                                  # render robot

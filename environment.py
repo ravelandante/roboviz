@@ -114,6 +114,9 @@ class Environment(ShowBase):
         self.accept('control-arrow_left', lambda: self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + LVector3f(90, 0, 0)))
         self.accept('control-arrow_right', lambda: self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + LVector3f(-90, 0, 0)))
 
+    #def finalizeExit(self):
+    #    self.destroy()
+
     def toggleLabels(self, first=False):
         """Toggles visibility of component labels
         Args:
