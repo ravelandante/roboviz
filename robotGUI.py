@@ -4,6 +4,7 @@
 # ---------------------------------------------------------------------------
 """Initialises the GUI for inputting files and reporting errors"""
 
+from email.policy import default
 import PySimpleGUI as sg
 import os
 from os.path import exists
@@ -77,6 +78,21 @@ class RobotGUI:
 
         window.close()
 
+    def connection_window(self):
+        layout = [[sg.Text('SRC Slot:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-SRC_COMBO-')],
+                  [sg.Text('DST Slot:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-DST_COMBO-')],
+                  [sg.Text('Orientation:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-O_COMBO-')],
+                  [sg.Button('Submit')]]
+        window = sg.Window("Enter Slots", layout, modal=True)
+        while True:
+            event, values = window.read()
+            if event == sg.WIN_CLOSED:
+                window.close()
+                return (-1, -1, -1)
+            if event == 'Submit':
+                window.close()
+                return (values['-SRC_COMBO-'], values['-DST_COMBO-'], values['-O_COMBO-'])
+
     def build_window(self):
         connections = []
         treedata = sg.TreeData()
@@ -84,13 +100,10 @@ class RobotGUI:
         parent = core
         treedata.insert(parent='', key=core.id, text=core.id, values=['CoreComponent', core.orientation])
         layout = [[sg.Button('+', size=3), sg.Button('-', size=3), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key='-C_COMBO-'),
-                   sg.InputText(key='-COMP_ID-', size=20, default_text='defaultID'),
-                   sg.Text('Orientation:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-O_COMBO-'),
-                   sg.Text('SRC Slot:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-SRC_COMBO-'),
-                   sg.Text('DST Slot:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-DST_COMBO-')],
+                   sg.InputText(key='-COMP_ID-', size=20, default_text='defaultID')],
                   [sg.Text('Components')],
                   [sg.Tree(data=treedata, key="-COMP_TREE-", auto_size_columns=True, num_rows=20,
-                           headings=['Type', 'Orientation'], col0_width=30, expand_x=True)],
+                           headings=['Type', 'Orientation'], col0_width=30, expand_x=True, show_expanded=True), ],
                   [sg.Button('Submit'), sg.Button('Help'), sg.Button('File'), sg.Exit(), sg.Checkbox('Write to file')]]
         window = sg.Window("Build a Robot", layout, modal=True)
         while True:
@@ -116,9 +129,9 @@ class RobotGUI:
 
                 id = values['-COMP_ID-']
                 type = values['-C_COMBO-']
-                orientation = values['-O_COMBO-']
-                src_slot = values['-SRC_COMBO-']
-                dst_slot = values['-DST_COMBO-']
+                src_slot, dst_slot, orientation = self.connection_window()
+                if src_slot == -1 or dst_slot == -1 or orientation == -1:
+                    continue
 
                 treedata.Insert(parent=sel_comp, key=id, text=id, values=[type, orientation])
                 window.Element('-COMP_TREE-').update(treedata)
@@ -127,6 +140,7 @@ class RobotGUI:
                     comp = Hinge(id, type, False, orientation)
                 else:
                     comp = Brick(id, type, False, orientation)
+
                 connections.append(Connection(parent, comp, src_slot, dst_slot))
                 parent = comp
             if event == 'Submit':
@@ -246,7 +260,6 @@ class RobotGUI:
             config = utils.configParse()
             robots = utils.robotParse(int(config[2]), positions)
 
-        # ANN = createBrain(neurons, brain, compArr)
         env = Environment(int(config[0]), int(config[1]), int(config[2]))
         for i, robot in enumerate(robots):                                      # loop through robots in swarm
             env.renderRobot(robot)                                  # render robot
