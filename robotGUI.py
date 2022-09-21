@@ -131,23 +131,23 @@ class RobotGUI:
         components.append(core)
         treedata.insert(parent='', key=core.id, text=core.id, values=['CoreComponent', core.orientation])
         layout = [[sg.Button('+', size=3), sg.Button('-', size=3), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key='-C_COMBO-'),
-                   sg.InputText(key='-COMP_ID-', size=20, default_text='defaultID')],
+                   sg.InputText(key='-COMP_ID-', size=30, default_text='comp_id')],
                   [sg.Text('Components')],
                   [sg.Tree(data=treedata, key="-COMP_TREE-", auto_size_columns=True, num_rows=20,
                            headings=['Type', 'Orientation'], col0_width=30, expand_x=True, show_expanded=True), ],
-                  [sg.Button('Submit'), sg.Button('Help'), sg.Button('File'),
+                  [sg.Button('Submit'), sg.Button('Help'), sg.Button('Back'),
                   sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")], target='-LOAD-'),
-                  sg.Input(key='-LOAD-', enable_events=True, visible=False), sg.Exit(), sg.Checkbox('Write to file', key='-FILE-')]]
+                  sg.Input(key='-LOAD-', enable_events=True, visible=False), sg.Exit(), sg.Checkbox('Write to file', default=True, key='-FILE-'),
+                  sg.InputText(key='-F_NAME-', size=30, default_text='robot_name')]]
         window = sg.Window("Build a Robot", layout, modal=True)
         while True:
             event, values = window.read()
             if event == sg.WIN_CLOSED or event == 'Exit':
                 quit()
-            if event == 'File':
+            if event == 'Back':
                 break
             if event == 'Help':
                 sg.popup("some help info\nsome more help stuff ig\neven more help text wowow", title="Help")
-
             if event == '-LOAD-':
                 self.utils.robot_path = values['-LOAD-']
                 robot = self.utils.robotParse(1, [[0, 0, 0]])[0]
@@ -173,6 +173,9 @@ class RobotGUI:
                 if values['-COMP_ID-'] in treedata.tree_dict:                           # if component id already exists in tree
                     sg.popup("Component {} already exists".format(values['-COMP_ID-']))
                     continue
+                if ' ' in values['-COMP_ID-']:
+                    sg.popup("No spaces in component ID")
+                    continue
                 if len(values['-COMP_TREE-']) == 0:                                     # if nothing selected, continue
                     sg.popup("Please select a component")
                     continue
@@ -182,25 +185,39 @@ class RobotGUI:
                 id = values['-COMP_ID-']
                 type = values['-C_COMBO-']
                 src_slot, dst_slot, orientation = self.connection_window()
+                parent = next(comp for comp in components if comp.id == sel_comp)
+
                 if src_slot == -1 or dst_slot == -1 or orientation == -1:
                     continue
+                if 'Hinge' in parent.type:
+                    if src_slot in [2, 3]:
+                        sg.popup("Invalid source slot for Hinge")
+                        continue
+                if 'Hinge' in type:
+                    if dst_slot in [2, 3]:
+                        sg.popup("Invalid destination slot for Hinge")
+                        continue
+                    comp = Hinge(id, type, False, orientation)
+                else:
+                    comp = Brick(id, type, False, orientation)
 
                 treedata.Insert(parent=sel_comp, key=id, text=id, values=[type, orientation])
                 window.Element('-COMP_TREE-').update(treedata)
 
-                if 'Hinge' in type:
-                    comp = Hinge(id, type, False, orientation)
-                else:
-                    comp = Brick(id, type, False, orientation)
-                parent = next(comp for comp in components if comp.id == sel_comp)
                 components.append(comp)
                 connections.append(Connection(parent, comp, src_slot, dst_slot))
 
             if event == 'Submit':
+                if len(components) == 1:
+                    sg.popup("Please add more than one component")
+                    continue
+                if ' ' in values['-F_NAME-']:
+                    sg.popup("No spaces in file name")
+                    continue
                 robot = Robot(0, connections, components, [0, 0, 0])
                 config = [1000, 1000, 1]
                 if (values['-FILE-']):
-                    self.utils.writeRobot(robot, 'test')
+                    self.utils.writeRobot(robot, values['-F_NAME-'])
                 self.runSim(config, [robot], file=False)
 
         window.close()
