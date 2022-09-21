@@ -15,6 +15,9 @@ import json
 import numpy as np
 
 
+CREATE_BRAIN = False
+
+
 class RobotUtils:
     def __init__(self, config_path, pos_path, robot_path):
         """
@@ -130,8 +133,23 @@ class RobotUtils:
             `name`: name of Robot JSON file (String)
         """
         path = 'json/{}.json'.format(name)
+        dict_outer = {}
+        dict_inner = {}
+        connections = list(robot.connections)
+        components = list(robot.components)
+
         with open(path, 'w') as f:
-            json.dump(robot.__dict__, f)
+            for i, component in enumerate(components):
+                components[i] = component.as_dict()
+            for i, connection in enumerate(connections):
+                connections[i] = connection.as_dict()
+
+            dict_inner["part"] = components
+            dict_inner["connection"] = connections
+            dict_outer["id"] = robot.id
+            dict_outer["body"] = dict_inner
+
+            json.dump(dict_outer, f, indent=4)
 
     def posParse(self):
         """
@@ -174,8 +192,9 @@ class RobotUtils:
             data = json.load(f)
         if("swarm" in data.keys()):
             swarm = data["swarm"]
-            #neurons = swarm["neuron"]
-            #brain = swarm["connection"]
+            if CREATE_BRAIN:
+                neurons = swarm["neuron"]
+                brain = swarm["connection"]
 
             for robot in swarm:
                 roboId = robot["id"]
@@ -228,10 +247,11 @@ class RobotUtils:
                     newCon = Connection(src, dest, srcSlot, destSlot)               # construct new connection
                     connArr.append(newCon)                                          # add to list of connections
 
-                robot = Robot(roboId, connArr, positions[count - 1])
+                robot = Robot(roboId, connArr, compArr, positions[count - 1])
                 count += 1
                 robotArr.append(robot)
-                #ANN = createBrain(neurons, brain, compArr)
+                if CREATE_BRAIN:
+                    ANN = self.createBrain(neurons, brain, compArr)
 
                 return robotArr
         else:
@@ -239,9 +259,10 @@ class RobotUtils:
             body = data["body"]
             bodyComp = body["part"]
             compArr = []
-            part2 = data["brain"]
-            neurons = part2["neuron"]
-            brain = part2["connection"]
+            if CREATE_BRAIN:
+                part2 = data["brain"]
+                neurons = part2["neuron"]
+                brain = part2["connection"]
 
             for i in bodyComp:
                 id = i['id']
@@ -285,7 +306,8 @@ class RobotUtils:
 
                 newCon = Connection(src, dest, srcSlot, destSlot)
                 connArr.append(newCon)
-            #ANN = createBrain(neurons, brain, compArr)
+            if CREATE_BRAIN:
+                ANN = self.createBrain(neurons, brain, compArr)
             for i in range(int(swarm_size)):                      # loop through robots in swarm
-                robotArr.append(Robot(i, connArr, positions[i]))
+                robotArr.append(Robot(i, connArr, compArr, positions[i]))
             return robotArr

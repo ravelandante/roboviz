@@ -65,6 +65,7 @@ class RobotGUI:
         self.config_path = config_path
         self.pos_path = pos_path
         self.robot_path = robot_path
+        self.working_directory = os.getcwd()
         self.out_of_bounds_all = []
         self.collisions = []
         self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
@@ -123,17 +124,20 @@ class RobotGUI:
 
     def build_window(self):
         """Displays the Robot building window"""
+        components = []
         connections = []
         treedata = sg.TreeData()
         core = Brick('Core', 'CoreComponent', True, 0)
-        parent = core
+        components.append(core)
         treedata.insert(parent='', key=core.id, text=core.id, values=['CoreComponent', core.orientation])
         layout = [[sg.Button('+', size=3), sg.Button('-', size=3), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key='-C_COMBO-'),
                    sg.InputText(key='-COMP_ID-', size=20, default_text='defaultID')],
                   [sg.Text('Components')],
                   [sg.Tree(data=treedata, key="-COMP_TREE-", auto_size_columns=True, num_rows=20,
                            headings=['Type', 'Orientation'], col0_width=30, expand_x=True, show_expanded=True), ],
-                  [sg.Button('Submit'), sg.Button('Help'), sg.Button('File'), sg.Exit(), sg.Checkbox('Write to file', key='-FILE-')]]
+                  [sg.Button('Submit'), sg.Button('Help'), sg.Button('File'),
+                  sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")], target='-LOAD-'),
+                  sg.Input(key='-LOAD-', enable_events=True, visible=False), sg.Exit(), sg.Checkbox('Write to file', key='-FILE-')]]
         window = sg.Window("Build a Robot", layout, modal=True)
         while True:
             event, values = window.read()
@@ -143,16 +147,35 @@ class RobotGUI:
                 break
             if event == 'Help':
                 sg.popup("some help info\nsome more help stuff ig\neven more help text wowow", title="Help")
+
+            if event == '-LOAD-':
+                self.utils.robot_path = values['-LOAD-']
+                robot = self.utils.robotParse(1, [[0, 0, 0]])[0]
+                for connection in robot.connections:
+                    dst = connection.dst
+                    treedata.Insert(parent=connection.src.id, key=dst.id, text=dst.id, values=[dst.type, dst.orientation])
+                window.Element('-COMP_TREE-').update(treedata)
+                components = robot.components
+                connections = robot.connections
+
             if event == '-':
-                # delete selected component
-                pass
+                # delete selected component (NOT WORKING)
+                if len(values['-COMP_TREE-']) == 0:
+                    sg.popup("Please select a component")
+                    continue
+                else:
+                    sel_comp = values['-COMP_TREE-'][0]
+                del_comp = next(comp for comp in components if comp.id == sel_comp)
+                components.remove(del_comp)
+
             if event == '+':
                 # add new component
                 if values['-COMP_ID-'] in treedata.tree_dict:                           # if component id already exists in tree
                     sg.popup("Component {} already exists".format(values['-COMP_ID-']))
                     continue
-                if len(values['-COMP_TREE-']) == 0:                                     # if nothing selected, parent is tree root
-                    sel_comp = ''
+                if len(values['-COMP_TREE-']) == 0:                                     # if nothing selected, continue
+                    sg.popup("Please select a component")
+                    continue
                 else:
                     sel_comp = values['-COMP_TREE-'][0]
 
@@ -169,11 +192,12 @@ class RobotGUI:
                     comp = Hinge(id, type, False, orientation)
                 else:
                     comp = Brick(id, type, False, orientation)
-
+                parent = next(comp for comp in components if comp.id == sel_comp)
+                components.append(comp)
                 connections.append(Connection(parent, comp, src_slot, dst_slot))
-                parent = comp
+
             if event == 'Submit':
-                robot = Robot(0, connections, [0, 0, 0])
+                robot = Robot(0, connections, components, [0, 0, 0])
                 config = [1000, 1000, 1]
                 if (values['-FILE-']):
                     self.utils.writeRobot(robot, 'test')
@@ -183,7 +207,6 @@ class RobotGUI:
 
     def startGUI(self):
         """Displays the file input GUI window"""
-        working_directory = os.getcwd()
 
         LastRender = False
         configError = sg.Text("Configuration file not included!", visible=False, text_color='Red', background_color=self.bgColour)
@@ -194,13 +217,13 @@ class RobotGUI:
             layout = [
                 [sg.Text("Choose a config file:", background_color=self.bgColour)],
                 [sg.InputText(key="-FILE_PATH-"),
-                 sg.FileBrowse(initial_folder=working_directory, file_types=[("Configuration file", "*.txt")])], [configError],
+                 sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Configuration file", "*.txt")])], [configError],
                 [sg.Text("Choose a positions file:", background_color=self.bgColour)],
                 [sg.InputText(key="-FILE_PATH-"),
-                 sg.FileBrowse(initial_folder=working_directory, file_types=[("Position file", "*.txt")])], [posError],
+                 sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Position file", "*.txt")])], [posError],
                 [sg.Text("Choose a robots file:", background_color=self.bgColour)],
                 [sg.InputText(key="-FILE_PATH-"),
-                 sg.FileBrowse(initial_folder=working_directory, file_types=[("Robot file", "*.json")])], [jsonError],
+                 sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")])], [jsonError],
                 [sg.Button('Submit'), sg.Button('Help'), sg.Button('Build'), sg.Exit()]
             ]
         else:
@@ -222,13 +245,13 @@ class RobotGUI:
             layout = [
                 [sg.Text("Choose a config file:", background_color=self.bgColour)],
                 [sg.InputText(default_text=config_path, key="-FILE_PATH-"),
-                 sg.FileBrowse(initial_folder=working_directory, file_types=[("Configuration file", "*.txt")])], [configError],
+                 sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Configuration file", "*.txt")])], [configError],
                 [sg.Text("Choose a positions file:", background_color=self.bgColour)],
                 [sg.InputText(default_text=pos_path, key="-FILE_PATH-"),
-                 sg.FileBrowse(initial_folder=working_directory, file_types=[("Position file", "*.txt")])], [posError],
+                 sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Position file", "*.txt")])], [posError],
                 [sg.Text("Choose a robots file:", background_color=self.bgColour)],
                 [sg.InputText(default_text=robot_path, key="-FILE_PATH-"),
-                 sg.FileBrowse(initial_folder=working_directory, file_types=[("Robot file", "*.json")])], [jsonError],
+                 sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")])], [jsonError],
                 [sg.Button('Submit'), sg.Button('Help'), sg.Button('Build'), sg.Exit()]
             ]
 

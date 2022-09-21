@@ -17,7 +17,6 @@ from panda3d.core import WindowProperties
 from direct.showbase.ShowBase import ShowBase
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import *
-from panda3d.core import PandaSystem
 
 from numpy import deg2rad
 import math
@@ -47,7 +46,6 @@ class Environment(ShowBase):
         proto_text = 'RoboViz Prototype'                                # add prototype text
         proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
                                       fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
-        print("Panda version:", PandaSystem.getVersionString())
 
         props = WindowProperties()
         props.setTitle('RoboViz')
@@ -305,7 +303,6 @@ class Environment(ShowBase):
         """
         # add position of robot core to list (for camera focus switching)
         self.robot_pos[robot.id] = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
-
         robot.connections[0].src.root = True  # !!!!!CHANGE!!!!!
         for i, connection in enumerate(robot.connections):                      # loop through connections in robot
             if connection.src.root and i == 0:                                  # if source is the core component
@@ -349,8 +346,7 @@ class Environment(ShowBase):
 
         for i, connection in enumerate(robot.connections):
             node = connection.dst.node
-            if i > 0:
-                self.displayLabel(pos=node.getPos(self.render), text=node.getName(), parent=node)
+            self.displayLabel(pos=node.getPos(self.render), text=node.getName(), parent=node)
         robot.drawBounds()
         robot.connections[0].src.node.flattenStrong()                                               # hide labels and set colours after flattening
         self.toggleLabels(first=True)

@@ -7,7 +7,7 @@ from panda3d.core import LVector3f
 
 SRC_SLOTS = {0: 180, 1: 90, 2: 0, 3: 270}
 DST_SLOTS = {0: 0, 1: 90, 2: 180, 3: 270}
-DIRECTION = {0: 0, 90: 1, 180: 2, 270: 3}
+DIRECTION = {0: 0, 90: 1, 180: 2, 270: 3, 360: 0}
 BUFFER = LVector3f(1.5, 1.5, 0)
 
 
@@ -80,6 +80,14 @@ class RobotComp:
         elif src_slot == 3:
             dst_pos = src_pos + LVector3f(src_dim + dst_dim, 0, 0)
         return (dst_pos, heading)
+
+    def as_dict(self):
+        dict = {}
+        dict['id'] = self.id
+        dict['type'] = self.type
+        dict['root'] = self.root
+        dict['orientation'] = self.orientation
+        return dict
 
     def __str__(self):
         return f"ID: {self.id}, Type: {self.type}, root: {self.root}, orient: {self.orientation}"

@@ -15,7 +15,7 @@ LINE_THICKNESS = 1
 class Robot:
     """Represents a robot and its connections"""
 
-    def __init__(self, id, connections, core_pos):
+    def __init__(self, id, connections, components, core_pos):
         """
         Constructor
         Args:
@@ -26,6 +26,7 @@ class Robot:
         self.id = id
         self.connections = connections
         self.core_pos = core_pos            # position (x, y, z) of robot core component
+        self.components = components
 
         self.ls = LineSegs()
         self.ls.setThickness(LINE_THICKNESS)
@@ -90,10 +91,6 @@ class Robot:
             return out_of_bounds
         else:
             return 'none'
-
-    def __dict__(self):
-        dict = {}
-        return dict
 
     def __str__(self):
         count = 0

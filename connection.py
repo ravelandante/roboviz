@@ -42,5 +42,13 @@ class Connection:
             elif self.dst_slot == 1:
                 self.dst_slot = 2
 
+    def as_dict(self):
+        dict = {}
+        dict["src"] = self.src.id
+        dict["dest"] = self.dst.id
+        dict["srcSlot"] = self.src_slot
+        dict["destSlot"] = self.dst_slot
+        return dict
+
     def __str__(self):
         return f"src: {self.src}, dest: {self.dst}, src_slot: {self.src_slot}, dst_slot: {self.dst_slot}"
