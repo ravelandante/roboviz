@@ -289,9 +289,11 @@ class RobotGUI:
         Creates the Environment and runs the simulation
         Args:
             `config`: configuration parameters (int[]) **optional**, only used when building a robot  
-            `robots`: array of Robots (Robot[]) **optional**, only used when building a robot
+            `robots`: array of Robots (Robot[]) **optional**, only used when building a robot  
+            `file`: whether or not the robots have been loaded from a file (boolean) **optional**
         """
         if file:
+            self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
             positions = self.utils.posParse()
             config = self.utils.configParse()
             robots = self.utils.robotParse(int(config[2]), positions)

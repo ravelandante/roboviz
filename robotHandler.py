@@ -7,6 +7,8 @@
 from robotGUI import RobotGUI
 import sys
 
+CREATE_BRAIN = True
+
 # Command line mode
 if(len(sys.argv) > 1):
     window = RobotGUI(sys.argv[1], sys.argv[2], sys.argv[3])

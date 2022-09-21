@@ -17,6 +17,7 @@ from panda3d.core import WindowProperties
 from direct.showbase.ShowBase import ShowBase
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import *
+from panda3d.core import PandaSystem
 
 from numpy import deg2rad
 import math
@@ -46,6 +47,7 @@ class Environment(ShowBase):
         proto_text = 'RoboViz Prototype'                                # add prototype text
         proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
                                       fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
+        print("Panda version:", PandaSystem.getVersionString())
 
         props = WindowProperties()
         props.setTitle('RoboViz')
