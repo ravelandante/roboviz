@@ -2,17 +2,27 @@
 # Created By: GMLMOG016, FLDCLA001, YNGFYN001
 # Created Date: 13/08/22
 # ---------------------------------------------------------------------------
-"""Represents a connection between 2 robot components"""
 
 
 class Connection:
+    """Represents a connection between 2 robot components"""
+
     def __init__(self, src, dst, src_slot, dst_slot):
+        """
+        Constructor
+        Args:
+            `src`: source ('parent') component (RobotComp)  
+            `dst`: destination ('child') component (RobotComp)  
+            `src_slot`: side of source component to attach dest. to (int)  
+            `dst_slot`: side of dset. component to attach source to (int)
+        """
         self.src = src                  # source robotComp
         self.dst = dst                  # destination robotComp
         self.src_slot = src_slot        # side of connection at source
         self.dst_slot = dst_slot        # side of connection at destination
 
     def standardiseSlots(self):
+        """Converts RoboGen's funky slot system to a more reasonable one (sides numbered clockwise 0->3 starting from side closest to viewer)"""
         if 'Hinge' in self.src.type and self.src_slot == 1:     # standardise source hinge slots
             self.src_slot = 2
         if 'Hinge' in self.dst.type and self.dst_slot == 1:     # standardise destination hinge slots

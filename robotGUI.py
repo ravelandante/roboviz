@@ -2,9 +2,7 @@
 # Created By: GMLMOG016, FLDCLA001, YNGFYN001
 # Created Date: 23/08/22
 # ---------------------------------------------------------------------------
-"""Initialises the GUI for inputting files and reporting errors"""
 
-from email.policy import default
 import PySimpleGUI as sg
 import os
 from os.path import exists
@@ -22,6 +20,13 @@ COMPONENTS = ['FixedBrick', 'ActiveHinge', 'PassiveHinge']
 
 
 def formatCollisions(collisions):
+    """
+    Formats List of collisions into displayable format
+    Args:
+        `collisions`: possible collisions between robots (int[][])
+    Returns:
+        `collision_text`: text format of robot collisions (String)
+    """
     collision_text = 'Possible Collision Between:\n'
     for collision in collisions:
         collision_text += 'Robot {}, Robot {}\n'.format(collision[0], collision[1])
@@ -29,6 +34,13 @@ def formatCollisions(collisions):
 
 
 def formatOutOfBounds(out_of_bounds):
+    """
+    Formats List of out of bounds robots into displayable format
+    Args:
+        `out_of_bounds`: robots that are out of bounds + units ([int, LVector3f])
+    Returns:
+        `out_of_bounds_text`: text format of out of bounds robots (String)
+    """
     out_of_bounds_text = ''
     for robot in out_of_bounds:
         out_of_bounds_text += 'Robot {}:\n'.format(robot[0])
@@ -40,15 +52,26 @@ def formatOutOfBounds(out_of_bounds):
 
 
 class RobotGUI:
+    """Initialises the GUI for inputting files, building robots and reporting errors"""
+
     def __init__(self, config_path='', pos_path='', robot_path=''):
+        """
+        Constructor
+        Args:
+            `config_path`: file path of configuration text file (String) **optional**, only used when building a robot  
+            `pos_path`: file path of robot positions text file (String) **optional**, only used when building a robot  
+            `robot_path`: file path of robot JSON file (String) **optional**, only used when building a robot
+        """
         self.config_path = config_path
         self.pos_path = pos_path
         self.robot_path = robot_path
         self.out_of_bounds_all = []
         self.collisions = []
+        self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
         self.bgColour = "Black"
 
     def error_window(self):
+        """Displays the error reporting window"""
         if len(self.collisions) > 0:
             collision_text = formatCollisions(self.collisions)
             if len(self.out_of_bounds_all) > 0:
@@ -79,6 +102,11 @@ class RobotGUI:
         window.close()
 
     def connection_window(self):
+        """
+        Displays the component connection window for specifying specific connection parameters
+        Returns:
+            `(src_slot, dst_slot, orientation)`: source, dest slots + orientation of component ((int, int, int)) (returns (-1, -1, -1) if window closed)
+        """
         layout = [[sg.Text('SRC Slot:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-SRC_COMBO-')],
                   [sg.Text('DST Slot:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-DST_COMBO-')],
                   [sg.Text('Orientation:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-O_COMBO-')],
@@ -94,6 +122,7 @@ class RobotGUI:
                 return (values['-SRC_COMBO-'], values['-DST_COMBO-'], values['-O_COMBO-'])
 
     def build_window(self):
+        """Displays the Robot building window"""
         connections = []
         treedata = sg.TreeData()
         core = Brick('Core', 'CoreComponent', True, 0)
@@ -104,7 +133,7 @@ class RobotGUI:
                   [sg.Text('Components')],
                   [sg.Tree(data=treedata, key="-COMP_TREE-", auto_size_columns=True, num_rows=20,
                            headings=['Type', 'Orientation'], col0_width=30, expand_x=True, show_expanded=True), ],
-                  [sg.Button('Submit'), sg.Button('Help'), sg.Button('File'), sg.Exit(), sg.Checkbox('Write to file')]]
+                  [sg.Button('Submit'), sg.Button('Help'), sg.Button('File'), sg.Exit(), sg.Checkbox('Write to file', key='-FILE-')]]
         window = sg.Window("Build a Robot", layout, modal=True)
         while True:
             event, values = window.read()
@@ -146,12 +175,14 @@ class RobotGUI:
             if event == 'Submit':
                 robot = Robot(0, connections, [0, 0, 0])
                 config = [1000, 1000, 1]
+                if (values['-FILE-']):
+                    self.utils.writeRobot(robot, 'test')
                 self.runSim(config, [robot], file=False)
 
         window.close()
 
     def startGUI(self):
-        """Displays the GUI window"""
+        """Displays the file input GUI window"""
         working_directory = os.getcwd()
 
         LastRender = False
@@ -253,12 +284,17 @@ class RobotGUI:
 
         window.close()
 
-    def runSim(self, config='', robots='', file=True):
-        utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
+    def runSim(self, config=0, robots=0, file=True):
+        """
+        Creates the Environment and runs the simulation
+        Args:
+            `config`: configuration parameters (int[]) **optional**, only used when building a robot  
+            `robots`: array of Robots (Robot[]) **optional**, only used when building a robot
+        """
         if file:
-            positions = utils.posParse()
-            config = utils.configParse()
-            robots = utils.robotParse(int(config[2]), positions)
+            positions = self.utils.posParse()
+            config = self.utils.configParse()
+            robots = self.utils.robotParse(int(config[2]), positions)
 
         env = Environment(int(config[0]), int(config[1]), int(config[2]))
         for i, robot in enumerate(robots):                                      # loop through robots in swarm
@@ -268,7 +304,7 @@ class RobotGUI:
             if out_of_bounds != 'none':
                 self.out_of_bounds_all.append([i, out_of_bounds])
         env.initialView()
-        self.collisions = utils.collisionDetect(robots)                  # get any possible collisions between robots
+        self.collisions = self.utils.collisionDetect(robots)                  # get any possible collisions between robots
 
         if len(self.collisions) > 0 or len(self.out_of_bounds_all) > 0:
             self.error_window()

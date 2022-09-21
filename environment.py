@@ -32,6 +32,13 @@ class Environment(ShowBase):
     """Renders environment terrain and robot components"""
 
     def __init__(self, x_length, y_length, swarm_size):
+        """
+        Constructor   
+        Args:  
+            `x_length`: the x size of the environment plane (int)  
+            `y_length`: the y size of the environment plane (int)  
+            `swarm_size`: the number of Robots in the swarm (int)
+        """
         ShowBase.__init__(self)
 
         # DEBUG/PROTOTYPE OPTIONS
@@ -114,13 +121,15 @@ class Environment(ShowBase):
         self.accept('control-arrow_left', lambda: self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + LVector3f(90, 0, 0)))
         self.accept('control-arrow_right', lambda: self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + LVector3f(-90, 0, 0)))
 
-    #def finalizeExit(self):
-    #    self.destroy()
+    # def finalizeExit(self):
+        # self.closeWindow(self.win)
+        # self.destroy()
 
     def toggleLabels(self, first=False):
-        """Toggles visibility of component labels
+        """
+        Toggles visibility of component labels
         Args:
-            `first`: first display of labels or not (Boolean)
+            `first`: first display of labels or not (Boolean) **optional**  
         """
         if first:
             for label in self.labels:
@@ -156,9 +165,10 @@ class Environment(ShowBase):
         self.focus_switch_counter += 1
 
     def moveCamera(self, pos, z_dist):
-        """Moves camera to point above pos in scene (looking down)
+        """
+        Moves camera to point above pos in scene (looking down)
         Args:
-            `pos`: position of camera (LVector3f)
+            `pos`: position of camera (LVector3f)  
             `z_dist`: distance above pos that camera is placed at (int)
         """
         self.focus.setPos(pos)                                          # move focus of camera
@@ -172,7 +182,8 @@ class Environment(ShowBase):
         self.enableMouse()
 
     def enlargeLabel(self, pickedObj):
-        """Enlarges component label when component is selected
+        """
+        Enlarges component label when component is selected
         Args:
             `pickedObj`: newly selected component (PandaNode)
         """
@@ -187,10 +198,11 @@ class Environment(ShowBase):
                     break
 
     def displayLabel(self, pos, text, parent):
-        """Displays a text label in the scene
+        """
+        Displays a text label in the scene
         Args:
-            `pos`: position of label (LVector3f)
-            `text`: text of label (String)
+            `pos`: position of label (LVector3f)  
+            `text`: text of label (String)  
             `parent`: parent of label (NodePath)
         """
         label = TextNode('id_label')                                    # add text node
@@ -238,9 +250,10 @@ class Environment(ShowBase):
                 self.sel_textNode.setText(sel_text)
 
     def moveRobot(self, direction):
-        """Moves selected robot in the given direction for the given units relative to the camera view
+        """
+        Moves selected robot in the given direction for the given units relative to the camera view
         Args:
-            `direction`: direction of robot movement (0:forward, 1:back, 2:left, 3:right, 4:up, 5:down) (int)
+            `direction`: direction of robot movement (0:forward, 1:back, 2:left, 3:right, 4:up, 5:down) (int)  
             `units`: number of units to move robot by (int)
         """
         heading = int(self.camera.getHpr()[0])
@@ -283,7 +296,8 @@ class Environment(ShowBase):
         self.moveCamera(pos=centre, z_dist=distance)
 
     def renderRobot(self, robot):
-        """Renders 1 robot in the scene by iterating through its Connections
+        """
+        Renders 1 robot in the scene by iterating through its Connections
         Args:
             `robot`: robot object to render (Robot)
         """

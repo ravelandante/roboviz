@@ -2,7 +2,6 @@
 # Created By: GMLMOG016, FLDCLA001, YNGFYN001
 # Created Date: 16/08/22
 # ---------------------------------------------------------------------------
-"""Represents a component of a robot"""
 
 from panda3d.core import LVector3f
 
@@ -13,7 +12,17 @@ BUFFER = LVector3f(1.5, 1.5, 0)
 
 
 class RobotComp:
+    """Represents a component of a robot"""
+
     def __init__(self, id, type, root, orientation):
+        """
+        Constructor
+        Args:
+            `id`: ID of Brick (String)  
+            `type`: type of brick component (String)  
+            `root`: whether this brick is the core of the robot or not (boolean)  
+            `orientation`: orientation (roll) of this component relative to its parent (int)
+        """
         self.id = id
         self.type = type                # component type
         self.root = root                # component is the root of the robot component tree
@@ -21,13 +30,14 @@ class RobotComp:
         self.direction = 0
 
     def calcPos(self, src, dst, connection):
-        """Calculates the position that the component should be placed at in the scene based on the source's position
+        """
+        Calculates the position that the component should be placed at in the scene based on the source's position
         Args:
-            src (PandaNode): source Panda3D node in connection
-            dst (PandaNode): destination Panda3D node in connection
-            connection (Connection): the Connection in question
+            `src`: source Panda3D node in connection (PandaNode)  
+            `dst`: destination Panda3D node in connection (PandaNode)  
+            `connection`: the Connection in question (Connection)
         Returns:
-            LVector3f: position that component should be placed at in the scene
+            `(dst_pos, heading)`: position and heading that component should be placed at in the scene (LVector3f, int)
         """
         connection.dst.bounds = dst.getTightBounds()
 

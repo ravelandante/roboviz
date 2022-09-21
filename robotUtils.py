@@ -17,14 +17,24 @@ import numpy as np
 
 class RobotUtils:
     def __init__(self, config_path, pos_path, robot_path):
+        """
+        Constructor
+        Args:
+            `config_path`: file path of configuration text file (String)  
+            `pos_path`: file path of robot positions text file (String)  
+            `robot_path`: file path of robot JSON file (String)
+        """
         self.config_path = config_path
         self.pos_path = pos_path
         self.robot_path = robot_path
 
     def collisionDetect(self, robots):
-        """Determines if there are any possible collisions between robots in the scene
+        """
+        Determines if there are any possible collisions between robots in the scene
             Args:
-                robots (List of Robot objects): list of all robots in the scene
+                `robots`: list of all robots in the scene (Robot[])
+            Returns
+                `collisions`: possible collisions between robots (int[][])
         """
         collisions = []
         for i, first_robot in enumerate(robots):
@@ -39,11 +49,12 @@ class RobotUtils:
         return collisions
 
     def createBrain(self, neurons, brain, compArr):
-        """Creates list of neurons based on JSON file ANN inputs
+        """
+        Creates list of neurons based on JSON file ANN inputs
         Args:
-            neurons (List): list of neurons and their info from JSON file
-            brain (List): list of connections between neurons from JSON file
-            compArr (List of RobotComp objects): list of components that neurons are connected to
+            `neurons`: list of neurons and their info from JSON file (Neurons[])  
+            `brain`: list of connections between neurons from JSON file (List)  
+            `compArr`: list of components that neurons are connected to (RobotComp[])
         """
         inputNeurons = []
         outputNeurons = []
@@ -111,7 +122,23 @@ class RobotUtils:
         net = Network(inputNeurons, outputNeurons, X_train, Y_train, epochs=E, lr=L)
         return net
 
+    def writeRobot(self, robot, name):
+        """
+        Writes built Robot out to relevant files
+        Args:
+            `robot`: Robot to be written out (Robot)  
+            `name`: name of Robot JSON file (String)
+        """
+        path = 'json/{}.json'.format(name)
+        with open(path, 'w') as f:
+            json.dump(robot.__dict__, f)
+
     def posParse(self):
+        """
+        Parses robot positions from positions file
+        Returns:
+            `positions`: positions of Robots in scene (int[])
+        """
         positions = []
         with open(self.pos_path, 'r') as f:
             for line in f:
@@ -124,6 +151,11 @@ class RobotUtils:
         return positions
 
     def configParse(self):
+        """
+        Parses environment and swarm size from configuration file
+        Returns:
+            `configuration`: environment and swarm size (int[])
+        """
         configuration = []
         with open(self.config_path, 'r') as f:
             for line in f:
@@ -131,6 +163,11 @@ class RobotUtils:
         return configuration
 
     def robotParse(self, swarm_size, positions):
+        """
+        Parses robot(s) from robot JSON file
+        Returns:
+            `robotArr`: all robots to be rendered in the scene (Robot[])
+        """
         robotArr = []
         count = 0  # counting the positions
         with open(self.robot_path, 'r') as f:

@@ -2,7 +2,7 @@
 # Created By: GMLMOG016, FLDCLA001, YNGFYN001
 # Created Date: 16/08/22
 # ---------------------------------------------------------------------------
-"""Represents a robot and it's connections"""
+
 
 from panda3d.core import BoundingBox
 from panda3d.core import LVector2f
@@ -13,7 +13,16 @@ LINE_THICKNESS = 1
 
 
 class Robot:
+    """Represents a robot and its connections"""
+
     def __init__(self, id, connections, core_pos):
+        """
+        Constructor
+        Args:
+            `id`: ID of robot (int)  
+            `connections`: connections between components that make up the robot (Connection[])  
+            `core_pos`: positions of the core component of the robot (int[])
+        """
         self.id = id
         self.connections = connections
         self.core_pos = core_pos            # position (x, y, z) of robot core component
@@ -58,12 +67,13 @@ class Robot:
         self.bounding_box.hide()                                            # hide bounding box
 
     def outOfBoundsDetect(self, x_length, y_length):
-        """Determines if robot exceeds the dimensions of the environment
+        """
+        Determines if robot exceeds the dimensions of the environment
         Args:
-            x_length (int): x length of the environment
-            y_length (int): y length of the environment
+            `x_length`: x length of the environment (int)  
+            `y_length`: y length of the environment (int)
         Returns:
-            LVector2f: x and y values of how far the robot is out of bounds
+            `out_of_bounds`: x and y values of how far the robot is out of bounds (LVector3f), returns `'none'` if not out of bounds
         """
         self.setBounds()                                                    # calc & set bounds of robot
 
@@ -80,6 +90,10 @@ class Robot:
             return out_of_bounds
         else:
             return 'none'
+
+    def __dict__(self):
+        dict = {}
+        return dict
 
     def __str__(self):
         count = 0
