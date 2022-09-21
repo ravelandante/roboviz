@@ -1,0 +1,3868 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>RoboViz API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>RoboViz</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># ----------------------------------------------------------------------------
+# Created By: GMLMOG016, FLDCLA001, YNGFYN001
+# Created Date: 13/08/22
+# ---------------------------------------------------------------------------
+
+import PySimpleGUI as sg
+from panda3d.core import LineSegs
+from panda3d.core import LVector2f
+from panda3d.core import BoundingBox
+import numpy as np
+import json
+from robotComp import RobotComp
+from brain import Neuron, Network
+from robot import Robot
+from connection import Connection
+from brick import Brick
+from hinge import Hinge
+from environment import Environment
+from robotUtils import RobotUtils
+import threading
+import subprocess
+from os.path import exists
+import os
+from panda3d.core import CollisionTraverser
+from panda3d.core import CollisionHandlerQueue
+from panda3d.core import CollisionRay
+from panda3d.core import CollisionNode
+from panda3d.core import AmbientLight
+from panda3d.core import LVector3f
+from panda3d.core import Mat4
+from panda3d.core import GeomNode
+from panda3d.core import TextNode
+from panda3d.core import NodePath
+from panda3d.core import WindowProperties
+from direct.showbase.ShowBase import ShowBase
+from direct.gui.OnscreenText import OnscreenText
+from direct.gui.DirectGui import *
+
+from numpy import deg2rad
+import math
+
+
+SHIFT_VALUE = 5     # number of units robots will be moved by
+ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}
+SHIFT_DIRECTION = {0: LVector3f(0, SHIFT_VALUE, 0), 2: LVector3f(0, -SHIFT_VALUE, 0), 3: LVector3f(-SHIFT_VALUE, 0, 0),
+                   1: LVector3f(SHIFT_VALUE, 0, 0), 4: LVector3f(0, 0, SHIFT_VALUE), 5: LVector3f(0, 0, -SHIFT_VALUE), }
+
+
+class Environment(ShowBase):
+    &#34;&#34;&#34;Renders environment terrain and robot components&#34;&#34;&#34;
+
+    def __init__(self, x_length, y_length, swarm_size):
+        &#34;&#34;&#34;
+        Constructor   
+        Args:  
+            `x_length`: the x size of the environment plane (int)  
+            `y_length`: the y size of the environment plane (int)  
+            `swarm_size`: the number of Robots in the swarm (int)
+        &#34;&#34;&#34;
+        ShowBase.__init__(self)
+
+        # DEBUG/PROTOTYPE OPTIONS
+        self.setFrameRateMeter(True)
+        proto_text = &#39;RoboViz Prototype&#39;                                # add prototype text
+        proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
+                                      fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
+
+        props = WindowProperties()
+        props.setTitle(&#39;RoboViz&#39;)
+        #props.setSize(1200, 780)
+        props.setIconFilename(&#39;resources/r_icon.ico&#39;)
+        self.win.requestProperties(props)
+
+        self.robotNode = NodePath(&#39;robotNode&#39;)
+        self.robotNode.reparentTo(self.render)
+
+        self.x_length = x_length
+        self.y_length = y_length
+        self.swarm_size = swarm_size
+
+        self.labels = []                                                # labels in scene
+        self.label_toggle = False                                       # whether labels are enabled or not
+
+        self.robot_pos = {}                                             # positions of robot cores
+        self.focus_switch_counter = 0
+
+        self.myHandler = CollisionHandlerQueue()
+        self.myTraverser = CollisionTraverser()
+
+        pickerNode = CollisionNode(&#39;mouseRay&#39;)                          # for selecting robots
+        pickerNP = self.camera.attachNewNode(pickerNode)
+        pickerNode.setFromCollideMask(GeomNode.getDefaultCollideMask())
+        self.pickerRay = CollisionRay()
+        pickerNode.addSolid(self.pickerRay)
+        self.myTraverser.addCollider(pickerNP, self.myHandler)
+
+        self.set_background_color(0.6, 0.6, 0.6, 1)                     # set background colour to a lighter grey
+        self.focus = NodePath(&#39;focus&#39;)                                  # create focus point (origin) of camera
+        self.focus.reparentTo(self.render)
+        self.camera.reparentTo(self.focus)
+
+        self.plane = self.loader.loadModel(&#39;./models/BAM/plane.bam&#39;)    # load &#39;terrain&#39; plane
+        self.plane.setScale(self.x_length, self.y_length, 0)            # scale up to specified dimensions
+        self.plane.reparentTo(self.render)
+
+        alight = AmbientLight(&#39;alight&#39;)                                 # create ambient light
+        alight.setColor((0.4, 0.4, 0.4, 1))
+        alnp = self.render.attachNewNode(alight)
+        self.render.setLight(alnp)
+
+        help_text = &#39;Controls:\nC - switch camera focus\nL - toggle component labels\nH - hide this help menu&#39;  # add help text
+        self.help_textNode = OnscreenText(text=help_text, pos=(1, 0.7), scale=0.04,
+                                          fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=0)
+        sel_text = &#39;Selected Robot: none\nSelected Component: none&#39;                                             # add selected text
+        self.sel_textNode = OnscreenText(text=sel_text, pos=(1, 0.8), scale=0.04,
+                                         fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=1)
+
+        # KEYPRESSES
+        self.accept(&#39;c&#39;, self.switchFocus)
+        self.accept(&#39;l&#39;, self.toggleLabels)
+        self.accept(&#39;h&#39;, lambda: self.help_textNode.show() if self.help_textNode.isHidden() else self.help_textNode.hide())
+        self.accept(&#39;mouse1&#39;, self.select)
+
+        # moving robots
+        self.accept(&#39;arrow_up-repeat&#39;, self.moveRobot, [0])
+        self.accept(&#39;arrow_up&#39;, self.moveRobot, [0])
+        self.accept(&#39;arrow_down-repeat&#39;, self.moveRobot, [2])
+        self.accept(&#39;arrow_down&#39;, self.moveRobot, [2])
+        self.accept(&#39;arrow_left-repeat&#39;, self.moveRobot, [3])
+        self.accept(&#39;arrow_left&#39;, self.moveRobot, [3])
+        self.accept(&#39;arrow_right-repeat&#39;, self.moveRobot, [1])
+        self.accept(&#39;arrow_right&#39;, self.moveRobot, [1])
+        self.accept(&#39;control-arrow_up-repeat&#39;, self.moveRobot, [4])
+        self.accept(&#39;control-arrow_up&#39;, self.moveRobot, [4])
+        self.accept(&#39;control-arrow_down-repeat&#39;, self.moveRobot, [5])
+        self.accept(&#39;control-arrow_down&#39;, self.moveRobot, [5])
+
+        # rotating robots
+        self.accept(&#39;control-arrow_left&#39;, lambda: self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + LVector3f(90, 0, 0)))
+        self.accept(&#39;control-arrow_right&#39;, lambda: self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + LVector3f(-90, 0, 0)))
+
+    # def finalizeExit(self):
+        # self.closeWindow(self.win)
+        # self.destroy()
+
+    def toggleLabels(self, first=False):
+        &#34;&#34;&#34;
+        Toggles visibility of component labels
+        Args:
+            `first`: first display of labels or not (Boolean) **optional**  
+        &#34;&#34;&#34;
+        if first:
+            for label in self.labels:
+                label.node().setTextColor(1, 1, 1, 1)                   # set label colours after node flattening
+                label.node().setCardColor(1, 1, 1, 0.3)
+                label.hide()                                            # hide labels
+        elif self.label_toggle == True:                                 # if labels are &#39;on&#39;
+            for label in self.labels:
+                label.hide()                                            # hide labels
+            self.label_toggle = False                                   # set to &#39;off&#39;
+        else:                                                           # if labels are &#39;off&#39;
+            for label in self.labels:
+                label.show()                                            # show labels
+            self.label_toggle = True                                    # set to &#39;on&#39;
+
+    def toggleBounding(self):
+        &#34;&#34;&#34;Toggles visibility of robot bounding box (selection box)&#34;&#34;&#34;
+        children = self.selected_robot.getChildren()
+        for child in children:
+            if child.getName().split(&#39;/&#39;)[-1] == &#39;lines&#39;:               # find line node in children of root
+                if child.isHidden():                                    # if bounding box is hidden
+                    child.show()
+                else:                                                   # if bounding box is visible
+                    child.hide()
+                break
+
+    def switchFocus(self):
+        &#34;&#34;&#34;Switches camera focus (origin) between robots in scene&#34;&#34;&#34;
+        while self.focus_switch_counter &gt; self.swarm_size - 1:          # loop 1 around to start of list
+            self.focus_switch_counter -= self.swarm_size
+        # print(f&#39;Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}&#39;)
+        self.moveCamera(pos=list(self.robot_pos.values())[self.focus_switch_counter], z_dist=400)      # move camera to next robot
+        self.focus_switch_counter += 1
+
+    def moveCamera(self, pos, z_dist):
+        &#34;&#34;&#34;
+        Moves camera to point above pos in scene (looking down)
+        Args:
+            `pos`: position of camera (LVector3f)  
+            `z_dist`: distance above pos that camera is placed at (int)
+        &#34;&#34;&#34;
+        self.focus.setPos(pos)                                          # move focus of camera
+        self.disableMouse()
+        self.camera.setPos(LVector3f(0, 0, z_dist))                     # move camera relative to focus
+        self.camera.setHpr(0, -90, 0)
+
+        mat = Mat4(self.camera.getMat())
+        mat.invertInPlace()
+        self.mouseInterfaceNode.setMat(mat)
+        self.enableMouse()
+
+    def enlargeLabel(self, pickedObj):
+        &#34;&#34;&#34;
+        Enlarges component label when component is selected
+        Args:
+            `pickedObj`: newly selected component (PandaNode)
+        &#34;&#34;&#34;
+        for child in pickedObj.getChildren():
+            if child.getName() == &#39;id_label&#39;:                           # find label of newly selected component
+                child.setScale(6, 6, 6)
+                break
+        if hasattr(self, &#39;selected_comp&#39;):
+            for child in self.selected_comp.getChildren():
+                if child.getName() == &#39;id_label&#39;:                       # find label of old selected component
+                    child.setScale(3, 3, 3)
+                    break
+
+    def displayLabel(self, pos, text, parent):
+        &#34;&#34;&#34;
+        Displays a text label in the scene
+        Args:
+            `pos`: position of label (LVector3f)  
+            `text`: text of label (String)  
+            `parent`: parent of label (NodePath)
+        &#34;&#34;&#34;
+        label = TextNode(&#39;id_label&#39;)                                    # add text node
+        label.setText(text)
+        label.setAlign(TextNode.ACenter)
+        label.setCardAsMargin(0, 0, 0, 0)
+        label.setCardDecal(True)
+
+        self.text3d = NodePath(label)                                   # add text to node
+        self.text3d.setScale(3, 3, 3)
+        self.text3d.setTwoSided(True)
+        self.text3d.setBillboardPointEye()                              # make text billboard (move with camera)
+        self.text3d.reparentTo(parent)
+        self.text3d.setPos(self.render, pos + LVector3f(0, 0, 20))      # set pos above component model
+        self.labels.append(self.text3d)
+
+    def select(self):
+        &#34;&#34;&#34;Determines which robot is selected (by mouse click), updates self.selected_robot to represent this&#34;&#34;&#34;
+        mpos = self.mouseWatcherNode.getMouse()
+        self.pickerRay.setFromLens(self.camNode, mpos.getX(), mpos.getY())
+
+        self.myTraverser.traverse(self.render)
+        if self.myHandler.getNumEntries() &gt; 0:
+            self.myHandler.sortEntries()                                # get closest object to mouse click
+            pickedObj = self.myHandler.getEntry(0).getIntoNodePath()
+            pickedObj = pickedObj.findNetTag(&#39;robot&#39;)                   # find object by tag
+            if not pickedObj.isEmpty():
+                if hasattr(self, &#39;selected_robot&#39;):
+                    self.toggleBounding()                               # hide old selection box
+
+                self.enlargeLabel(pickedObj)
+                self.selected_comp = pickedObj
+
+                while True:
+                    if &#39;Core&#39; not in pickedObj.getName():
+                        pickedObj = pickedObj.parent
+                    else:
+                        break
+                self.selected_robot = pickedObj                         # set class attribute to selected robot core
+                self.toggleBounding()                                   # show new selection box
+                if self.selected_robot.getName()[0].isdigit() and self.selected_robot.getName()[1].isdigit():
+                    sel_text = &#39;Selected Robot: &#39; + self.selected_robot.getName()[0:2] + &#39;\nSelected Component: &#39; + self.selected_comp.getName()
+                else:
+                    sel_text = &#39;Selected Robot: &#39; + self.selected_robot.getName()[0] + &#39;\nSelected Component: &#39; + self.selected_comp.getName()
+                self.sel_textNode.setText(sel_text)
+
+    def moveRobot(self, direction):
+        &#34;&#34;&#34;
+        Moves selected robot in the given direction for the given units relative to the camera view
+        Args:
+            `direction`: direction of robot movement (0:forward, 1:back, 2:left, 3:right, 4:up, 5:down) (int)  
+            `units`: number of units to move robot by (int)
+        &#34;&#34;&#34;
+        heading = int(self.camera.getHpr()[0])
+        rotation = int(self.camera.getHpr()[2])
+        if direction not in [4, 5]:                                         # if moving along xy plane
+            if heading in range(-45, 45):
+                heading = 0
+            elif heading in range(45, 135):
+                heading = 1
+            elif heading in range(135, 181) or heading in range(-180, -135):
+                heading = 2
+            elif heading in range(-135, -45):
+                heading = 3
+            if rotation in range(90, 181) or rotation in range(-180, -90):  # if camera is rotated around 180
+                if direction in [1, 3]:
+                    if direction == 1:
+                        direction = 3
+                    elif direction == 3:
+                        direction = 1
+            direction = int(direction) - heading
+            if direction &lt; 0:
+                direction += 4
+        else:                                                               # if moving along z axis
+            if rotation in range(90, 181) or rotation in range(-180, -90):  # if camera is rotated around 180
+                if direction == 4:                                          # switch up and down
+                    direction = 5
+                elif direction == 5:
+                    direction = 4
+        shift = SHIFT_DIRECTION[direction]                                  # get direction of shift
+        self.selected_robot.setPos(self.render, self.selected_robot.getPos(self.render) + shift)
+        self.robot_pos[int(self.selected_robot.getName()[0])] = self.selected_robot.getPos(self.render)
+
+    def initialView(self):
+        &#34;&#34;&#34;Moves and zooms camera so that all robots are initially placed in the camera&#39;s view&#34;&#34;&#34;
+        # move + zoom camera to overlook all robots
+        bounds = self.robotNode.getBounds()                                             # bounding box of all robots together
+        centre = bounds.getCenter()                                                     # centre of bounding box
+        fov = self.camLens.getFov()
+        distance = bounds.getRadius() / math.tan(deg2rad(min(fov[0], fov[1]) * 0.6))    # calc distance needed to see all robots
+        self.moveCamera(pos=centre, z_dist=distance)
+
+    def renderRobot(self, robot):
+        &#34;&#34;&#34;
+        Renders 1 robot in the scene by iterating through its Connections
+        Args:
+            `robot`: robot object to render (Robot)
+        &#34;&#34;&#34;
+        # add position of robot core to list (for camera focus switching)
+        self.robot_pos[robot.id] = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
+
+        robot.connections[0].src.root = True  # !!!!!CHANGE!!!!!
+        for i, connection in enumerate(robot.connections):                      # loop through connections in robot
+            if connection.src.root and i == 0:                                  # if source is the core component
+                src_path = &#39;./models/BAM/&#39; + connection.src.type + &#39;.bam&#39;       # get path of source model file
+                self.src = self.loader.loadModel(src_path)                      # load model of source component
+                # set core&#39;s position to robot core_pos
+                connection.src.pos = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
+
+                self.src.setPos(connection.src.pos)                             # set position of source model
+                self.src.reparentTo(self.robotNode)                             # set parent to robotNode
+                self.src.setName(str(robot.id) + connection.src.id)             # set name of node to component ID
+                self.src.setTag(&#39;robot&#39;, str(robot.id) + connection.src.id)
+
+                self.displayLabel(pos=connection.src.pos, text=&#39;Robot &#39; + str(robot.id), parent=self.src)   # display robot id label text
+                connection.src.node = self.src                                              # add Panda3D node to robotComp
+
+            dst_path = &#39;./models/BAM/&#39; + connection.dst.type + &#39;.bam&#39;           # get path of destination model file
+            self.dst = self.loader.loadModel(dst_path)                          # load model of source component
+            self.dst.setName(connection.dst.id)
+            self.dst.setTag(&#39;robot&#39;, connection.dst.id)
+
+            connection.standardiseSlots()
+
+            # calc position of dest comp based on source position
+            connection.dst.pos, heading = connection.dst.calcPos(self.src, self.dst, connection)
+
+            self.dst.setColor(connection.dst.colour)                            # set model to relevant colour
+            self.dst.reparentTo(connection.src.node)                            # reparent dst node to src node (add to tree)
+
+            self.dst.setHpr(self.render, heading, 0, 0)                         # set heading of destination model
+            self.dst.setPos(self.render, connection.dst.pos)                    # set position of destination model
+            if &#39;Hinge&#39; in connection.dst.type:
+                connection.dst.orientation += connection.src.orientation
+                while connection.dst.orientation &gt; 3:
+                    connection.dst.orientation -= 4
+                self.dst.setR(self.render, ORIENTATION[connection.dst.orientation])
+
+            connection.dst.node = self.dst                                      # add Panda3D node to robotComp
+
+            # print(f&#39;Rendered \&#39;{connection.dst.id}\&#39; of type \&#39;{connection.dst.type}\&#39; at {connection.dst.pos}&#39;)
+
+        for i, connection in enumerate(robot.connections):
+            node = connection.dst.node
+            if i &gt; 0:
+                self.displayLabel(pos=node.getPos(self.render), text=node.getName(), parent=node)
+        robot.drawBounds()
+        robot.connections[0].src.node.flattenStrong()                                               # hide labels and set colours after flattening
+        self.toggleLabels(first=True)
+# ----------------------------------------------------------------------------
+# Created By: GMLMOG016, FLDCLA001, YNGFYN001
+# Created Date: 23/08/22
+# ---------------------------------------------------------------------------
+
+
+COMPONENTS = [&#39;FixedBrick&#39;, &#39;ActiveHinge&#39;, &#39;PassiveHinge&#39;]
+
+
+def formatCollisions(collisions):
+    &#34;&#34;&#34;
+    Formats List of collisions into displayable format
+    Args:
+        `collisions`: possible collisions between robots (int[][])
+    Returns:
+        `collision_text`: text format of robot collisions (String)
+    &#34;&#34;&#34;
+    collision_text = &#39;Possible Collision Between:\n&#39;
+    for collision in collisions:
+        collision_text += &#39;Robot {}, Robot {}\n&#39;.format(collision[0], collision[1])
+    return collision_text
+
+
+def formatOutOfBounds(out_of_bounds):
+    &#34;&#34;&#34;
+    Formats List of out of bounds robots into displayable format
+    Args:
+        `out_of_bounds`: robots that are out of bounds + units ([int, LVector3f])
+    Returns:
+        `out_of_bounds_text`: text format of out of bounds robots (String)
+    &#34;&#34;&#34;
+    out_of_bounds_text = &#39;&#39;
+    for robot in out_of_bounds:
+        out_of_bounds_text += &#39;Robot {}:\n&#39;.format(robot[0])
+        if robot[1][0] != 0:
+            out_of_bounds_text += &#39;x-axis = {} units\n&#39;.format(int(robot[1][0]))
+        if robot[1][1] != 0:
+            out_of_bounds_text += &#39;y-axis = {} units\n\n&#39;.format(int(robot[1][1]))
+    return out_of_bounds_text
+
+
+class RobotGUI:
+    &#34;&#34;&#34;Initialises the GUI for inputting files, building robots and reporting errors&#34;&#34;&#34;
+
+    def __init__(self, config_path=&#39;&#39;, pos_path=&#39;&#39;, robot_path=&#39;&#39;):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `config_path`: file path of configuration text file (String) **optional**, only used when building a robot  
+            `pos_path`: file path of robot positions text file (String) **optional**, only used when building a robot  
+            `robot_path`: file path of robot JSON file (String) **optional**, only used when building a robot
+        &#34;&#34;&#34;
+        self.config_path = config_path
+        self.pos_path = pos_path
+        self.robot_path = robot_path
+        self.out_of_bounds_all = []
+        self.collisions = []
+        self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
+        self.bgColour = &#34;Black&#34;
+
+    def error_window(self):
+        &#34;&#34;&#34;Displays the error reporting window&#34;&#34;&#34;
+        if len(self.collisions) &gt; 0:
+            collision_text = formatCollisions(self.collisions)
+            if len(self.out_of_bounds_all) &gt; 0:
+                out_of_bounds_text = formatOutOfBounds(self.out_of_bounds_all)
+                layout = [[sg.Text(&#34;Robot Collisions&#34;, background_color=self.bgColour)],
+                          [sg.Multiline(size=(50, 7), default_text=collision_text,  key=&#39;-COL_BOX-&#39;, echo_stdout_stderr=True, disabled=True)],
+                          [sg.Text(&#34;Robots out of bounds&#34;, background_color=self.bgColour)],
+                          [sg.Multiline(size=(50, 7), default_text=out_of_bounds_text,  key=&#39;-OOB_BOX-&#39;, echo_stdout_stderr=True, disabled=True)],
+                          [sg.Button(&#39;Continue&#39;), sg.Button(&#39;Cancel&#39;)]]
+            else:
+                layout = [[sg.Text(&#34;Robot Collisions&#34;, background_color=self.bgColour)],
+                          [sg.Multiline(size=(50, 7), default_text=collision_text,  key=&#39;-COL_BOX-&#39;, echo_stdout_stderr=True, disabled=True)],
+                          [sg.Button(&#39;Continue&#39;), sg.Button(&#39;Cancel&#39;)]]
+        elif len(self.out_of_bounds_all) &gt; 0:
+            out_of_bounds_text = formatOutOfBounds(self.out_of_bounds_all)
+            layout = [[sg.Text(&#34;Robots out of bounds&#34;, background_color=self.bgColour)],
+                      [sg.Multiline(size=(50, 7), default_text=out_of_bounds_text,  key=&#39;-OOB_BOX-&#39;, echo_stdout_stderr=True, disabled=True)],
+                      [sg.Button(&#39;Continue&#39;), sg.Button(&#39;Cancel&#39;)]]
+
+        window = sg.Window(&#34;Errors&#34;, layout, modal=True)
+        while True:
+            event, _ = window.read()
+            if event == &#34;Continue&#34; or event == sg.WIN_CLOSED:
+                break
+            if event == &#34;Cancel&#34;:
+                quit()
+
+        window.close()
+
+    def connection_window(self):
+        &#34;&#34;&#34;
+        Displays the component connection window for specifying specific connection parameters
+        Returns:
+            `(src_slot, dst_slot, orientation)`: source, dest slots + orientation of component ((int, int, int)) (returns (-1, -1, -1) if window closed)
+        &#34;&#34;&#34;
+        layout = [[sg.Text(&#39;SRC Slot:&#39;), sg.Combo(values=[0, 1, 2, 3], default_value=0, key=&#39;-SRC_COMBO-&#39;)],
+                  [sg.Text(&#39;DST Slot:&#39;), sg.Combo(values=[0, 1, 2, 3], default_value=0, key=&#39;-DST_COMBO-&#39;)],
+                  [sg.Text(&#39;Orientation:&#39;), sg.Combo(values=[0, 1, 2, 3], default_value=0, key=&#39;-O_COMBO-&#39;)],
+                  [sg.Button(&#39;Submit&#39;)]]
+        window = sg.Window(&#34;Enter Slots&#34;, layout, modal=True)
+        while True:
+            event, values = window.read()
+            if event == sg.WIN_CLOSED:
+                window.close()
+                return (-1, -1, -1)
+            if event == &#39;Submit&#39;:
+                window.close()
+                return (values[&#39;-SRC_COMBO-&#39;], values[&#39;-DST_COMBO-&#39;], values[&#39;-O_COMBO-&#39;])
+
+    def build_window(self):
+        &#34;&#34;&#34;Displays the Robot building window&#34;&#34;&#34;
+        connections = []
+        treedata = sg.TreeData()
+        core = Brick(&#39;Core&#39;, &#39;CoreComponent&#39;, True, 0)
+        parent = core
+        treedata.insert(parent=&#39;&#39;, key=core.id, text=core.id, values=[&#39;CoreComponent&#39;, core.orientation])
+        layout = [[sg.Button(&#39;+&#39;, size=3), sg.Button(&#39;-&#39;, size=3), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key=&#39;-C_COMBO-&#39;),
+                   sg.InputText(key=&#39;-COMP_ID-&#39;, size=20, default_text=&#39;defaultID&#39;)],
+                  [sg.Text(&#39;Components&#39;)],
+                  [sg.Tree(data=treedata, key=&#34;-COMP_TREE-&#34;, auto_size_columns=True, num_rows=20,
+                           headings=[&#39;Type&#39;, &#39;Orientation&#39;], col0_width=30, expand_x=True, show_expanded=True), ],
+                  [sg.Button(&#39;Submit&#39;), sg.Button(&#39;Help&#39;), sg.Button(&#39;File&#39;), sg.Exit(), sg.Checkbox(&#39;Write to file&#39;, key=&#39;-FILE-&#39;)]]
+        window = sg.Window(&#34;Build a Robot&#34;, layout, modal=True)
+        while True:
+            event, values = window.read()
+            if event == sg.WIN_CLOSED or event == &#39;Exit&#39;:
+                quit()
+            if event == &#39;File&#39;:
+                break
+            if event == &#39;Help&#39;:
+                sg.popup(&#34;some help info\nsome more help stuff ig\neven more help text wowow&#34;, title=&#34;Help&#34;)
+            if event == &#39;-&#39;:
+                # delete selected component
+                pass
+            if event == &#39;+&#39;:
+                # add new component
+                if values[&#39;-COMP_ID-&#39;] in treedata.tree_dict:                           # if component id already exists in tree
+                    sg.popup(&#34;Component {} already exists&#34;.format(values[&#39;-COMP_ID-&#39;]))
+                    continue
+                if len(values[&#39;-COMP_TREE-&#39;]) == 0:                                     # if nothing selected, parent is tree root
+                    sel_comp = &#39;&#39;
+                else:
+                    sel_comp = values[&#39;-COMP_TREE-&#39;][0]
+
+                id = values[&#39;-COMP_ID-&#39;]
+                type = values[&#39;-C_COMBO-&#39;]
+                src_slot, dst_slot, orientation = self.connection_window()
+                if src_slot == -1 or dst_slot == -1 or orientation == -1:
+                    continue
+
+                treedata.Insert(parent=sel_comp, key=id, text=id, values=[type, orientation])
+                window.Element(&#39;-COMP_TREE-&#39;).update(treedata)
+
+                if &#39;Hinge&#39; in type:
+                    comp = Hinge(id, type, False, orientation)
+                else:
+                    comp = Brick(id, type, False, orientation)
+
+                connections.append(Connection(parent, comp, src_slot, dst_slot))
+                parent = comp
+            if event == &#39;Submit&#39;:
+                robot = Robot(0, connections, [0, 0, 0])
+                config = [1000, 1000, 1]
+                if (values[&#39;-FILE-&#39;]):
+                    self.utils.writeRobot(robot, &#39;test&#39;)
+                self.runSim(config, [robot], file=False)
+
+        window.close()
+
+    def startGUI(self):
+        &#34;&#34;&#34;Displays the file input GUI window&#34;&#34;&#34;
+        working_directory = os.getcwd()
+
+        LastRender = False
+        configError = sg.Text(&#34;Configuration file not included!&#34;, visible=False, text_color=&#39;Red&#39;, background_color=self.bgColour)
+        posError = sg.Text(&#34;Positions file not included!&#34;, visible=False, text_color=&#39;Red&#39;, background_color=self.bgColour)
+        jsonError = sg.Text(&#34;Robots file not included!&#34;, visible=False, text_color=&#39;Red&#39;, background_color=self.bgColour)
+
+        if(not exists(&#39;LastRender.txt&#39;)):
+            layout = [
+                [sg.Text(&#34;Choose a config file:&#34;, background_color=self.bgColour)],
+                [sg.InputText(key=&#34;-FILE_PATH-&#34;),
+                 sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Configuration file&#34;, &#34;*.txt&#34;)])], [configError],
+                [sg.Text(&#34;Choose a positions file:&#34;, background_color=self.bgColour)],
+                [sg.InputText(key=&#34;-FILE_PATH-&#34;),
+                 sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Position file&#34;, &#34;*.txt&#34;)])], [posError],
+                [sg.Text(&#34;Choose a robots file:&#34;, background_color=self.bgColour)],
+                [sg.InputText(key=&#34;-FILE_PATH-&#34;),
+                 sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Robot file&#34;, &#34;*.json&#34;)])], [jsonError],
+                [sg.Button(&#39;Submit&#39;), sg.Button(&#39;Help&#39;), sg.Button(&#39;Build&#39;), sg.Exit()]
+            ]
+        else:
+            LastRender = True
+            pos_path = &#34;&#34;
+            config_path = &#34;&#34;
+            robot_path = &#34;&#34;
+            with open(&#39;LastRender.txt&#39;, &#39;r&#39;) as f:
+                i = 0
+                for line in f:
+                    line = line.strip()
+                    if i == 0:
+                        pos_path = line
+                    elif i == 1:
+                        config_path = line
+                    elif i == 2:
+                        robot_path = line
+                    i += 1
+            layout = [
+                [sg.Text(&#34;Choose a config file:&#34;, background_color=self.bgColour)],
+                [sg.InputText(default_text=config_path, key=&#34;-FILE_PATH-&#34;),
+                 sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Configuration file&#34;, &#34;*.txt&#34;)])], [configError],
+                [sg.Text(&#34;Choose a positions file:&#34;, background_color=self.bgColour)],
+                [sg.InputText(default_text=pos_path, key=&#34;-FILE_PATH-&#34;),
+                 sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Position file&#34;, &#34;*.txt&#34;)])], [posError],
+                [sg.Text(&#34;Choose a robots file:&#34;, background_color=self.bgColour)],
+                [sg.InputText(default_text=robot_path, key=&#34;-FILE_PATH-&#34;),
+                 sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Robot file&#34;, &#34;*.json&#34;)])], [jsonError],
+                [sg.Button(&#39;Submit&#39;), sg.Button(&#39;Help&#39;), sg.Button(&#39;Build&#39;), sg.Exit()]
+            ]
+
+        sg.theme(self.bgColour)
+        window = sg.Window(&#34;RoboViz&#34;, layout, icon=&#39;resources/r_icon.ico&#39;)
+
+        # Main Program Loop
+        while True:
+            event, values = window.read()
+            if event == sg.WIN_CLOSED or event == &#39;Exit&#39;:
+                break
+            if (event == &#34;Help&#34;):
+                sg.popup(&#34;some help info\nsome more help stuff ig\neven more help text wowow&#34;, title=&#34;Help&#34;)
+            if (event == &#34;Build&#34;):
+                window.hide()
+                self.build_window()
+                window.UnHide()
+
+            if (event == &#34;Submit&#34; and values[&#34;-FILE_PATH-&#34;] == &#34;&#34;):
+                configError.update(visible=True)
+            else:
+                configError.update(visible=False)
+
+            if (event == &#34;Submit&#34; and values[&#34;-FILE_PATH-0&#34;] == &#34;&#34;):
+                posError.update(visible=True)
+            else:
+                posError.update(visible=False)
+
+            if (event == &#34;Submit&#34; and values[&#34;-FILE_PATH-2&#34;] == &#34;&#34;):
+                jsonError.update(visible=True)
+            else:
+                jsonError.update(visible=False)
+
+            if (event == &#34;Submit&#34; and values[&#34;-FILE_PATH-&#34;] != &#34;&#34; and values[&#34;-FILE_PATH-0&#34;] != &#34;&#34; and values[&#34;-FILE_PATH-2&#34;] != &#34;&#34;):
+                self.config_path = values[&#34;-FILE_PATH-&#34;]
+                self.pos_path = values[&#34;-FILE_PATH-0&#34;]
+                self.robot_path = values[&#34;-FILE_PATH-2&#34;]
+
+                if (not LastRender):
+                    lines = [self.pos_path, self.config_path, self.robot_path]
+                    with open(&#39;LastRender.txt&#39;, &#39;w&#39;) as f:
+                        for line in lines:
+                            f.write(line)
+                            f.write(&#39; \n&#39;)
+                subprocess.check_call([&#34;attrib&#34;, &#34;+H&#34;, &#34;LastRender.txt&#34;])   # hide saved file paths file
+
+                # x = threading.Thread(target=self.runSim)
+                # x.start()
+                # x.join()
+
+                # window.hide()
+                self.runSim()
+
+        window.close()
+
+    def runSim(self, config=0, robots=0, file=True):
+        &#34;&#34;&#34;
+        Creates the Environment and runs the simulation
+        Args:
+            `config`: configuration parameters (int[]) **optional**, only used when building a robot  
+            `robots`: array of Robots (Robot[]) **optional**, only used when building a robot
+        &#34;&#34;&#34;
+        if file:
+            positions = self.utils.posParse()
+            config = self.utils.configParse()
+            robots = self.utils.robotParse(int(config[2]), positions)
+
+        env = Environment(int(config[0]), int(config[1]), int(config[2]))
+        for i, robot in enumerate(robots):                                      # loop through robots in swarm
+            env.renderRobot(robot)                                  # render robot
+            # get any out of bounds/collisions
+            out_of_bounds = robot.outOfBoundsDetect(int(config[0]), int(config[1]))
+            if out_of_bounds != &#39;none&#39;:
+                self.out_of_bounds_all.append([i, out_of_bounds])
+        env.initialView()
+        self.collisions = self.utils.collisionDetect(robots)                  # get any possible collisions between robots
+
+        if len(self.collisions) &gt; 0 or len(self.out_of_bounds_all) &gt; 0:
+            self.error_window()
+
+        env.run()
+
+
+# ----------------------------------------------------------------------------
+# Created By: GMLMOG016, FLDCLA001, YNGFYN001
+# Created Date: 13/08/22
+# ---------------------------------------------------------------------------
+&#34;&#34;&#34;Contains various utility functions (such as file IO) for creating robots&#34;&#34;&#34;
+
+
+class RobotUtils:
+    def __init__(self, config_path, pos_path, robot_path):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `config_path`: file path of configuration text file (String)  
+            `pos_path`: file path of robot positions text file (String)  
+            `robot_path`: file path of robot JSON file (String)
+        &#34;&#34;&#34;
+        self.config_path = config_path
+        self.pos_path = pos_path
+        self.robot_path = robot_path
+
+    def collisionDetect(self, robots):
+        &#34;&#34;&#34;
+        Determines if there are any possible collisions between robots in the scene
+            Args:
+                `robots`: list of all robots in the scene (Robot[])
+            Returns
+                `collisions`: possible collisions between robots (int[][])
+        &#34;&#34;&#34;
+        collisions = []
+        for i, first_robot in enumerate(robots):
+            for second_robot in robots[i + 1:]:
+                # if robots cross each other&#39;s z bounds
+                if first_robot.bounds[4] &gt;= second_robot.bounds[5] and first_robot.bounds[5] &lt;= second_robot.bounds[4]:
+                    # if robots cross each other&#39;s x bounds
+                    if first_robot.bounds[0] &gt;= second_robot.bounds[1] and first_robot.bounds[1] &lt;= second_robot.bounds[0]:
+                        # if robots cross each other&#39;s y bounds
+                        if first_robot.bounds[2] &gt;= second_robot.bounds[3] and first_robot.bounds[3] &lt;= second_robot.bounds[2]:
+                            collisions.append([first_robot.id, second_robot.id])
+        return collisions
+
+    def createBrain(self, neurons, brain, compArr):
+        &#34;&#34;&#34;
+        Creates list of neurons based on JSON file ANN inputs
+        Args:
+            `neurons`: list of neurons and their info from JSON file (Neurons[])  
+            `brain`: list of connections between neurons from JSON file (List)  
+            `compArr`: list of components that neurons are connected to (RobotComp[])
+        &#34;&#34;&#34;
+        inputNeurons = []
+        outputNeurons = []
+        other = []
+        for i in neurons:
+            id = i[&#39;id&#39;]
+            layer = i[&#39;layer&#39;]
+            type = i[&#39;type&#39;]
+            # read in json file
+            bodyPartId = i[&#39;bodyPartId&#39;]
+            for j in compArr:
+                if j.id == bodyPartId:
+                    bodyPartId = j
+            # set the body part id to a specific component
+            ioId = i[&#39;ioId&#39;]
+            gain = i[&#39;gain&#39;]
+            if type == &#39;sigmoid&#39;:
+                bias = i[&#39;bias&#39;]
+                phaseOffset = 0
+                period = 0
+            elif type == &#39;oscillator&#39;:
+                phaseOffset = i[&#39;phaseOffset&#39;]
+                period = i[&#39;period&#39;]
+                bias = 0
+            else:
+                phaseOffset = 0
+                period = 0
+                bias = 0
+            neuron = Neuron(id, layer, type, bodyPartId, ioId, gain, bias, phaseOffset, period)
+            # create the neuron
+            if layer == &#39;input&#39;:
+                inputNeurons.append(neuron)
+            elif layer == &#39;output&#39;:
+                inputNeurons.append(neuron)
+            else:
+                other.append(neuron)
+                # in case there is a middle layer
+
+        # set up the weights &amp; destination comps
+        for i in brain:
+            src = i[&#39;src&#39;]
+            dest = i[&#39;dest&#39;]
+            weight = i[&#39;weight&#39;]
+            w = 0
+            comp = RobotComp(0, 0, 0, 0)
+            for j in compArr:
+                if j.id in dest:
+                    comp = j
+                    w = weight
+                    break
+            for j in inputNeurons:
+                if j.id in src:
+                    j.setWeight(w)
+                    j.setDestComp(comp)
+                    break
+            for j in outputNeurons:
+                if j.id in src:
+                    j.setWeight(w)
+                    j.setDestComp(comp)
+                    break
+
+        X_train = np.array([[0, 0, 1, 1], [0, 1, 0, 1]])  # dim x m
+        Y_train = np.array([[0, 1, 1, 0]])  # 1 x m
+        L, E = 0.15, 100
+        net = Network(inputNeurons, outputNeurons, X_train, Y_train, epochs=E, lr=L)
+        return net
+
+    def writeRobot(self, robot, name):
+        &#34;&#34;&#34;
+        Writes built Robot out to relevant files
+        Args:
+            `robot`: Robot to be written out (Robot)  
+            `name`: name of Robot JSON file (String)
+        &#34;&#34;&#34;
+        path = &#39;json/{}.json&#39;.format(name)
+        with open(path, &#39;w&#39;) as f:
+            json.dump(robot.__dict__, f)
+
+    def posParse(self):
+        &#34;&#34;&#34;
+        Parses robot positions from positions file
+        Returns:
+            `positions`: positions of Robots in scene (int[])
+        &#34;&#34;&#34;
+        positions = []
+        with open(self.pos_path, &#39;r&#39;) as f:
+            for line in f:
+                robot_position = []
+                line = line.split(&#39; &#39;)
+                robot_position.append(int(line[0]))                         # x value
+                robot_position.append(int(line[1]))                         # y value
+                robot_position.append(int(line[2]))                         # z value
+                positions.append(robot_position)
+        return positions
+
+    def configParse(self):
+        &#34;&#34;&#34;
+        Parses environment and swarm size from configuration file
+        Returns:
+            `configuration`: environment and swarm size (int[])
+        &#34;&#34;&#34;
+        configuration = []
+        with open(self.config_path, &#39;r&#39;) as f:
+            for line in f:
+                configuration.append(int(line))
+        return configuration
+
+    def robotParse(self, swarm_size, positions):
+        &#34;&#34;&#34;
+        Parses robot(s) from robot JSON file
+        Returns:
+            `robotArr`: all robots to be rendered in the scene (Robot[])
+        &#34;&#34;&#34;
+        robotArr = []
+        count = 0  # counting the positions
+        with open(self.robot_path, &#39;r&#39;) as f:
+            data = json.load(f)
+        if(&#34;swarm&#34; in data.keys()):
+            swarm = data[&#34;swarm&#34;]
+            #neurons = swarm[&#34;neuron&#34;]
+            #brain = swarm[&#34;connection&#34;]
+
+            for robot in swarm:
+                roboId = robot[&#34;id&#34;]
+                body = robot[&#34;body&#34;]
+
+                bodyComp = body[&#34;part&#34;]
+                compArr = []
+
+                for i in bodyComp:
+                    id = i[&#39;id&#39;]
+                    type = i[&#39;type&#39;]
+                    root = i[&#39;root&#39;]
+                    orient = i[&#39;orientation&#39;]
+                    if &#39;Hinge&#39; in type:
+                        newComp = Hinge(id, type, root, orient)                     # create new Hinge component
+                    else:
+                        newComp = Brick(id, type, root, orient)                     # create new Brick component
+
+                    compArr.append(newComp)
+
+                bodyConnect = body[&#34;connection&#34;]
+                connArr = []
+
+                for i in bodyConnect:
+                    src = i[&#39;src&#39;]
+                    # find the component that is the source
+                    for j in compArr:
+                        compare = j.id
+                        if src == compare:
+                            src = j
+
+                    dest = i[&#39;dest&#39;]
+                    # find the component that is the destination
+                    for j in compArr:
+                        if dest == (j.id):
+                            dest = j
+
+                    srcSlot = i[&#39;srcSlot&#39;]
+                    # find the component that is the source slot
+                    for j in compArr:
+                        if srcSlot == (j.id):
+                            srcSlot = j
+
+                    destSlot = i[&#39;destSlot&#39;]
+                    # find the component that is the destination slot
+                    for j in compArr:
+                        if destSlot == (j.id):
+                            srcSlot = j
+
+                    newCon = Connection(src, dest, srcSlot, destSlot)               # construct new connection
+                    connArr.append(newCon)                                          # add to list of connections
+
+                robot = Robot(roboId, connArr, positions[count - 1])
+                count += 1
+                robotArr.append(robot)
+                #ANN = createBrain(neurons, brain, compArr)
+
+                return robotArr
+        else:
+            roboId = data[&#34;id&#34;]
+            body = data[&#34;body&#34;]
+            bodyComp = body[&#34;part&#34;]
+            compArr = []
+            part2 = data[&#34;brain&#34;]
+            neurons = part2[&#34;neuron&#34;]
+            brain = part2[&#34;connection&#34;]
+
+            for i in bodyComp:
+                id = i[&#39;id&#39;]
+                type = i[&#39;type&#39;]
+                root = i[&#39;root&#39;]
+                orient = i[&#39;orientation&#39;]
+                if &#39;Hinge&#39; in type:
+                    newComp = Hinge(id, type, root, orient)                     # create new Hinge component
+                else:
+                    newComp = Brick(id, type, root, orient)                     # create new Brick component
+                compArr.append(newComp)
+
+            bodyConnect = body[&#34;connection&#34;]
+            connArr = []
+
+            for i in bodyConnect:
+                src = i[&#39;src&#39;]
+                # find the component that is the source
+                for j in compArr:
+                    compare = j.id
+                    if src == compare:
+                        src = j
+
+                dest = i[&#39;dest&#39;]
+                # find the component that is the destination
+                for j in compArr:
+                    if dest == (j.id):
+                        dest = j
+
+                srcSlot = i[&#39;srcSlot&#39;]
+                # find the component that is the source slot
+                for j in compArr:
+                    if srcSlot == (j.id):
+                        srcSlot = j
+
+                destSlot = i[&#39;destSlot&#39;]
+                # find the component that is the destination slot
+                for j in compArr:
+                    if destSlot == (j.id):
+                        srcSlot = j
+
+                newCon = Connection(src, dest, srcSlot, destSlot)
+                connArr.append(newCon)
+            #ANN = createBrain(neurons, brain, compArr)
+            for i in range(int(swarm_size)):                      # loop through robots in swarm
+                robotArr.append(Robot(i, connArr, positions[i]))
+            return robotArr
+# ----------------------------------------------------------------------------
+# Created By: GMLMOG016, FLDCLA001, YNGFYN001
+# Created Date: 16/08/22
+# ---------------------------------------------------------------------------
+
+
+LINE_THICKNESS = 1
+
+
+class Robot:
+    &#34;&#34;&#34;Represents a robot and its connections&#34;&#34;&#34;
+
+    def __init__(self, id, connections, core_pos):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `id`: ID of robot (int)  
+            `connections`: connections between components that make up the robot (Connection[])  
+            `core_pos`: positions of the core component of the robot (int[])
+        &#34;&#34;&#34;
+        self.id = id
+        self.connections = connections
+        self.core_pos = core_pos            # position (x, y, z) of robot core component
+
+        self.ls = LineSegs()
+        self.ls.setThickness(LINE_THICKNESS)
+        self.ls.setColor(1, 1, 1, 1)
+
+    def setBounds(self):
+        &#34;&#34;&#34;Calculates and sets the bounds (bounding box) of the robot&#34;&#34;&#34;
+        root_node = self.connections[0].src.node
+
+        robot_min, robot_max = root_node.getTightBounds()
+        box = BoundingBox(robot_min, robot_max)
+        vertices = box.getPoints()
+
+        # calc bounds of robot bounding box
+        x_max, x_min, y_max, y_min, z_max, z_min = vertices[4][0], vertices[0][0], vertices[2][1], vertices[0][1], vertices[1][2], vertices[2][2]
+        self.bounds = [x_max, x_min, y_max, y_min, z_max, z_min]       # set bounds of robot
+
+    def drawBounds(self):
+        &#34;&#34;&#34;Draws LineSegs between all points of the robot bounding box&#34;&#34;&#34;
+        root_node = self.connections[0].src.node                            # root node
+        robot_min, robot_max = root_node.getTightBounds(root_node)          # get bounds of robot
+        box = BoundingBox(robot_min, robot_max)
+        vertices = box.getPoints()                                          # get points of robot bounding box
+
+        for z in range(0, len(vertices), 4):                                # draw &#39;side&#39; boxes
+            self.ls.moveTo(vertices[z])
+            self.ls.drawTo(vertices[z + 1])
+            self.ls.drawTo(vertices[z + 3])
+            self.ls.drawTo(vertices[z + 2])
+            self.ls.drawTo(vertices[z])
+
+        for xy in range(0, len(vertices)//2):                               # draw &#39;top and bottom&#39; boxes
+            self.ls.moveTo(vertices[xy])
+            self.ls.drawTo(vertices[xy + len(vertices)//2])
+
+        bounds_node = self.ls.create()
+        self.bounding_box = NodePath(bounds_node)
+        self.bounding_box.reparentTo(root_node)                             # reparent bounding box to robot root
+        self.bounding_box.hide()                                            # hide bounding box
+
+    def outOfBoundsDetect(self, x_length, y_length):
+        &#34;&#34;&#34;
+        Determines if robot exceeds the dimensions of the environment
+        Args:
+            `x_length`: x length of the environment (int)  
+            `y_length`: y length of the environment (int)
+        Returns:
+            `out_of_bounds`: x and y values of how far the robot is out of bounds (LVector3f), returns `&#39;none&#39;` if not out of bounds
+        &#34;&#34;&#34;
+        self.setBounds()                                                    # calc &amp; set bounds of robot
+
+        out_of_bounds = LVector2f(0, 0)
+        if self.bounds[0] &gt; x_length/2:                                     # if over +x
+            out_of_bounds[0] = int(self.bounds[0] - x_length/2)
+        elif self.bounds[1] &lt; -x_length/2:                                  # if over -x
+            out_of_bounds[0] = int(x_length/2 + self.bounds[1])
+        if self.bounds[2] &gt; y_length/2:                                     # if over +y
+            out_of_bounds[1] = int(self.bounds[2] - y_length/2)
+        elif self.bounds[3] &lt; -y_length/2:                                  # if over -y
+            out_of_bounds[1] = int(y_length/2 + self.bounds[3])
+        if out_of_bounds != LVector2f(0, 0):
+            return out_of_bounds
+        else:
+            return &#39;none&#39;
+
+    def __dict__(self):
+        dict = {}
+        return dict
+
+    def __str__(self):
+        count = 0
+        s = f&#34;ID: {self.id}, Connections: &#34;
+        for i in self.connections:
+            s = s + f&#34;\n{count+1}: {i}&#34;
+            count = count+1
+        s = s + f&#34;\nCore: {self.core_pos}&#34;
+        s = s+f&#34;\nTotal connections: {count}&#34;
+        return s
+# ----------------------------------------------------------------------------
+# Created By: GMLMOG016, FLDCLA001, YNGFYN001
+# Created Date: 16/08/22
+# ---------------------------------------------------------------------------
+
+
+SRC_SLOTS = {0: 180, 1: 90, 2: 0, 3: 270}
+DST_SLOTS = {0: 0, 1: 90, 2: 180, 3: 270}
+DIRECTION = {0: 0, 90: 1, 180: 2, 270: 3}
+BUFFER = LVector3f(1.5, 1.5, 0)
+
+
+class RobotComp:
+    &#34;&#34;&#34;Represents a component of a robot&#34;&#34;&#34;
+
+    def __init__(self, id, type, root, orientation):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `id`: ID of Brick (String)  
+            `type`: type of brick component (String)  
+            `root`: whether this brick is the core of the robot or not (boolean)  
+            `orientation`: orientation (roll) of this component relative to its parent (int)
+        &#34;&#34;&#34;
+        self.id = id
+        self.type = type                # component type
+        self.root = root                # component is the root of the robot component tree
+        self.orientation = orientation  # global orientation
+        self.direction = 0
+
+    def calcPos(self, src, dst, connection):
+        &#34;&#34;&#34;
+        Calculates the position that the component should be placed at in the scene based on the source&#39;s position
+        Args:
+            `src`: source Panda3D node in connection (PandaNode)  
+            `dst`: destination Panda3D node in connection (PandaNode)  
+            `connection`: the Connection in question (Connection)
+        Returns:
+            `(dst_pos, heading)`: position and heading that component should be placed at in the scene (LVector3f, int)
+        &#34;&#34;&#34;
+        connection.dst.bounds = dst.getTightBounds()
+
+        if connection.src.root == True:
+            connection.src.bounds = src.getTightBounds()
+            connection.src.root = False
+
+        src_min, src_max = connection.src.bounds[0], connection.src.bounds[1]
+        src_dims = (src_max - src_min)/2                                # get distance from centre of source model to edge
+        src_pos = connection.src.pos
+
+        src_dims -= BUFFER                                              # buffer to slot hinges and bricks together
+
+        dst_min, dst_max = connection.dst.bounds[0], connection.dst.bounds[1]
+        dst_dims = (dst_max - dst_min)/2                                # get distance from centre of dest model to edge
+
+        src_slot = connection.src_slot - connection.src.direction       # get slot number relative to orientation of model
+        if src_slot &lt; 0:                                                # wrap slots around (4 -&gt; 0 etc.)
+            src_slot += 4
+
+        heading = SRC_SLOTS[src_slot] + DST_SLOTS[connection.dst_slot]  # heading of dst model, depending on src and dst slot
+        connection.dst.direction = DIRECTION[heading]
+        dst.setHpr(heading, 0, 0)
+
+        if connection.src_slot in [0, 2]:                               # which dims to use to calculate new pos
+            src_dim = src_dims[1]
+        else:
+            src_dim = src_dims[0]
+        if connection.dst_slot in [0, 2]:
+            dst_dim = dst_dims[1]
+        else:
+            dst_dim = dst_dims[0]
+
+        if src_slot == 0:                                               # use src slot to determine which side to place dest model
+            dst_pos = src_pos + LVector3f(0, -(src_dim + dst_dim), 0)
+        elif src_slot == 1:
+            dst_pos = src_pos + LVector3f(-(src_dim + dst_dim), 0, 0)
+        elif src_slot == 2:
+            dst_pos = src_pos + LVector3f(0, src_dim + dst_dim, 0)
+        elif src_slot == 3:
+            dst_pos = src_pos + LVector3f(src_dim + dst_dim, 0, 0)
+        return (dst_pos, heading)
+
+    def __str__(self):
+        return f&#34;ID: {self.id}, Type: {self.type}, root: {self.root}, orient: {self.orientation}&#34;
+# ----------------------------------------------------------------------------
+# Created By: GMLMOG016, FLDCLA001, YNGFYN001
+# Created Date: 16/08/22
+# ---------------------------------------------------------------------------
+
+
+class Hinge(RobotComp):
+    &#34;&#34;&#34;Represents an ActiveHinge or PassiveHinge component&#34;&#34;&#34;
+
+    def __init__(self, id, type, root, orientation):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `id`: ID of Brick (String)  
+            `type`: type of brick component (String)  
+            `root`: whether this brick is the core of the robot or not (boolean)  
+            `orientation`: orientation (roll) of this component relative to its parent (int)
+        &#34;&#34;&#34;
+        super().__init__(id, type, root, orientation)
+        self.colour = (0, 1, 0, 1)                      # colour of component
+# ----------------------------------------------------------------------------
+# Created By: GMLMOG016, FLDCLA001, YNGFYN001
+# Created Date: 16/08/22
+# ---------------------------------------------------------------------------
+
+
+class Brick(RobotComp):
+    &#34;&#34;&#34;Represents a CoreComponent or FixedBrick component&#34;&#34;&#34;
+
+    def __init__(self, id, type, root, orientation):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `id`: ID of Brick (String)  
+            `type`: type of brick component (String)  
+            `root`: whether this brick is the core of the robot or not (boolean)  
+            `orientation`: orientation (roll) of this component relative to its parent (int)
+        &#34;&#34;&#34;
+        super().__init__(id, type, root, orientation)
+        self.colour = (1, 0, 0, 1)                      # colour of component
+# ----------------------------------------------------------------------------
+# Created By: GMLMOG016, FLDCLA001, YNGFYN001
+# Created Date: 13/08/22
+# ---------------------------------------------------------------------------
+
+
+class Connection:
+    &#34;&#34;&#34;Represents a connection between 2 robot components&#34;&#34;&#34;
+
+    def __init__(self, src, dst, src_slot, dst_slot):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `src`: source (&#39;parent&#39;) component (RobotComp)  
+            `dst`: destination (&#39;child&#39;) component (RobotComp)  
+            `src_slot`: side of source component to attach dest. to (int)  
+            `dst_slot`: side of dset. component to attach source to (int)
+        &#34;&#34;&#34;
+        self.src = src                  # source robotComp
+        self.dst = dst                  # destination robotComp
+        self.src_slot = src_slot        # side of connection at source
+        self.dst_slot = dst_slot        # side of connection at destination
+
+    def standardiseSlots(self):
+        &#34;&#34;&#34;Converts RoboGen&#39;s funky slot system to a more reasonable one (sides numbered clockwise 0-&gt;3 starting from side closest to viewer)&#34;&#34;&#34;
+        if &#39;Hinge&#39; in self.src.type and self.src_slot == 1:     # standardise source hinge slots
+            self.src_slot = 2
+        if &#39;Hinge&#39; in self.dst.type and self.dst_slot == 1:     # standardise destination hinge slots
+            self.dst_slot = 2
+        if self.src.type == &#39;FixedBrick&#39; or self.src.type == &#39;CoreComponent&#39;:
+            if self.src_slot == 3:
+                self.src_slot = 1
+            elif self.src_slot == 2:
+                self.src_slot = 3
+            elif self.src_slot == 1:
+                self.src_slot = 2
+        if self.dst.type == &#39;FixedBrick&#39; or self.dst.type == &#39;CoreComponent&#39;:
+            if self.dst_slot == 3:
+                self.dst_slot = 1
+            elif self.dst_slot == 2:
+                self.dst_slot = 3
+            elif self.dst_slot == 1:
+                self.dst_slot = 2
+
+    def __str__(self):
+        return f&#34;src: {self.src}, dest: {self.dst}, src_slot: {self.src_slot}, dst_slot: {self.dst_slot}&#34;</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="RoboViz.formatCollisions"><code class="name flex">
+<span>def <span class="ident">formatCollisions</span></span>(<span>collisions)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Formats List of collisions into displayable format</p>
+<h2 id="args">Args</h2>
+<p><code>collisions</code>: possible collisions between robots (int[][])</p>
+<h2 id="returns">Returns</h2>
+<p><code>collision_text</code>: text format of robot collisions (String)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def formatCollisions(collisions):
+    &#34;&#34;&#34;
+    Formats List of collisions into displayable format
+    Args:
+        `collisions`: possible collisions between robots (int[][])
+    Returns:
+        `collision_text`: text format of robot collisions (String)
+    &#34;&#34;&#34;
+    collision_text = &#39;Possible Collision Between:\n&#39;
+    for collision in collisions:
+        collision_text += &#39;Robot {}, Robot {}\n&#39;.format(collision[0], collision[1])
+    return collision_text</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.formatOutOfBounds"><code class="name flex">
+<span>def <span class="ident">formatOutOfBounds</span></span>(<span>out_of_bounds)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Formats List of out of bounds robots into displayable format</p>
+<h2 id="args">Args</h2>
+<p><code>out_of_bounds</code>: robots that are out of bounds + units ([int, LVector3f])</p>
+<h2 id="returns">Returns</h2>
+<p><code>out_of_bounds_text</code>: text format of out of bounds robots (String)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def formatOutOfBounds(out_of_bounds):
+    &#34;&#34;&#34;
+    Formats List of out of bounds robots into displayable format
+    Args:
+        `out_of_bounds`: robots that are out of bounds + units ([int, LVector3f])
+    Returns:
+        `out_of_bounds_text`: text format of out of bounds robots (String)
+    &#34;&#34;&#34;
+    out_of_bounds_text = &#39;&#39;
+    for robot in out_of_bounds:
+        out_of_bounds_text += &#39;Robot {}:\n&#39;.format(robot[0])
+        if robot[1][0] != 0:
+            out_of_bounds_text += &#39;x-axis = {} units\n&#39;.format(int(robot[1][0]))
+        if robot[1][1] != 0:
+            out_of_bounds_text += &#39;y-axis = {} units\n\n&#39;.format(int(robot[1][1]))
+    return out_of_bounds_text</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="RoboViz.Brick"><code class="flex name class">
+<span>class <span class="ident">Brick</span></span>
+<span>(</span><span>id, type, root, orientation)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a CoreComponent or FixedBrick component</p>
+<p>Constructor</p>
+<h2 id="args">Args</h2>
+<p><code>id</code>: ID of Brick (String)<br>
+<code>type</code>: type of brick component (String)<br>
+<code>root</code>: whether this brick is the core of the robot or not (boolean)<br>
+<code>orientation</code>: orientation (roll) of this component relative to its parent (int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Brick(RobotComp):
+    &#34;&#34;&#34;Represents a CoreComponent or FixedBrick component&#34;&#34;&#34;
+
+    def __init__(self, id, type, root, orientation):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `id`: ID of Brick (String)  
+            `type`: type of brick component (String)  
+            `root`: whether this brick is the core of the robot or not (boolean)  
+            `orientation`: orientation (roll) of this component relative to its parent (int)
+        &#34;&#34;&#34;
+        super().__init__(id, type, root, orientation)
+        self.colour = (1, 0, 0, 1)                      # colour of component</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="RoboViz.RobotComp" href="#RoboViz.RobotComp">RobotComp</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="RoboViz.RobotComp" href="#RoboViz.RobotComp">RobotComp</a></b></code>:
+<ul class="hlist">
+<li><code><a title="RoboViz.RobotComp.calcPos" href="#RoboViz.RobotComp.calcPos">calcPos</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="RoboViz.Connection"><code class="flex name class">
+<span>class <span class="ident">Connection</span></span>
+<span>(</span><span>src, dst, src_slot, dst_slot)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a connection between 2 robot components</p>
+<p>Constructor</p>
+<h2 id="args">Args</h2>
+<p><code>src</code>: source ('parent') component (RobotComp)<br>
+<code>dst</code>: destination ('child') component (RobotComp)<br>
+<code>src_slot</code>: side of source component to attach dest. to (int)<br>
+<code>dst_slot</code>: side of dset. component to attach source to (int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Connection:
+    &#34;&#34;&#34;Represents a connection between 2 robot components&#34;&#34;&#34;
+
+    def __init__(self, src, dst, src_slot, dst_slot):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `src`: source (&#39;parent&#39;) component (RobotComp)  
+            `dst`: destination (&#39;child&#39;) component (RobotComp)  
+            `src_slot`: side of source component to attach dest. to (int)  
+            `dst_slot`: side of dset. component to attach source to (int)
+        &#34;&#34;&#34;
+        self.src = src                  # source robotComp
+        self.dst = dst                  # destination robotComp
+        self.src_slot = src_slot        # side of connection at source
+        self.dst_slot = dst_slot        # side of connection at destination
+
+    def standardiseSlots(self):
+        &#34;&#34;&#34;Converts RoboGen&#39;s funky slot system to a more reasonable one (sides numbered clockwise 0-&gt;3 starting from side closest to viewer)&#34;&#34;&#34;
+        if &#39;Hinge&#39; in self.src.type and self.src_slot == 1:     # standardise source hinge slots
+            self.src_slot = 2
+        if &#39;Hinge&#39; in self.dst.type and self.dst_slot == 1:     # standardise destination hinge slots
+            self.dst_slot = 2
+        if self.src.type == &#39;FixedBrick&#39; or self.src.type == &#39;CoreComponent&#39;:
+            if self.src_slot == 3:
+                self.src_slot = 1
+            elif self.src_slot == 2:
+                self.src_slot = 3
+            elif self.src_slot == 1:
+                self.src_slot = 2
+        if self.dst.type == &#39;FixedBrick&#39; or self.dst.type == &#39;CoreComponent&#39;:
+            if self.dst_slot == 3:
+                self.dst_slot = 1
+            elif self.dst_slot == 2:
+                self.dst_slot = 3
+            elif self.dst_slot == 1:
+                self.dst_slot = 2
+
+    def __str__(self):
+        return f&#34;src: {self.src}, dest: {self.dst}, src_slot: {self.src_slot}, dst_slot: {self.dst_slot}&#34;</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="RoboViz.Connection.standardiseSlots"><code class="name flex">
+<span>def <span class="ident">standardiseSlots</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Converts RoboGen's funky slot system to a more reasonable one (sides numbered clockwise 0-&gt;3 starting from side closest to viewer)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def standardiseSlots(self):
+    &#34;&#34;&#34;Converts RoboGen&#39;s funky slot system to a more reasonable one (sides numbered clockwise 0-&gt;3 starting from side closest to viewer)&#34;&#34;&#34;
+    if &#39;Hinge&#39; in self.src.type and self.src_slot == 1:     # standardise source hinge slots
+        self.src_slot = 2
+    if &#39;Hinge&#39; in self.dst.type and self.dst_slot == 1:     # standardise destination hinge slots
+        self.dst_slot = 2
+    if self.src.type == &#39;FixedBrick&#39; or self.src.type == &#39;CoreComponent&#39;:
+        if self.src_slot == 3:
+            self.src_slot = 1
+        elif self.src_slot == 2:
+            self.src_slot = 3
+        elif self.src_slot == 1:
+            self.src_slot = 2
+    if self.dst.type == &#39;FixedBrick&#39; or self.dst.type == &#39;CoreComponent&#39;:
+        if self.dst_slot == 3:
+            self.dst_slot = 1
+        elif self.dst_slot == 2:
+            self.dst_slot = 3
+        elif self.dst_slot == 1:
+            self.dst_slot = 2</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="RoboViz.Environment"><code class="flex name class">
+<span>class <span class="ident">Environment</span></span>
+<span>(</span><span>x_length, y_length, swarm_size)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Renders environment terrain and robot components</p>
+<p>Constructor <br>
+Args:<br>
+<code>x_length</code>: the x size of the environment plane (int)<br>
+<code>y_length</code>: the y size of the environment plane (int)<br>
+<code>swarm_size</code>: the number of Robots in the swarm (int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Environment(ShowBase):
+    &#34;&#34;&#34;Renders environment terrain and robot components&#34;&#34;&#34;
+
+    def __init__(self, x_length, y_length, swarm_size):
+        &#34;&#34;&#34;
+        Constructor   
+        Args:  
+            `x_length`: the x size of the environment plane (int)  
+            `y_length`: the y size of the environment plane (int)  
+            `swarm_size`: the number of Robots in the swarm (int)
+        &#34;&#34;&#34;
+        ShowBase.__init__(self)
+
+        # DEBUG/PROTOTYPE OPTIONS
+        self.setFrameRateMeter(True)
+        proto_text = &#39;RoboViz Prototype&#39;                                # add prototype text
+        proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
+                                      fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
+
+        props = WindowProperties()
+        props.setTitle(&#39;RoboViz&#39;)
+        #props.setSize(1200, 780)
+        props.setIconFilename(&#39;resources/r_icon.ico&#39;)
+        self.win.requestProperties(props)
+
+        self.robotNode = NodePath(&#39;robotNode&#39;)
+        self.robotNode.reparentTo(self.render)
+
+        self.x_length = x_length
+        self.y_length = y_length
+        self.swarm_size = swarm_size
+
+        self.labels = []                                                # labels in scene
+        self.label_toggle = False                                       # whether labels are enabled or not
+
+        self.robot_pos = {}                                             # positions of robot cores
+        self.focus_switch_counter = 0
+
+        self.myHandler = CollisionHandlerQueue()
+        self.myTraverser = CollisionTraverser()
+
+        pickerNode = CollisionNode(&#39;mouseRay&#39;)                          # for selecting robots
+        pickerNP = self.camera.attachNewNode(pickerNode)
+        pickerNode.setFromCollideMask(GeomNode.getDefaultCollideMask())
+        self.pickerRay = CollisionRay()
+        pickerNode.addSolid(self.pickerRay)
+        self.myTraverser.addCollider(pickerNP, self.myHandler)
+
+        self.set_background_color(0.6, 0.6, 0.6, 1)                     # set background colour to a lighter grey
+        self.focus = NodePath(&#39;focus&#39;)                                  # create focus point (origin) of camera
+        self.focus.reparentTo(self.render)
+        self.camera.reparentTo(self.focus)
+
+        self.plane = self.loader.loadModel(&#39;./models/BAM/plane.bam&#39;)    # load &#39;terrain&#39; plane
+        self.plane.setScale(self.x_length, self.y_length, 0)            # scale up to specified dimensions
+        self.plane.reparentTo(self.render)
+
+        alight = AmbientLight(&#39;alight&#39;)                                 # create ambient light
+        alight.setColor((0.4, 0.4, 0.4, 1))
+        alnp = self.render.attachNewNode(alight)
+        self.render.setLight(alnp)
+
+        help_text = &#39;Controls:\nC - switch camera focus\nL - toggle component labels\nH - hide this help menu&#39;  # add help text
+        self.help_textNode = OnscreenText(text=help_text, pos=(1, 0.7), scale=0.04,
+                                          fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=0)
+        sel_text = &#39;Selected Robot: none\nSelected Component: none&#39;                                             # add selected text
+        self.sel_textNode = OnscreenText(text=sel_text, pos=(1, 0.8), scale=0.04,
+                                         fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=1)
+
+        # KEYPRESSES
+        self.accept(&#39;c&#39;, self.switchFocus)
+        self.accept(&#39;l&#39;, self.toggleLabels)
+        self.accept(&#39;h&#39;, lambda: self.help_textNode.show() if self.help_textNode.isHidden() else self.help_textNode.hide())
+        self.accept(&#39;mouse1&#39;, self.select)
+
+        # moving robots
+        self.accept(&#39;arrow_up-repeat&#39;, self.moveRobot, [0])
+        self.accept(&#39;arrow_up&#39;, self.moveRobot, [0])
+        self.accept(&#39;arrow_down-repeat&#39;, self.moveRobot, [2])
+        self.accept(&#39;arrow_down&#39;, self.moveRobot, [2])
+        self.accept(&#39;arrow_left-repeat&#39;, self.moveRobot, [3])
+        self.accept(&#39;arrow_left&#39;, self.moveRobot, [3])
+        self.accept(&#39;arrow_right-repeat&#39;, self.moveRobot, [1])
+        self.accept(&#39;arrow_right&#39;, self.moveRobot, [1])
+        self.accept(&#39;control-arrow_up-repeat&#39;, self.moveRobot, [4])
+        self.accept(&#39;control-arrow_up&#39;, self.moveRobot, [4])
+        self.accept(&#39;control-arrow_down-repeat&#39;, self.moveRobot, [5])
+        self.accept(&#39;control-arrow_down&#39;, self.moveRobot, [5])
+
+        # rotating robots
+        self.accept(&#39;control-arrow_left&#39;, lambda: self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + LVector3f(90, 0, 0)))
+        self.accept(&#39;control-arrow_right&#39;, lambda: self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + LVector3f(-90, 0, 0)))
+
+    # def finalizeExit(self):
+        # self.closeWindow(self.win)
+        # self.destroy()
+
+    def toggleLabels(self, first=False):
+        &#34;&#34;&#34;
+        Toggles visibility of component labels
+        Args:
+            `first`: first display of labels or not (Boolean) **optional**  
+        &#34;&#34;&#34;
+        if first:
+            for label in self.labels:
+                label.node().setTextColor(1, 1, 1, 1)                   # set label colours after node flattening
+                label.node().setCardColor(1, 1, 1, 0.3)
+                label.hide()                                            # hide labels
+        elif self.label_toggle == True:                                 # if labels are &#39;on&#39;
+            for label in self.labels:
+                label.hide()                                            # hide labels
+            self.label_toggle = False                                   # set to &#39;off&#39;
+        else:                                                           # if labels are &#39;off&#39;
+            for label in self.labels:
+                label.show()                                            # show labels
+            self.label_toggle = True                                    # set to &#39;on&#39;
+
+    def toggleBounding(self):
+        &#34;&#34;&#34;Toggles visibility of robot bounding box (selection box)&#34;&#34;&#34;
+        children = self.selected_robot.getChildren()
+        for child in children:
+            if child.getName().split(&#39;/&#39;)[-1] == &#39;lines&#39;:               # find line node in children of root
+                if child.isHidden():                                    # if bounding box is hidden
+                    child.show()
+                else:                                                   # if bounding box is visible
+                    child.hide()
+                break
+
+    def switchFocus(self):
+        &#34;&#34;&#34;Switches camera focus (origin) between robots in scene&#34;&#34;&#34;
+        while self.focus_switch_counter &gt; self.swarm_size - 1:          # loop 1 around to start of list
+            self.focus_switch_counter -= self.swarm_size
+        # print(f&#39;Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}&#39;)
+        self.moveCamera(pos=list(self.robot_pos.values())[self.focus_switch_counter], z_dist=400)      # move camera to next robot
+        self.focus_switch_counter += 1
+
+    def moveCamera(self, pos, z_dist):
+        &#34;&#34;&#34;
+        Moves camera to point above pos in scene (looking down)
+        Args:
+            `pos`: position of camera (LVector3f)  
+            `z_dist`: distance above pos that camera is placed at (int)
+        &#34;&#34;&#34;
+        self.focus.setPos(pos)                                          # move focus of camera
+        self.disableMouse()
+        self.camera.setPos(LVector3f(0, 0, z_dist))                     # move camera relative to focus
+        self.camera.setHpr(0, -90, 0)
+
+        mat = Mat4(self.camera.getMat())
+        mat.invertInPlace()
+        self.mouseInterfaceNode.setMat(mat)
+        self.enableMouse()
+
+    def enlargeLabel(self, pickedObj):
+        &#34;&#34;&#34;
+        Enlarges component label when component is selected
+        Args:
+            `pickedObj`: newly selected component (PandaNode)
+        &#34;&#34;&#34;
+        for child in pickedObj.getChildren():
+            if child.getName() == &#39;id_label&#39;:                           # find label of newly selected component
+                child.setScale(6, 6, 6)
+                break
+        if hasattr(self, &#39;selected_comp&#39;):
+            for child in self.selected_comp.getChildren():
+                if child.getName() == &#39;id_label&#39;:                       # find label of old selected component
+                    child.setScale(3, 3, 3)
+                    break
+
+    def displayLabel(self, pos, text, parent):
+        &#34;&#34;&#34;
+        Displays a text label in the scene
+        Args:
+            `pos`: position of label (LVector3f)  
+            `text`: text of label (String)  
+            `parent`: parent of label (NodePath)
+        &#34;&#34;&#34;
+        label = TextNode(&#39;id_label&#39;)                                    # add text node
+        label.setText(text)
+        label.setAlign(TextNode.ACenter)
+        label.setCardAsMargin(0, 0, 0, 0)
+        label.setCardDecal(True)
+
+        self.text3d = NodePath(label)                                   # add text to node
+        self.text3d.setScale(3, 3, 3)
+        self.text3d.setTwoSided(True)
+        self.text3d.setBillboardPointEye()                              # make text billboard (move with camera)
+        self.text3d.reparentTo(parent)
+        self.text3d.setPos(self.render, pos + LVector3f(0, 0, 20))      # set pos above component model
+        self.labels.append(self.text3d)
+
+    def select(self):
+        &#34;&#34;&#34;Determines which robot is selected (by mouse click), updates self.selected_robot to represent this&#34;&#34;&#34;
+        mpos = self.mouseWatcherNode.getMouse()
+        self.pickerRay.setFromLens(self.camNode, mpos.getX(), mpos.getY())
+
+        self.myTraverser.traverse(self.render)
+        if self.myHandler.getNumEntries() &gt; 0:
+            self.myHandler.sortEntries()                                # get closest object to mouse click
+            pickedObj = self.myHandler.getEntry(0).getIntoNodePath()
+            pickedObj = pickedObj.findNetTag(&#39;robot&#39;)                   # find object by tag
+            if not pickedObj.isEmpty():
+                if hasattr(self, &#39;selected_robot&#39;):
+                    self.toggleBounding()                               # hide old selection box
+
+                self.enlargeLabel(pickedObj)
+                self.selected_comp = pickedObj
+
+                while True:
+                    if &#39;Core&#39; not in pickedObj.getName():
+                        pickedObj = pickedObj.parent
+                    else:
+                        break
+                self.selected_robot = pickedObj                         # set class attribute to selected robot core
+                self.toggleBounding()                                   # show new selection box
+                if self.selected_robot.getName()[0].isdigit() and self.selected_robot.getName()[1].isdigit():
+                    sel_text = &#39;Selected Robot: &#39; + self.selected_robot.getName()[0:2] + &#39;\nSelected Component: &#39; + self.selected_comp.getName()
+                else:
+                    sel_text = &#39;Selected Robot: &#39; + self.selected_robot.getName()[0] + &#39;\nSelected Component: &#39; + self.selected_comp.getName()
+                self.sel_textNode.setText(sel_text)
+
+    def moveRobot(self, direction):
+        &#34;&#34;&#34;
+        Moves selected robot in the given direction for the given units relative to the camera view
+        Args:
+            `direction`: direction of robot movement (0:forward, 1:back, 2:left, 3:right, 4:up, 5:down) (int)  
+            `units`: number of units to move robot by (int)
+        &#34;&#34;&#34;
+        heading = int(self.camera.getHpr()[0])
+        rotation = int(self.camera.getHpr()[2])
+        if direction not in [4, 5]:                                         # if moving along xy plane
+            if heading in range(-45, 45):
+                heading = 0
+            elif heading in range(45, 135):
+                heading = 1
+            elif heading in range(135, 181) or heading in range(-180, -135):
+                heading = 2
+            elif heading in range(-135, -45):
+                heading = 3
+            if rotation in range(90, 181) or rotation in range(-180, -90):  # if camera is rotated around 180
+                if direction in [1, 3]:
+                    if direction == 1:
+                        direction = 3
+                    elif direction == 3:
+                        direction = 1
+            direction = int(direction) - heading
+            if direction &lt; 0:
+                direction += 4
+        else:                                                               # if moving along z axis
+            if rotation in range(90, 181) or rotation in range(-180, -90):  # if camera is rotated around 180
+                if direction == 4:                                          # switch up and down
+                    direction = 5
+                elif direction == 5:
+                    direction = 4
+        shift = SHIFT_DIRECTION[direction]                                  # get direction of shift
+        self.selected_robot.setPos(self.render, self.selected_robot.getPos(self.render) + shift)
+        self.robot_pos[int(self.selected_robot.getName()[0])] = self.selected_robot.getPos(self.render)
+
+    def initialView(self):
+        &#34;&#34;&#34;Moves and zooms camera so that all robots are initially placed in the camera&#39;s view&#34;&#34;&#34;
+        # move + zoom camera to overlook all robots
+        bounds = self.robotNode.getBounds()                                             # bounding box of all robots together
+        centre = bounds.getCenter()                                                     # centre of bounding box
+        fov = self.camLens.getFov()
+        distance = bounds.getRadius() / math.tan(deg2rad(min(fov[0], fov[1]) * 0.6))    # calc distance needed to see all robots
+        self.moveCamera(pos=centre, z_dist=distance)
+
+    def renderRobot(self, robot):
+        &#34;&#34;&#34;
+        Renders 1 robot in the scene by iterating through its Connections
+        Args:
+            `robot`: robot object to render (Robot)
+        &#34;&#34;&#34;
+        # add position of robot core to list (for camera focus switching)
+        self.robot_pos[robot.id] = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
+
+        robot.connections[0].src.root = True  # !!!!!CHANGE!!!!!
+        for i, connection in enumerate(robot.connections):                      # loop through connections in robot
+            if connection.src.root and i == 0:                                  # if source is the core component
+                src_path = &#39;./models/BAM/&#39; + connection.src.type + &#39;.bam&#39;       # get path of source model file
+                self.src = self.loader.loadModel(src_path)                      # load model of source component
+                # set core&#39;s position to robot core_pos
+                connection.src.pos = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
+
+                self.src.setPos(connection.src.pos)                             # set position of source model
+                self.src.reparentTo(self.robotNode)                             # set parent to robotNode
+                self.src.setName(str(robot.id) + connection.src.id)             # set name of node to component ID
+                self.src.setTag(&#39;robot&#39;, str(robot.id) + connection.src.id)
+
+                self.displayLabel(pos=connection.src.pos, text=&#39;Robot &#39; + str(robot.id), parent=self.src)   # display robot id label text
+                connection.src.node = self.src                                              # add Panda3D node to robotComp
+
+            dst_path = &#39;./models/BAM/&#39; + connection.dst.type + &#39;.bam&#39;           # get path of destination model file
+            self.dst = self.loader.loadModel(dst_path)                          # load model of source component
+            self.dst.setName(connection.dst.id)
+            self.dst.setTag(&#39;robot&#39;, connection.dst.id)
+
+            connection.standardiseSlots()
+
+            # calc position of dest comp based on source position
+            connection.dst.pos, heading = connection.dst.calcPos(self.src, self.dst, connection)
+
+            self.dst.setColor(connection.dst.colour)                            # set model to relevant colour
+            self.dst.reparentTo(connection.src.node)                            # reparent dst node to src node (add to tree)
+
+            self.dst.setHpr(self.render, heading, 0, 0)                         # set heading of destination model
+            self.dst.setPos(self.render, connection.dst.pos)                    # set position of destination model
+            if &#39;Hinge&#39; in connection.dst.type:
+                connection.dst.orientation += connection.src.orientation
+                while connection.dst.orientation &gt; 3:
+                    connection.dst.orientation -= 4
+                self.dst.setR(self.render, ORIENTATION[connection.dst.orientation])
+
+            connection.dst.node = self.dst                                      # add Panda3D node to robotComp
+
+            # print(f&#39;Rendered \&#39;{connection.dst.id}\&#39; of type \&#39;{connection.dst.type}\&#39; at {connection.dst.pos}&#39;)
+
+        for i, connection in enumerate(robot.connections):
+            node = connection.dst.node
+            if i &gt; 0:
+                self.displayLabel(pos=node.getPos(self.render), text=node.getName(), parent=node)
+        robot.drawBounds()
+        robot.connections[0].src.node.flattenStrong()                                               # hide labels and set colours after flattening
+        self.toggleLabels(first=True)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>direct.showbase.ShowBase.ShowBase</li>
+<li>direct.showbase.DirectObject.DirectObject</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="RoboViz.Environment.displayLabel"><code class="name flex">
+<span>def <span class="ident">displayLabel</span></span>(<span>self, pos, text, parent)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Displays a text label in the scene</p>
+<h2 id="args">Args</h2>
+<p><code>pos</code>: position of label (LVector3f)<br>
+<code>text</code>: text of label (String)<br>
+<code>parent</code>: parent of label (NodePath)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def displayLabel(self, pos, text, parent):
+    &#34;&#34;&#34;
+    Displays a text label in the scene
+    Args:
+        `pos`: position of label (LVector3f)  
+        `text`: text of label (String)  
+        `parent`: parent of label (NodePath)
+    &#34;&#34;&#34;
+    label = TextNode(&#39;id_label&#39;)                                    # add text node
+    label.setText(text)
+    label.setAlign(TextNode.ACenter)
+    label.setCardAsMargin(0, 0, 0, 0)
+    label.setCardDecal(True)
+
+    self.text3d = NodePath(label)                                   # add text to node
+    self.text3d.setScale(3, 3, 3)
+    self.text3d.setTwoSided(True)
+    self.text3d.setBillboardPointEye()                              # make text billboard (move with camera)
+    self.text3d.reparentTo(parent)
+    self.text3d.setPos(self.render, pos + LVector3f(0, 0, 20))      # set pos above component model
+    self.labels.append(self.text3d)</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.Environment.enlargeLabel"><code class="name flex">
+<span>def <span class="ident">enlargeLabel</span></span>(<span>self, pickedObj)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enlarges component label when component is selected</p>
+<h2 id="args">Args</h2>
+<p><code>pickedObj</code>: newly selected component (PandaNode)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def enlargeLabel(self, pickedObj):
+    &#34;&#34;&#34;
+    Enlarges component label when component is selected
+    Args:
+        `pickedObj`: newly selected component (PandaNode)
+    &#34;&#34;&#34;
+    for child in pickedObj.getChildren():
+        if child.getName() == &#39;id_label&#39;:                           # find label of newly selected component
+            child.setScale(6, 6, 6)
+            break
+    if hasattr(self, &#39;selected_comp&#39;):
+        for child in self.selected_comp.getChildren():
+            if child.getName() == &#39;id_label&#39;:                       # find label of old selected component
+                child.setScale(3, 3, 3)
+                break</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.Environment.initialView"><code class="name flex">
+<span>def <span class="ident">initialView</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Moves and zooms camera so that all robots are initially placed in the camera's view</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def initialView(self):
+    &#34;&#34;&#34;Moves and zooms camera so that all robots are initially placed in the camera&#39;s view&#34;&#34;&#34;
+    # move + zoom camera to overlook all robots
+    bounds = self.robotNode.getBounds()                                             # bounding box of all robots together
+    centre = bounds.getCenter()                                                     # centre of bounding box
+    fov = self.camLens.getFov()
+    distance = bounds.getRadius() / math.tan(deg2rad(min(fov[0], fov[1]) * 0.6))    # calc distance needed to see all robots
+    self.moveCamera(pos=centre, z_dist=distance)</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.Environment.moveCamera"><code class="name flex">
+<span>def <span class="ident">moveCamera</span></span>(<span>self, pos, z_dist)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Moves camera to point above pos in scene (looking down)</p>
+<h2 id="args">Args</h2>
+<p><code>pos</code>: position of camera (LVector3f)<br>
+<code>z_dist</code>: distance above pos that camera is placed at (int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def moveCamera(self, pos, z_dist):
+    &#34;&#34;&#34;
+    Moves camera to point above pos in scene (looking down)
+    Args:
+        `pos`: position of camera (LVector3f)  
+        `z_dist`: distance above pos that camera is placed at (int)
+    &#34;&#34;&#34;
+    self.focus.setPos(pos)                                          # move focus of camera
+    self.disableMouse()
+    self.camera.setPos(LVector3f(0, 0, z_dist))                     # move camera relative to focus
+    self.camera.setHpr(0, -90, 0)
+
+    mat = Mat4(self.camera.getMat())
+    mat.invertInPlace()
+    self.mouseInterfaceNode.setMat(mat)
+    self.enableMouse()</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.Environment.moveRobot"><code class="name flex">
+<span>def <span class="ident">moveRobot</span></span>(<span>self, direction)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Moves selected robot in the given direction for the given units relative to the camera view</p>
+<h2 id="args">Args</h2>
+<p><code>direction</code>: direction of robot movement (0:forward, 1:back, 2:left, 3:right, 4:up, 5:down) (int)<br>
+<code>units</code>: number of units to move robot by (int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def moveRobot(self, direction):
+    &#34;&#34;&#34;
+    Moves selected robot in the given direction for the given units relative to the camera view
+    Args:
+        `direction`: direction of robot movement (0:forward, 1:back, 2:left, 3:right, 4:up, 5:down) (int)  
+        `units`: number of units to move robot by (int)
+    &#34;&#34;&#34;
+    heading = int(self.camera.getHpr()[0])
+    rotation = int(self.camera.getHpr()[2])
+    if direction not in [4, 5]:                                         # if moving along xy plane
+        if heading in range(-45, 45):
+            heading = 0
+        elif heading in range(45, 135):
+            heading = 1
+        elif heading in range(135, 181) or heading in range(-180, -135):
+            heading = 2
+        elif heading in range(-135, -45):
+            heading = 3
+        if rotation in range(90, 181) or rotation in range(-180, -90):  # if camera is rotated around 180
+            if direction in [1, 3]:
+                if direction == 1:
+                    direction = 3
+                elif direction == 3:
+                    direction = 1
+        direction = int(direction) - heading
+        if direction &lt; 0:
+            direction += 4
+    else:                                                               # if moving along z axis
+        if rotation in range(90, 181) or rotation in range(-180, -90):  # if camera is rotated around 180
+            if direction == 4:                                          # switch up and down
+                direction = 5
+            elif direction == 5:
+                direction = 4
+    shift = SHIFT_DIRECTION[direction]                                  # get direction of shift
+    self.selected_robot.setPos(self.render, self.selected_robot.getPos(self.render) + shift)
+    self.robot_pos[int(self.selected_robot.getName()[0])] = self.selected_robot.getPos(self.render)</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.Environment.renderRobot"><code class="name flex">
+<span>def <span class="ident">renderRobot</span></span>(<span>self, robot)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Renders 1 robot in the scene by iterating through its Connections</p>
+<h2 id="args">Args</h2>
+<p><code>robot</code>: robot object to render (Robot)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def renderRobot(self, robot):
+    &#34;&#34;&#34;
+    Renders 1 robot in the scene by iterating through its Connections
+    Args:
+        `robot`: robot object to render (Robot)
+    &#34;&#34;&#34;
+    # add position of robot core to list (for camera focus switching)
+    self.robot_pos[robot.id] = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
+
+    robot.connections[0].src.root = True  # !!!!!CHANGE!!!!!
+    for i, connection in enumerate(robot.connections):                      # loop through connections in robot
+        if connection.src.root and i == 0:                                  # if source is the core component
+            src_path = &#39;./models/BAM/&#39; + connection.src.type + &#39;.bam&#39;       # get path of source model file
+            self.src = self.loader.loadModel(src_path)                      # load model of source component
+            # set core&#39;s position to robot core_pos
+            connection.src.pos = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
+
+            self.src.setPos(connection.src.pos)                             # set position of source model
+            self.src.reparentTo(self.robotNode)                             # set parent to robotNode
+            self.src.setName(str(robot.id) + connection.src.id)             # set name of node to component ID
+            self.src.setTag(&#39;robot&#39;, str(robot.id) + connection.src.id)
+
+            self.displayLabel(pos=connection.src.pos, text=&#39;Robot &#39; + str(robot.id), parent=self.src)   # display robot id label text
+            connection.src.node = self.src                                              # add Panda3D node to robotComp
+
+        dst_path = &#39;./models/BAM/&#39; + connection.dst.type + &#39;.bam&#39;           # get path of destination model file
+        self.dst = self.loader.loadModel(dst_path)                          # load model of source component
+        self.dst.setName(connection.dst.id)
+        self.dst.setTag(&#39;robot&#39;, connection.dst.id)
+
+        connection.standardiseSlots()
+
+        # calc position of dest comp based on source position
+        connection.dst.pos, heading = connection.dst.calcPos(self.src, self.dst, connection)
+
+        self.dst.setColor(connection.dst.colour)                            # set model to relevant colour
+        self.dst.reparentTo(connection.src.node)                            # reparent dst node to src node (add to tree)
+
+        self.dst.setHpr(self.render, heading, 0, 0)                         # set heading of destination model
+        self.dst.setPos(self.render, connection.dst.pos)                    # set position of destination model
+        if &#39;Hinge&#39; in connection.dst.type:
+            connection.dst.orientation += connection.src.orientation
+            while connection.dst.orientation &gt; 3:
+                connection.dst.orientation -= 4
+            self.dst.setR(self.render, ORIENTATION[connection.dst.orientation])
+
+        connection.dst.node = self.dst                                      # add Panda3D node to robotComp
+
+        # print(f&#39;Rendered \&#39;{connection.dst.id}\&#39; of type \&#39;{connection.dst.type}\&#39; at {connection.dst.pos}&#39;)
+
+    for i, connection in enumerate(robot.connections):
+        node = connection.dst.node
+        if i &gt; 0:
+            self.displayLabel(pos=node.getPos(self.render), text=node.getName(), parent=node)
+    robot.drawBounds()
+    robot.connections[0].src.node.flattenStrong()                                               # hide labels and set colours after flattening
+    self.toggleLabels(first=True)</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.Environment.select"><code class="name flex">
+<span>def <span class="ident">select</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Determines which robot is selected (by mouse click), updates self.selected_robot to represent this</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def select(self):
+    &#34;&#34;&#34;Determines which robot is selected (by mouse click), updates self.selected_robot to represent this&#34;&#34;&#34;
+    mpos = self.mouseWatcherNode.getMouse()
+    self.pickerRay.setFromLens(self.camNode, mpos.getX(), mpos.getY())
+
+    self.myTraverser.traverse(self.render)
+    if self.myHandler.getNumEntries() &gt; 0:
+        self.myHandler.sortEntries()                                # get closest object to mouse click
+        pickedObj = self.myHandler.getEntry(0).getIntoNodePath()
+        pickedObj = pickedObj.findNetTag(&#39;robot&#39;)                   # find object by tag
+        if not pickedObj.isEmpty():
+            if hasattr(self, &#39;selected_robot&#39;):
+                self.toggleBounding()                               # hide old selection box
+
+            self.enlargeLabel(pickedObj)
+            self.selected_comp = pickedObj
+
+            while True:
+                if &#39;Core&#39; not in pickedObj.getName():
+                    pickedObj = pickedObj.parent
+                else:
+                    break
+            self.selected_robot = pickedObj                         # set class attribute to selected robot core
+            self.toggleBounding()                                   # show new selection box
+            if self.selected_robot.getName()[0].isdigit() and self.selected_robot.getName()[1].isdigit():
+                sel_text = &#39;Selected Robot: &#39; + self.selected_robot.getName()[0:2] + &#39;\nSelected Component: &#39; + self.selected_comp.getName()
+            else:
+                sel_text = &#39;Selected Robot: &#39; + self.selected_robot.getName()[0] + &#39;\nSelected Component: &#39; + self.selected_comp.getName()
+            self.sel_textNode.setText(sel_text)</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.Environment.switchFocus"><code class="name flex">
+<span>def <span class="ident">switchFocus</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Switches camera focus (origin) between robots in scene</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def switchFocus(self):
+    &#34;&#34;&#34;Switches camera focus (origin) between robots in scene&#34;&#34;&#34;
+    while self.focus_switch_counter &gt; self.swarm_size - 1:          # loop 1 around to start of list
+        self.focus_switch_counter -= self.swarm_size
+    # print(f&#39;Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}&#39;)
+    self.moveCamera(pos=list(self.robot_pos.values())[self.focus_switch_counter], z_dist=400)      # move camera to next robot
+    self.focus_switch_counter += 1</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.Environment.toggleBounding"><code class="name flex">
+<span>def <span class="ident">toggleBounding</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Toggles visibility of robot bounding box (selection box)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def toggleBounding(self):
+    &#34;&#34;&#34;Toggles visibility of robot bounding box (selection box)&#34;&#34;&#34;
+    children = self.selected_robot.getChildren()
+    for child in children:
+        if child.getName().split(&#39;/&#39;)[-1] == &#39;lines&#39;:               # find line node in children of root
+            if child.isHidden():                                    # if bounding box is hidden
+                child.show()
+            else:                                                   # if bounding box is visible
+                child.hide()
+            break</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.Environment.toggleLabels"><code class="name flex">
+<span>def <span class="ident">toggleLabels</span></span>(<span>self, first=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Toggles visibility of component labels</p>
+<h2 id="args">Args</h2>
+<p><code>first</code>: first display of labels or not (Boolean) <strong>optional</strong></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def toggleLabels(self, first=False):
+    &#34;&#34;&#34;
+    Toggles visibility of component labels
+    Args:
+        `first`: first display of labels or not (Boolean) **optional**  
+    &#34;&#34;&#34;
+    if first:
+        for label in self.labels:
+            label.node().setTextColor(1, 1, 1, 1)                   # set label colours after node flattening
+            label.node().setCardColor(1, 1, 1, 0.3)
+            label.hide()                                            # hide labels
+    elif self.label_toggle == True:                                 # if labels are &#39;on&#39;
+        for label in self.labels:
+            label.hide()                                            # hide labels
+        self.label_toggle = False                                   # set to &#39;off&#39;
+    else:                                                           # if labels are &#39;off&#39;
+        for label in self.labels:
+            label.show()                                            # show labels
+        self.label_toggle = True                                    # set to &#39;on&#39;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="RoboViz.Hinge"><code class="flex name class">
+<span>class <span class="ident">Hinge</span></span>
+<span>(</span><span>id, type, root, orientation)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents an ActiveHinge or PassiveHinge component</p>
+<p>Constructor</p>
+<h2 id="args">Args</h2>
+<p><code>id</code>: ID of Brick (String)<br>
+<code>type</code>: type of brick component (String)<br>
+<code>root</code>: whether this brick is the core of the robot or not (boolean)<br>
+<code>orientation</code>: orientation (roll) of this component relative to its parent (int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Hinge(RobotComp):
+    &#34;&#34;&#34;Represents an ActiveHinge or PassiveHinge component&#34;&#34;&#34;
+
+    def __init__(self, id, type, root, orientation):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `id`: ID of Brick (String)  
+            `type`: type of brick component (String)  
+            `root`: whether this brick is the core of the robot or not (boolean)  
+            `orientation`: orientation (roll) of this component relative to its parent (int)
+        &#34;&#34;&#34;
+        super().__init__(id, type, root, orientation)
+        self.colour = (0, 1, 0, 1)                      # colour of component</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="RoboViz.RobotComp" href="#RoboViz.RobotComp">RobotComp</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="RoboViz.RobotComp" href="#RoboViz.RobotComp">RobotComp</a></b></code>:
+<ul class="hlist">
+<li><code><a title="RoboViz.RobotComp.calcPos" href="#RoboViz.RobotComp.calcPos">calcPos</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="RoboViz.Robot"><code class="flex name class">
+<span>class <span class="ident">Robot</span></span>
+<span>(</span><span>id, connections, core_pos)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a robot and its connections</p>
+<p>Constructor</p>
+<h2 id="args">Args</h2>
+<p><code>id</code>: ID of robot (int)<br>
+<code>connections</code>: connections between components that make up the robot (Connection[])<br>
+<code>core_pos</code>: positions of the core component of the robot (int[])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Robot:
+    &#34;&#34;&#34;Represents a robot and its connections&#34;&#34;&#34;
+
+    def __init__(self, id, connections, core_pos):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `id`: ID of robot (int)  
+            `connections`: connections between components that make up the robot (Connection[])  
+            `core_pos`: positions of the core component of the robot (int[])
+        &#34;&#34;&#34;
+        self.id = id
+        self.connections = connections
+        self.core_pos = core_pos            # position (x, y, z) of robot core component
+
+        self.ls = LineSegs()
+        self.ls.setThickness(LINE_THICKNESS)
+        self.ls.setColor(1, 1, 1, 1)
+
+    def setBounds(self):
+        &#34;&#34;&#34;Calculates and sets the bounds (bounding box) of the robot&#34;&#34;&#34;
+        root_node = self.connections[0].src.node
+
+        robot_min, robot_max = root_node.getTightBounds()
+        box = BoundingBox(robot_min, robot_max)
+        vertices = box.getPoints()
+
+        # calc bounds of robot bounding box
+        x_max, x_min, y_max, y_min, z_max, z_min = vertices[4][0], vertices[0][0], vertices[2][1], vertices[0][1], vertices[1][2], vertices[2][2]
+        self.bounds = [x_max, x_min, y_max, y_min, z_max, z_min]       # set bounds of robot
+
+    def drawBounds(self):
+        &#34;&#34;&#34;Draws LineSegs between all points of the robot bounding box&#34;&#34;&#34;
+        root_node = self.connections[0].src.node                            # root node
+        robot_min, robot_max = root_node.getTightBounds(root_node)          # get bounds of robot
+        box = BoundingBox(robot_min, robot_max)
+        vertices = box.getPoints()                                          # get points of robot bounding box
+
+        for z in range(0, len(vertices), 4):                                # draw &#39;side&#39; boxes
+            self.ls.moveTo(vertices[z])
+            self.ls.drawTo(vertices[z + 1])
+            self.ls.drawTo(vertices[z + 3])
+            self.ls.drawTo(vertices[z + 2])
+            self.ls.drawTo(vertices[z])
+
+        for xy in range(0, len(vertices)//2):                               # draw &#39;top and bottom&#39; boxes
+            self.ls.moveTo(vertices[xy])
+            self.ls.drawTo(vertices[xy + len(vertices)//2])
+
+        bounds_node = self.ls.create()
+        self.bounding_box = NodePath(bounds_node)
+        self.bounding_box.reparentTo(root_node)                             # reparent bounding box to robot root
+        self.bounding_box.hide()                                            # hide bounding box
+
+    def outOfBoundsDetect(self, x_length, y_length):
+        &#34;&#34;&#34;
+        Determines if robot exceeds the dimensions of the environment
+        Args:
+            `x_length`: x length of the environment (int)  
+            `y_length`: y length of the environment (int)
+        Returns:
+            `out_of_bounds`: x and y values of how far the robot is out of bounds (LVector3f), returns `&#39;none&#39;` if not out of bounds
+        &#34;&#34;&#34;
+        self.setBounds()                                                    # calc &amp; set bounds of robot
+
+        out_of_bounds = LVector2f(0, 0)
+        if self.bounds[0] &gt; x_length/2:                                     # if over +x
+            out_of_bounds[0] = int(self.bounds[0] - x_length/2)
+        elif self.bounds[1] &lt; -x_length/2:                                  # if over -x
+            out_of_bounds[0] = int(x_length/2 + self.bounds[1])
+        if self.bounds[2] &gt; y_length/2:                                     # if over +y
+            out_of_bounds[1] = int(self.bounds[2] - y_length/2)
+        elif self.bounds[3] &lt; -y_length/2:                                  # if over -y
+            out_of_bounds[1] = int(y_length/2 + self.bounds[3])
+        if out_of_bounds != LVector2f(0, 0):
+            return out_of_bounds
+        else:
+            return &#39;none&#39;
+
+    def __dict__(self):
+        dict = {}
+        return dict
+
+    def __str__(self):
+        count = 0
+        s = f&#34;ID: {self.id}, Connections: &#34;
+        for i in self.connections:
+            s = s + f&#34;\n{count+1}: {i}&#34;
+            count = count+1
+        s = s + f&#34;\nCore: {self.core_pos}&#34;
+        s = s+f&#34;\nTotal connections: {count}&#34;
+        return s</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="RoboViz.Robot.drawBounds"><code class="name flex">
+<span>def <span class="ident">drawBounds</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Draws LineSegs between all points of the robot bounding box</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def drawBounds(self):
+    &#34;&#34;&#34;Draws LineSegs between all points of the robot bounding box&#34;&#34;&#34;
+    root_node = self.connections[0].src.node                            # root node
+    robot_min, robot_max = root_node.getTightBounds(root_node)          # get bounds of robot
+    box = BoundingBox(robot_min, robot_max)
+    vertices = box.getPoints()                                          # get points of robot bounding box
+
+    for z in range(0, len(vertices), 4):                                # draw &#39;side&#39; boxes
+        self.ls.moveTo(vertices[z])
+        self.ls.drawTo(vertices[z + 1])
+        self.ls.drawTo(vertices[z + 3])
+        self.ls.drawTo(vertices[z + 2])
+        self.ls.drawTo(vertices[z])
+
+    for xy in range(0, len(vertices)//2):                               # draw &#39;top and bottom&#39; boxes
+        self.ls.moveTo(vertices[xy])
+        self.ls.drawTo(vertices[xy + len(vertices)//2])
+
+    bounds_node = self.ls.create()
+    self.bounding_box = NodePath(bounds_node)
+    self.bounding_box.reparentTo(root_node)                             # reparent bounding box to robot root
+    self.bounding_box.hide()                                            # hide bounding box</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.Robot.outOfBoundsDetect"><code class="name flex">
+<span>def <span class="ident">outOfBoundsDetect</span></span>(<span>self, x_length, y_length)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Determines if robot exceeds the dimensions of the environment</p>
+<h2 id="args">Args</h2>
+<p><code>x_length</code>: x length of the environment (int)<br>
+<code>y_length</code>: y length of the environment (int)</p>
+<h2 id="returns">Returns</h2>
+<p><code>out_of_bounds</code>: x and y values of how far the robot is out of bounds (LVector3f), returns <code>'none'</code> if not out of bounds</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def outOfBoundsDetect(self, x_length, y_length):
+    &#34;&#34;&#34;
+    Determines if robot exceeds the dimensions of the environment
+    Args:
+        `x_length`: x length of the environment (int)  
+        `y_length`: y length of the environment (int)
+    Returns:
+        `out_of_bounds`: x and y values of how far the robot is out of bounds (LVector3f), returns `&#39;none&#39;` if not out of bounds
+    &#34;&#34;&#34;
+    self.setBounds()                                                    # calc &amp; set bounds of robot
+
+    out_of_bounds = LVector2f(0, 0)
+    if self.bounds[0] &gt; x_length/2:                                     # if over +x
+        out_of_bounds[0] = int(self.bounds[0] - x_length/2)
+    elif self.bounds[1] &lt; -x_length/2:                                  # if over -x
+        out_of_bounds[0] = int(x_length/2 + self.bounds[1])
+    if self.bounds[2] &gt; y_length/2:                                     # if over +y
+        out_of_bounds[1] = int(self.bounds[2] - y_length/2)
+    elif self.bounds[3] &lt; -y_length/2:                                  # if over -y
+        out_of_bounds[1] = int(y_length/2 + self.bounds[3])
+    if out_of_bounds != LVector2f(0, 0):
+        return out_of_bounds
+    else:
+        return &#39;none&#39;</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.Robot.setBounds"><code class="name flex">
+<span>def <span class="ident">setBounds</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates and sets the bounds (bounding box) of the robot</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setBounds(self):
+    &#34;&#34;&#34;Calculates and sets the bounds (bounding box) of the robot&#34;&#34;&#34;
+    root_node = self.connections[0].src.node
+
+    robot_min, robot_max = root_node.getTightBounds()
+    box = BoundingBox(robot_min, robot_max)
+    vertices = box.getPoints()
+
+    # calc bounds of robot bounding box
+    x_max, x_min, y_max, y_min, z_max, z_min = vertices[4][0], vertices[0][0], vertices[2][1], vertices[0][1], vertices[1][2], vertices[2][2]
+    self.bounds = [x_max, x_min, y_max, y_min, z_max, z_min]       # set bounds of robot</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="RoboViz.RobotComp"><code class="flex name class">
+<span>class <span class="ident">RobotComp</span></span>
+<span>(</span><span>id, type, root, orientation)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a component of a robot</p>
+<p>Constructor</p>
+<h2 id="args">Args</h2>
+<p><code>id</code>: ID of Brick (String)<br>
+<code>type</code>: type of brick component (String)<br>
+<code>root</code>: whether this brick is the core of the robot or not (boolean)<br>
+<code>orientation</code>: orientation (roll) of this component relative to its parent (int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RobotComp:
+    &#34;&#34;&#34;Represents a component of a robot&#34;&#34;&#34;
+
+    def __init__(self, id, type, root, orientation):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `id`: ID of Brick (String)  
+            `type`: type of brick component (String)  
+            `root`: whether this brick is the core of the robot or not (boolean)  
+            `orientation`: orientation (roll) of this component relative to its parent (int)
+        &#34;&#34;&#34;
+        self.id = id
+        self.type = type                # component type
+        self.root = root                # component is the root of the robot component tree
+        self.orientation = orientation  # global orientation
+        self.direction = 0
+
+    def calcPos(self, src, dst, connection):
+        &#34;&#34;&#34;
+        Calculates the position that the component should be placed at in the scene based on the source&#39;s position
+        Args:
+            `src`: source Panda3D node in connection (PandaNode)  
+            `dst`: destination Panda3D node in connection (PandaNode)  
+            `connection`: the Connection in question (Connection)
+        Returns:
+            `(dst_pos, heading)`: position and heading that component should be placed at in the scene (LVector3f, int)
+        &#34;&#34;&#34;
+        connection.dst.bounds = dst.getTightBounds()
+
+        if connection.src.root == True:
+            connection.src.bounds = src.getTightBounds()
+            connection.src.root = False
+
+        src_min, src_max = connection.src.bounds[0], connection.src.bounds[1]
+        src_dims = (src_max - src_min)/2                                # get distance from centre of source model to edge
+        src_pos = connection.src.pos
+
+        src_dims -= BUFFER                                              # buffer to slot hinges and bricks together
+
+        dst_min, dst_max = connection.dst.bounds[0], connection.dst.bounds[1]
+        dst_dims = (dst_max - dst_min)/2                                # get distance from centre of dest model to edge
+
+        src_slot = connection.src_slot - connection.src.direction       # get slot number relative to orientation of model
+        if src_slot &lt; 0:                                                # wrap slots around (4 -&gt; 0 etc.)
+            src_slot += 4
+
+        heading = SRC_SLOTS[src_slot] + DST_SLOTS[connection.dst_slot]  # heading of dst model, depending on src and dst slot
+        connection.dst.direction = DIRECTION[heading]
+        dst.setHpr(heading, 0, 0)
+
+        if connection.src_slot in [0, 2]:                               # which dims to use to calculate new pos
+            src_dim = src_dims[1]
+        else:
+            src_dim = src_dims[0]
+        if connection.dst_slot in [0, 2]:
+            dst_dim = dst_dims[1]
+        else:
+            dst_dim = dst_dims[0]
+
+        if src_slot == 0:                                               # use src slot to determine which side to place dest model
+            dst_pos = src_pos + LVector3f(0, -(src_dim + dst_dim), 0)
+        elif src_slot == 1:
+            dst_pos = src_pos + LVector3f(-(src_dim + dst_dim), 0, 0)
+        elif src_slot == 2:
+            dst_pos = src_pos + LVector3f(0, src_dim + dst_dim, 0)
+        elif src_slot == 3:
+            dst_pos = src_pos + LVector3f(src_dim + dst_dim, 0, 0)
+        return (dst_pos, heading)
+
+    def __str__(self):
+        return f&#34;ID: {self.id}, Type: {self.type}, root: {self.root}, orient: {self.orientation}&#34;</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="RoboViz.Brick" href="#RoboViz.Brick">Brick</a></li>
+<li><a title="RoboViz.Hinge" href="#RoboViz.Hinge">Hinge</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="RoboViz.RobotComp.calcPos"><code class="name flex">
+<span>def <span class="ident">calcPos</span></span>(<span>self, src, dst, connection)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the position that the component should be placed at in the scene based on the source's position</p>
+<h2 id="args">Args</h2>
+<p><code>src</code>: source Panda3D node in connection (PandaNode)<br>
+<code>dst</code>: destination Panda3D node in connection (PandaNode)<br>
+<code>connection</code>: the Connection in question (Connection)</p>
+<h2 id="returns">Returns</h2>
+<p><code>(dst_pos, heading)</code>: position and heading that component should be placed at in the scene (LVector3f, int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calcPos(self, src, dst, connection):
+    &#34;&#34;&#34;
+    Calculates the position that the component should be placed at in the scene based on the source&#39;s position
+    Args:
+        `src`: source Panda3D node in connection (PandaNode)  
+        `dst`: destination Panda3D node in connection (PandaNode)  
+        `connection`: the Connection in question (Connection)
+    Returns:
+        `(dst_pos, heading)`: position and heading that component should be placed at in the scene (LVector3f, int)
+    &#34;&#34;&#34;
+    connection.dst.bounds = dst.getTightBounds()
+
+    if connection.src.root == True:
+        connection.src.bounds = src.getTightBounds()
+        connection.src.root = False
+
+    src_min, src_max = connection.src.bounds[0], connection.src.bounds[1]
+    src_dims = (src_max - src_min)/2                                # get distance from centre of source model to edge
+    src_pos = connection.src.pos
+
+    src_dims -= BUFFER                                              # buffer to slot hinges and bricks together
+
+    dst_min, dst_max = connection.dst.bounds[0], connection.dst.bounds[1]
+    dst_dims = (dst_max - dst_min)/2                                # get distance from centre of dest model to edge
+
+    src_slot = connection.src_slot - connection.src.direction       # get slot number relative to orientation of model
+    if src_slot &lt; 0:                                                # wrap slots around (4 -&gt; 0 etc.)
+        src_slot += 4
+
+    heading = SRC_SLOTS[src_slot] + DST_SLOTS[connection.dst_slot]  # heading of dst model, depending on src and dst slot
+    connection.dst.direction = DIRECTION[heading]
+    dst.setHpr(heading, 0, 0)
+
+    if connection.src_slot in [0, 2]:                               # which dims to use to calculate new pos
+        src_dim = src_dims[1]
+    else:
+        src_dim = src_dims[0]
+    if connection.dst_slot in [0, 2]:
+        dst_dim = dst_dims[1]
+    else:
+        dst_dim = dst_dims[0]
+
+    if src_slot == 0:                                               # use src slot to determine which side to place dest model
+        dst_pos = src_pos + LVector3f(0, -(src_dim + dst_dim), 0)
+    elif src_slot == 1:
+        dst_pos = src_pos + LVector3f(-(src_dim + dst_dim), 0, 0)
+    elif src_slot == 2:
+        dst_pos = src_pos + LVector3f(0, src_dim + dst_dim, 0)
+    elif src_slot == 3:
+        dst_pos = src_pos + LVector3f(src_dim + dst_dim, 0, 0)
+    return (dst_pos, heading)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="RoboViz.RobotGUI"><code class="flex name class">
+<span>class <span class="ident">RobotGUI</span></span>
+<span>(</span><span>config_path='', pos_path='', robot_path='')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initialises the GUI for inputting files, building robots and reporting errors</p>
+<p>Constructor</p>
+<h2 id="args">Args</h2>
+<p><code>config_path</code>: file path of configuration text file (String) <strong>optional</strong>, only used when building a robot<br>
+<code>pos_path</code>: file path of robot positions text file (String) <strong>optional</strong>, only used when building a robot<br>
+<code>robot_path</code>: file path of robot JSON file (String) <strong>optional</strong>, only used when building a robot</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RobotGUI:
+    &#34;&#34;&#34;Initialises the GUI for inputting files, building robots and reporting errors&#34;&#34;&#34;
+
+    def __init__(self, config_path=&#39;&#39;, pos_path=&#39;&#39;, robot_path=&#39;&#39;):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `config_path`: file path of configuration text file (String) **optional**, only used when building a robot  
+            `pos_path`: file path of robot positions text file (String) **optional**, only used when building a robot  
+            `robot_path`: file path of robot JSON file (String) **optional**, only used when building a robot
+        &#34;&#34;&#34;
+        self.config_path = config_path
+        self.pos_path = pos_path
+        self.robot_path = robot_path
+        self.out_of_bounds_all = []
+        self.collisions = []
+        self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
+        self.bgColour = &#34;Black&#34;
+
+    def error_window(self):
+        &#34;&#34;&#34;Displays the error reporting window&#34;&#34;&#34;
+        if len(self.collisions) &gt; 0:
+            collision_text = formatCollisions(self.collisions)
+            if len(self.out_of_bounds_all) &gt; 0:
+                out_of_bounds_text = formatOutOfBounds(self.out_of_bounds_all)
+                layout = [[sg.Text(&#34;Robot Collisions&#34;, background_color=self.bgColour)],
+                          [sg.Multiline(size=(50, 7), default_text=collision_text,  key=&#39;-COL_BOX-&#39;, echo_stdout_stderr=True, disabled=True)],
+                          [sg.Text(&#34;Robots out of bounds&#34;, background_color=self.bgColour)],
+                          [sg.Multiline(size=(50, 7), default_text=out_of_bounds_text,  key=&#39;-OOB_BOX-&#39;, echo_stdout_stderr=True, disabled=True)],
+                          [sg.Button(&#39;Continue&#39;), sg.Button(&#39;Cancel&#39;)]]
+            else:
+                layout = [[sg.Text(&#34;Robot Collisions&#34;, background_color=self.bgColour)],
+                          [sg.Multiline(size=(50, 7), default_text=collision_text,  key=&#39;-COL_BOX-&#39;, echo_stdout_stderr=True, disabled=True)],
+                          [sg.Button(&#39;Continue&#39;), sg.Button(&#39;Cancel&#39;)]]
+        elif len(self.out_of_bounds_all) &gt; 0:
+            out_of_bounds_text = formatOutOfBounds(self.out_of_bounds_all)
+            layout = [[sg.Text(&#34;Robots out of bounds&#34;, background_color=self.bgColour)],
+                      [sg.Multiline(size=(50, 7), default_text=out_of_bounds_text,  key=&#39;-OOB_BOX-&#39;, echo_stdout_stderr=True, disabled=True)],
+                      [sg.Button(&#39;Continue&#39;), sg.Button(&#39;Cancel&#39;)]]
+
+        window = sg.Window(&#34;Errors&#34;, layout, modal=True)
+        while True:
+            event, _ = window.read()
+            if event == &#34;Continue&#34; or event == sg.WIN_CLOSED:
+                break
+            if event == &#34;Cancel&#34;:
+                quit()
+
+        window.close()
+
+    def connection_window(self):
+        &#34;&#34;&#34;
+        Displays the component connection window for specifying specific connection parameters
+        Returns:
+            `(src_slot, dst_slot, orientation)`: source, dest slots + orientation of component ((int, int, int)) (returns (-1, -1, -1) if window closed)
+        &#34;&#34;&#34;
+        layout = [[sg.Text(&#39;SRC Slot:&#39;), sg.Combo(values=[0, 1, 2, 3], default_value=0, key=&#39;-SRC_COMBO-&#39;)],
+                  [sg.Text(&#39;DST Slot:&#39;), sg.Combo(values=[0, 1, 2, 3], default_value=0, key=&#39;-DST_COMBO-&#39;)],
+                  [sg.Text(&#39;Orientation:&#39;), sg.Combo(values=[0, 1, 2, 3], default_value=0, key=&#39;-O_COMBO-&#39;)],
+                  [sg.Button(&#39;Submit&#39;)]]
+        window = sg.Window(&#34;Enter Slots&#34;, layout, modal=True)
+        while True:
+            event, values = window.read()
+            if event == sg.WIN_CLOSED:
+                window.close()
+                return (-1, -1, -1)
+            if event == &#39;Submit&#39;:
+                window.close()
+                return (values[&#39;-SRC_COMBO-&#39;], values[&#39;-DST_COMBO-&#39;], values[&#39;-O_COMBO-&#39;])
+
+    def build_window(self):
+        &#34;&#34;&#34;Displays the Robot building window&#34;&#34;&#34;
+        connections = []
+        treedata = sg.TreeData()
+        core = Brick(&#39;Core&#39;, &#39;CoreComponent&#39;, True, 0)
+        parent = core
+        treedata.insert(parent=&#39;&#39;, key=core.id, text=core.id, values=[&#39;CoreComponent&#39;, core.orientation])
+        layout = [[sg.Button(&#39;+&#39;, size=3), sg.Button(&#39;-&#39;, size=3), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key=&#39;-C_COMBO-&#39;),
+                   sg.InputText(key=&#39;-COMP_ID-&#39;, size=20, default_text=&#39;defaultID&#39;)],
+                  [sg.Text(&#39;Components&#39;)],
+                  [sg.Tree(data=treedata, key=&#34;-COMP_TREE-&#34;, auto_size_columns=True, num_rows=20,
+                           headings=[&#39;Type&#39;, &#39;Orientation&#39;], col0_width=30, expand_x=True, show_expanded=True), ],
+                  [sg.Button(&#39;Submit&#39;), sg.Button(&#39;Help&#39;), sg.Button(&#39;File&#39;), sg.Exit(), sg.Checkbox(&#39;Write to file&#39;, key=&#39;-FILE-&#39;)]]
+        window = sg.Window(&#34;Build a Robot&#34;, layout, modal=True)
+        while True:
+            event, values = window.read()
+            if event == sg.WIN_CLOSED or event == &#39;Exit&#39;:
+                quit()
+            if event == &#39;File&#39;:
+                break
+            if event == &#39;Help&#39;:
+                sg.popup(&#34;some help info\nsome more help stuff ig\neven more help text wowow&#34;, title=&#34;Help&#34;)
+            if event == &#39;-&#39;:
+                # delete selected component
+                pass
+            if event == &#39;+&#39;:
+                # add new component
+                if values[&#39;-COMP_ID-&#39;] in treedata.tree_dict:                           # if component id already exists in tree
+                    sg.popup(&#34;Component {} already exists&#34;.format(values[&#39;-COMP_ID-&#39;]))
+                    continue
+                if len(values[&#39;-COMP_TREE-&#39;]) == 0:                                     # if nothing selected, parent is tree root
+                    sel_comp = &#39;&#39;
+                else:
+                    sel_comp = values[&#39;-COMP_TREE-&#39;][0]
+
+                id = values[&#39;-COMP_ID-&#39;]
+                type = values[&#39;-C_COMBO-&#39;]
+                src_slot, dst_slot, orientation = self.connection_window()
+                if src_slot == -1 or dst_slot == -1 or orientation == -1:
+                    continue
+
+                treedata.Insert(parent=sel_comp, key=id, text=id, values=[type, orientation])
+                window.Element(&#39;-COMP_TREE-&#39;).update(treedata)
+
+                if &#39;Hinge&#39; in type:
+                    comp = Hinge(id, type, False, orientation)
+                else:
+                    comp = Brick(id, type, False, orientation)
+
+                connections.append(Connection(parent, comp, src_slot, dst_slot))
+                parent = comp
+            if event == &#39;Submit&#39;:
+                robot = Robot(0, connections, [0, 0, 0])
+                config = [1000, 1000, 1]
+                if (values[&#39;-FILE-&#39;]):
+                    self.utils.writeRobot(robot, &#39;test&#39;)
+                self.runSim(config, [robot], file=False)
+
+        window.close()
+
+    def startGUI(self):
+        &#34;&#34;&#34;Displays the file input GUI window&#34;&#34;&#34;
+        working_directory = os.getcwd()
+
+        LastRender = False
+        configError = sg.Text(&#34;Configuration file not included!&#34;, visible=False, text_color=&#39;Red&#39;, background_color=self.bgColour)
+        posError = sg.Text(&#34;Positions file not included!&#34;, visible=False, text_color=&#39;Red&#39;, background_color=self.bgColour)
+        jsonError = sg.Text(&#34;Robots file not included!&#34;, visible=False, text_color=&#39;Red&#39;, background_color=self.bgColour)
+
+        if(not exists(&#39;LastRender.txt&#39;)):
+            layout = [
+                [sg.Text(&#34;Choose a config file:&#34;, background_color=self.bgColour)],
+                [sg.InputText(key=&#34;-FILE_PATH-&#34;),
+                 sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Configuration file&#34;, &#34;*.txt&#34;)])], [configError],
+                [sg.Text(&#34;Choose a positions file:&#34;, background_color=self.bgColour)],
+                [sg.InputText(key=&#34;-FILE_PATH-&#34;),
+                 sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Position file&#34;, &#34;*.txt&#34;)])], [posError],
+                [sg.Text(&#34;Choose a robots file:&#34;, background_color=self.bgColour)],
+                [sg.InputText(key=&#34;-FILE_PATH-&#34;),
+                 sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Robot file&#34;, &#34;*.json&#34;)])], [jsonError],
+                [sg.Button(&#39;Submit&#39;), sg.Button(&#39;Help&#39;), sg.Button(&#39;Build&#39;), sg.Exit()]
+            ]
+        else:
+            LastRender = True
+            pos_path = &#34;&#34;
+            config_path = &#34;&#34;
+            robot_path = &#34;&#34;
+            with open(&#39;LastRender.txt&#39;, &#39;r&#39;) as f:
+                i = 0
+                for line in f:
+                    line = line.strip()
+                    if i == 0:
+                        pos_path = line
+                    elif i == 1:
+                        config_path = line
+                    elif i == 2:
+                        robot_path = line
+                    i += 1
+            layout = [
+                [sg.Text(&#34;Choose a config file:&#34;, background_color=self.bgColour)],
+                [sg.InputText(default_text=config_path, key=&#34;-FILE_PATH-&#34;),
+                 sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Configuration file&#34;, &#34;*.txt&#34;)])], [configError],
+                [sg.Text(&#34;Choose a positions file:&#34;, background_color=self.bgColour)],
+                [sg.InputText(default_text=pos_path, key=&#34;-FILE_PATH-&#34;),
+                 sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Position file&#34;, &#34;*.txt&#34;)])], [posError],
+                [sg.Text(&#34;Choose a robots file:&#34;, background_color=self.bgColour)],
+                [sg.InputText(default_text=robot_path, key=&#34;-FILE_PATH-&#34;),
+                 sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Robot file&#34;, &#34;*.json&#34;)])], [jsonError],
+                [sg.Button(&#39;Submit&#39;), sg.Button(&#39;Help&#39;), sg.Button(&#39;Build&#39;), sg.Exit()]
+            ]
+
+        sg.theme(self.bgColour)
+        window = sg.Window(&#34;RoboViz&#34;, layout, icon=&#39;resources/r_icon.ico&#39;)
+
+        # Main Program Loop
+        while True:
+            event, values = window.read()
+            if event == sg.WIN_CLOSED or event == &#39;Exit&#39;:
+                break
+            if (event == &#34;Help&#34;):
+                sg.popup(&#34;some help info\nsome more help stuff ig\neven more help text wowow&#34;, title=&#34;Help&#34;)
+            if (event == &#34;Build&#34;):
+                window.hide()
+                self.build_window()
+                window.UnHide()
+
+            if (event == &#34;Submit&#34; and values[&#34;-FILE_PATH-&#34;] == &#34;&#34;):
+                configError.update(visible=True)
+            else:
+                configError.update(visible=False)
+
+            if (event == &#34;Submit&#34; and values[&#34;-FILE_PATH-0&#34;] == &#34;&#34;):
+                posError.update(visible=True)
+            else:
+                posError.update(visible=False)
+
+            if (event == &#34;Submit&#34; and values[&#34;-FILE_PATH-2&#34;] == &#34;&#34;):
+                jsonError.update(visible=True)
+            else:
+                jsonError.update(visible=False)
+
+            if (event == &#34;Submit&#34; and values[&#34;-FILE_PATH-&#34;] != &#34;&#34; and values[&#34;-FILE_PATH-0&#34;] != &#34;&#34; and values[&#34;-FILE_PATH-2&#34;] != &#34;&#34;):
+                self.config_path = values[&#34;-FILE_PATH-&#34;]
+                self.pos_path = values[&#34;-FILE_PATH-0&#34;]
+                self.robot_path = values[&#34;-FILE_PATH-2&#34;]
+
+                if (not LastRender):
+                    lines = [self.pos_path, self.config_path, self.robot_path]
+                    with open(&#39;LastRender.txt&#39;, &#39;w&#39;) as f:
+                        for line in lines:
+                            f.write(line)
+                            f.write(&#39; \n&#39;)
+                subprocess.check_call([&#34;attrib&#34;, &#34;+H&#34;, &#34;LastRender.txt&#34;])   # hide saved file paths file
+
+                # x = threading.Thread(target=self.runSim)
+                # x.start()
+                # x.join()
+
+                # window.hide()
+                self.runSim()
+
+        window.close()
+
+    def runSim(self, config=0, robots=0, file=True):
+        &#34;&#34;&#34;
+        Creates the Environment and runs the simulation
+        Args:
+            `config`: configuration parameters (int[]) **optional**, only used when building a robot  
+            `robots`: array of Robots (Robot[]) **optional**, only used when building a robot
+        &#34;&#34;&#34;
+        if file:
+            positions = self.utils.posParse()
+            config = self.utils.configParse()
+            robots = self.utils.robotParse(int(config[2]), positions)
+
+        env = Environment(int(config[0]), int(config[1]), int(config[2]))
+        for i, robot in enumerate(robots):                                      # loop through robots in swarm
+            env.renderRobot(robot)                                  # render robot
+            # get any out of bounds/collisions
+            out_of_bounds = robot.outOfBoundsDetect(int(config[0]), int(config[1]))
+            if out_of_bounds != &#39;none&#39;:
+                self.out_of_bounds_all.append([i, out_of_bounds])
+        env.initialView()
+        self.collisions = self.utils.collisionDetect(robots)                  # get any possible collisions between robots
+
+        if len(self.collisions) &gt; 0 or len(self.out_of_bounds_all) &gt; 0:
+            self.error_window()
+
+        env.run()</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="RoboViz.RobotGUI.build_window"><code class="name flex">
+<span>def <span class="ident">build_window</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Displays the Robot building window</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def build_window(self):
+    &#34;&#34;&#34;Displays the Robot building window&#34;&#34;&#34;
+    connections = []
+    treedata = sg.TreeData()
+    core = Brick(&#39;Core&#39;, &#39;CoreComponent&#39;, True, 0)
+    parent = core
+    treedata.insert(parent=&#39;&#39;, key=core.id, text=core.id, values=[&#39;CoreComponent&#39;, core.orientation])
+    layout = [[sg.Button(&#39;+&#39;, size=3), sg.Button(&#39;-&#39;, size=3), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key=&#39;-C_COMBO-&#39;),
+               sg.InputText(key=&#39;-COMP_ID-&#39;, size=20, default_text=&#39;defaultID&#39;)],
+              [sg.Text(&#39;Components&#39;)],
+              [sg.Tree(data=treedata, key=&#34;-COMP_TREE-&#34;, auto_size_columns=True, num_rows=20,
+                       headings=[&#39;Type&#39;, &#39;Orientation&#39;], col0_width=30, expand_x=True, show_expanded=True), ],
+              [sg.Button(&#39;Submit&#39;), sg.Button(&#39;Help&#39;), sg.Button(&#39;File&#39;), sg.Exit(), sg.Checkbox(&#39;Write to file&#39;, key=&#39;-FILE-&#39;)]]
+    window = sg.Window(&#34;Build a Robot&#34;, layout, modal=True)
+    while True:
+        event, values = window.read()
+        if event == sg.WIN_CLOSED or event == &#39;Exit&#39;:
+            quit()
+        if event == &#39;File&#39;:
+            break
+        if event == &#39;Help&#39;:
+            sg.popup(&#34;some help info\nsome more help stuff ig\neven more help text wowow&#34;, title=&#34;Help&#34;)
+        if event == &#39;-&#39;:
+            # delete selected component
+            pass
+        if event == &#39;+&#39;:
+            # add new component
+            if values[&#39;-COMP_ID-&#39;] in treedata.tree_dict:                           # if component id already exists in tree
+                sg.popup(&#34;Component {} already exists&#34;.format(values[&#39;-COMP_ID-&#39;]))
+                continue
+            if len(values[&#39;-COMP_TREE-&#39;]) == 0:                                     # if nothing selected, parent is tree root
+                sel_comp = &#39;&#39;
+            else:
+                sel_comp = values[&#39;-COMP_TREE-&#39;][0]
+
+            id = values[&#39;-COMP_ID-&#39;]
+            type = values[&#39;-C_COMBO-&#39;]
+            src_slot, dst_slot, orientation = self.connection_window()
+            if src_slot == -1 or dst_slot == -1 or orientation == -1:
+                continue
+
+            treedata.Insert(parent=sel_comp, key=id, text=id, values=[type, orientation])
+            window.Element(&#39;-COMP_TREE-&#39;).update(treedata)
+
+            if &#39;Hinge&#39; in type:
+                comp = Hinge(id, type, False, orientation)
+            else:
+                comp = Brick(id, type, False, orientation)
+
+            connections.append(Connection(parent, comp, src_slot, dst_slot))
+            parent = comp
+        if event == &#39;Submit&#39;:
+            robot = Robot(0, connections, [0, 0, 0])
+            config = [1000, 1000, 1]
+            if (values[&#39;-FILE-&#39;]):
+                self.utils.writeRobot(robot, &#39;test&#39;)
+            self.runSim(config, [robot], file=False)
+
+    window.close()</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.RobotGUI.connection_window"><code class="name flex">
+<span>def <span class="ident">connection_window</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Displays the component connection window for specifying specific connection parameters</p>
+<h2 id="returns">Returns</h2>
+<p><code>(src_slot, dst_slot, orientation)</code>: source, dest slots + orientation of component ((int, int, int)) (returns (-1, -1, -1) if window closed)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def connection_window(self):
+    &#34;&#34;&#34;
+    Displays the component connection window for specifying specific connection parameters
+    Returns:
+        `(src_slot, dst_slot, orientation)`: source, dest slots + orientation of component ((int, int, int)) (returns (-1, -1, -1) if window closed)
+    &#34;&#34;&#34;
+    layout = [[sg.Text(&#39;SRC Slot:&#39;), sg.Combo(values=[0, 1, 2, 3], default_value=0, key=&#39;-SRC_COMBO-&#39;)],
+              [sg.Text(&#39;DST Slot:&#39;), sg.Combo(values=[0, 1, 2, 3], default_value=0, key=&#39;-DST_COMBO-&#39;)],
+              [sg.Text(&#39;Orientation:&#39;), sg.Combo(values=[0, 1, 2, 3], default_value=0, key=&#39;-O_COMBO-&#39;)],
+              [sg.Button(&#39;Submit&#39;)]]
+    window = sg.Window(&#34;Enter Slots&#34;, layout, modal=True)
+    while True:
+        event, values = window.read()
+        if event == sg.WIN_CLOSED:
+            window.close()
+            return (-1, -1, -1)
+        if event == &#39;Submit&#39;:
+            window.close()
+            return (values[&#39;-SRC_COMBO-&#39;], values[&#39;-DST_COMBO-&#39;], values[&#39;-O_COMBO-&#39;])</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.RobotGUI.error_window"><code class="name flex">
+<span>def <span class="ident">error_window</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Displays the error reporting window</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def error_window(self):
+    &#34;&#34;&#34;Displays the error reporting window&#34;&#34;&#34;
+    if len(self.collisions) &gt; 0:
+        collision_text = formatCollisions(self.collisions)
+        if len(self.out_of_bounds_all) &gt; 0:
+            out_of_bounds_text = formatOutOfBounds(self.out_of_bounds_all)
+            layout = [[sg.Text(&#34;Robot Collisions&#34;, background_color=self.bgColour)],
+                      [sg.Multiline(size=(50, 7), default_text=collision_text,  key=&#39;-COL_BOX-&#39;, echo_stdout_stderr=True, disabled=True)],
+                      [sg.Text(&#34;Robots out of bounds&#34;, background_color=self.bgColour)],
+                      [sg.Multiline(size=(50, 7), default_text=out_of_bounds_text,  key=&#39;-OOB_BOX-&#39;, echo_stdout_stderr=True, disabled=True)],
+                      [sg.Button(&#39;Continue&#39;), sg.Button(&#39;Cancel&#39;)]]
+        else:
+            layout = [[sg.Text(&#34;Robot Collisions&#34;, background_color=self.bgColour)],
+                      [sg.Multiline(size=(50, 7), default_text=collision_text,  key=&#39;-COL_BOX-&#39;, echo_stdout_stderr=True, disabled=True)],
+                      [sg.Button(&#39;Continue&#39;), sg.Button(&#39;Cancel&#39;)]]
+    elif len(self.out_of_bounds_all) &gt; 0:
+        out_of_bounds_text = formatOutOfBounds(self.out_of_bounds_all)
+        layout = [[sg.Text(&#34;Robots out of bounds&#34;, background_color=self.bgColour)],
+                  [sg.Multiline(size=(50, 7), default_text=out_of_bounds_text,  key=&#39;-OOB_BOX-&#39;, echo_stdout_stderr=True, disabled=True)],
+                  [sg.Button(&#39;Continue&#39;), sg.Button(&#39;Cancel&#39;)]]
+
+    window = sg.Window(&#34;Errors&#34;, layout, modal=True)
+    while True:
+        event, _ = window.read()
+        if event == &#34;Continue&#34; or event == sg.WIN_CLOSED:
+            break
+        if event == &#34;Cancel&#34;:
+            quit()
+
+    window.close()</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.RobotGUI.runSim"><code class="name flex">
+<span>def <span class="ident">runSim</span></span>(<span>self, config=0, robots=0, file=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates the Environment and runs the simulation</p>
+<h2 id="args">Args</h2>
+<p><code>config</code>: configuration parameters (int[]) <strong>optional</strong>, only used when building a robot<br>
+<code>robots</code>: array of Robots (Robot[]) <strong>optional</strong>, only used when building a robot</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def runSim(self, config=0, robots=0, file=True):
+    &#34;&#34;&#34;
+    Creates the Environment and runs the simulation
+    Args:
+        `config`: configuration parameters (int[]) **optional**, only used when building a robot  
+        `robots`: array of Robots (Robot[]) **optional**, only used when building a robot
+    &#34;&#34;&#34;
+    if file:
+        positions = self.utils.posParse()
+        config = self.utils.configParse()
+        robots = self.utils.robotParse(int(config[2]), positions)
+
+    env = Environment(int(config[0]), int(config[1]), int(config[2]))
+    for i, robot in enumerate(robots):                                      # loop through robots in swarm
+        env.renderRobot(robot)                                  # render robot
+        # get any out of bounds/collisions
+        out_of_bounds = robot.outOfBoundsDetect(int(config[0]), int(config[1]))
+        if out_of_bounds != &#39;none&#39;:
+            self.out_of_bounds_all.append([i, out_of_bounds])
+    env.initialView()
+    self.collisions = self.utils.collisionDetect(robots)                  # get any possible collisions between robots
+
+    if len(self.collisions) &gt; 0 or len(self.out_of_bounds_all) &gt; 0:
+        self.error_window()
+
+    env.run()</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.RobotGUI.startGUI"><code class="name flex">
+<span>def <span class="ident">startGUI</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Displays the file input GUI window</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def startGUI(self):
+    &#34;&#34;&#34;Displays the file input GUI window&#34;&#34;&#34;
+    working_directory = os.getcwd()
+
+    LastRender = False
+    configError = sg.Text(&#34;Configuration file not included!&#34;, visible=False, text_color=&#39;Red&#39;, background_color=self.bgColour)
+    posError = sg.Text(&#34;Positions file not included!&#34;, visible=False, text_color=&#39;Red&#39;, background_color=self.bgColour)
+    jsonError = sg.Text(&#34;Robots file not included!&#34;, visible=False, text_color=&#39;Red&#39;, background_color=self.bgColour)
+
+    if(not exists(&#39;LastRender.txt&#39;)):
+        layout = [
+            [sg.Text(&#34;Choose a config file:&#34;, background_color=self.bgColour)],
+            [sg.InputText(key=&#34;-FILE_PATH-&#34;),
+             sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Configuration file&#34;, &#34;*.txt&#34;)])], [configError],
+            [sg.Text(&#34;Choose a positions file:&#34;, background_color=self.bgColour)],
+            [sg.InputText(key=&#34;-FILE_PATH-&#34;),
+             sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Position file&#34;, &#34;*.txt&#34;)])], [posError],
+            [sg.Text(&#34;Choose a robots file:&#34;, background_color=self.bgColour)],
+            [sg.InputText(key=&#34;-FILE_PATH-&#34;),
+             sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Robot file&#34;, &#34;*.json&#34;)])], [jsonError],
+            [sg.Button(&#39;Submit&#39;), sg.Button(&#39;Help&#39;), sg.Button(&#39;Build&#39;), sg.Exit()]
+        ]
+    else:
+        LastRender = True
+        pos_path = &#34;&#34;
+        config_path = &#34;&#34;
+        robot_path = &#34;&#34;
+        with open(&#39;LastRender.txt&#39;, &#39;r&#39;) as f:
+            i = 0
+            for line in f:
+                line = line.strip()
+                if i == 0:
+                    pos_path = line
+                elif i == 1:
+                    config_path = line
+                elif i == 2:
+                    robot_path = line
+                i += 1
+        layout = [
+            [sg.Text(&#34;Choose a config file:&#34;, background_color=self.bgColour)],
+            [sg.InputText(default_text=config_path, key=&#34;-FILE_PATH-&#34;),
+             sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Configuration file&#34;, &#34;*.txt&#34;)])], [configError],
+            [sg.Text(&#34;Choose a positions file:&#34;, background_color=self.bgColour)],
+            [sg.InputText(default_text=pos_path, key=&#34;-FILE_PATH-&#34;),
+             sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Position file&#34;, &#34;*.txt&#34;)])], [posError],
+            [sg.Text(&#34;Choose a robots file:&#34;, background_color=self.bgColour)],
+            [sg.InputText(default_text=robot_path, key=&#34;-FILE_PATH-&#34;),
+             sg.FileBrowse(initial_folder=working_directory, file_types=[(&#34;Robot file&#34;, &#34;*.json&#34;)])], [jsonError],
+            [sg.Button(&#39;Submit&#39;), sg.Button(&#39;Help&#39;), sg.Button(&#39;Build&#39;), sg.Exit()]
+        ]
+
+    sg.theme(self.bgColour)
+    window = sg.Window(&#34;RoboViz&#34;, layout, icon=&#39;resources/r_icon.ico&#39;)
+
+    # Main Program Loop
+    while True:
+        event, values = window.read()
+        if event == sg.WIN_CLOSED or event == &#39;Exit&#39;:
+            break
+        if (event == &#34;Help&#34;):
+            sg.popup(&#34;some help info\nsome more help stuff ig\neven more help text wowow&#34;, title=&#34;Help&#34;)
+        if (event == &#34;Build&#34;):
+            window.hide()
+            self.build_window()
+            window.UnHide()
+
+        if (event == &#34;Submit&#34; and values[&#34;-FILE_PATH-&#34;] == &#34;&#34;):
+            configError.update(visible=True)
+        else:
+            configError.update(visible=False)
+
+        if (event == &#34;Submit&#34; and values[&#34;-FILE_PATH-0&#34;] == &#34;&#34;):
+            posError.update(visible=True)
+        else:
+            posError.update(visible=False)
+
+        if (event == &#34;Submit&#34; and values[&#34;-FILE_PATH-2&#34;] == &#34;&#34;):
+            jsonError.update(visible=True)
+        else:
+            jsonError.update(visible=False)
+
+        if (event == &#34;Submit&#34; and values[&#34;-FILE_PATH-&#34;] != &#34;&#34; and values[&#34;-FILE_PATH-0&#34;] != &#34;&#34; and values[&#34;-FILE_PATH-2&#34;] != &#34;&#34;):
+            self.config_path = values[&#34;-FILE_PATH-&#34;]
+            self.pos_path = values[&#34;-FILE_PATH-0&#34;]
+            self.robot_path = values[&#34;-FILE_PATH-2&#34;]
+
+            if (not LastRender):
+                lines = [self.pos_path, self.config_path, self.robot_path]
+                with open(&#39;LastRender.txt&#39;, &#39;w&#39;) as f:
+                    for line in lines:
+                        f.write(line)
+                        f.write(&#39; \n&#39;)
+            subprocess.check_call([&#34;attrib&#34;, &#34;+H&#34;, &#34;LastRender.txt&#34;])   # hide saved file paths file
+
+            # x = threading.Thread(target=self.runSim)
+            # x.start()
+            # x.join()
+
+            # window.hide()
+            self.runSim()
+
+    window.close()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="RoboViz.RobotUtils"><code class="flex name class">
+<span>class <span class="ident">RobotUtils</span></span>
+<span>(</span><span>config_path, pos_path, robot_path)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Constructor</p>
+<h2 id="args">Args</h2>
+<p><code>config_path</code>: file path of configuration text file (String)<br>
+<code>pos_path</code>: file path of robot positions text file (String)<br>
+<code>robot_path</code>: file path of robot JSON file (String)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RobotUtils:
+    def __init__(self, config_path, pos_path, robot_path):
+        &#34;&#34;&#34;
+        Constructor
+        Args:
+            `config_path`: file path of configuration text file (String)  
+            `pos_path`: file path of robot positions text file (String)  
+            `robot_path`: file path of robot JSON file (String)
+        &#34;&#34;&#34;
+        self.config_path = config_path
+        self.pos_path = pos_path
+        self.robot_path = robot_path
+
+    def collisionDetect(self, robots):
+        &#34;&#34;&#34;
+        Determines if there are any possible collisions between robots in the scene
+            Args:
+                `robots`: list of all robots in the scene (Robot[])
+            Returns
+                `collisions`: possible collisions between robots (int[][])
+        &#34;&#34;&#34;
+        collisions = []
+        for i, first_robot in enumerate(robots):
+            for second_robot in robots[i + 1:]:
+                # if robots cross each other&#39;s z bounds
+                if first_robot.bounds[4] &gt;= second_robot.bounds[5] and first_robot.bounds[5] &lt;= second_robot.bounds[4]:
+                    # if robots cross each other&#39;s x bounds
+                    if first_robot.bounds[0] &gt;= second_robot.bounds[1] and first_robot.bounds[1] &lt;= second_robot.bounds[0]:
+                        # if robots cross each other&#39;s y bounds
+                        if first_robot.bounds[2] &gt;= second_robot.bounds[3] and first_robot.bounds[3] &lt;= second_robot.bounds[2]:
+                            collisions.append([first_robot.id, second_robot.id])
+        return collisions
+
+    def createBrain(self, neurons, brain, compArr):
+        &#34;&#34;&#34;
+        Creates list of neurons based on JSON file ANN inputs
+        Args:
+            `neurons`: list of neurons and their info from JSON file (Neurons[])  
+            `brain`: list of connections between neurons from JSON file (List)  
+            `compArr`: list of components that neurons are connected to (RobotComp[])
+        &#34;&#34;&#34;
+        inputNeurons = []
+        outputNeurons = []
+        other = []
+        for i in neurons:
+            id = i[&#39;id&#39;]
+            layer = i[&#39;layer&#39;]
+            type = i[&#39;type&#39;]
+            # read in json file
+            bodyPartId = i[&#39;bodyPartId&#39;]
+            for j in compArr:
+                if j.id == bodyPartId:
+                    bodyPartId = j
+            # set the body part id to a specific component
+            ioId = i[&#39;ioId&#39;]
+            gain = i[&#39;gain&#39;]
+            if type == &#39;sigmoid&#39;:
+                bias = i[&#39;bias&#39;]
+                phaseOffset = 0
+                period = 0
+            elif type == &#39;oscillator&#39;:
+                phaseOffset = i[&#39;phaseOffset&#39;]
+                period = i[&#39;period&#39;]
+                bias = 0
+            else:
+                phaseOffset = 0
+                period = 0
+                bias = 0
+            neuron = Neuron(id, layer, type, bodyPartId, ioId, gain, bias, phaseOffset, period)
+            # create the neuron
+            if layer == &#39;input&#39;:
+                inputNeurons.append(neuron)
+            elif layer == &#39;output&#39;:
+                inputNeurons.append(neuron)
+            else:
+                other.append(neuron)
+                # in case there is a middle layer
+
+        # set up the weights &amp; destination comps
+        for i in brain:
+            src = i[&#39;src&#39;]
+            dest = i[&#39;dest&#39;]
+            weight = i[&#39;weight&#39;]
+            w = 0
+            comp = RobotComp(0, 0, 0, 0)
+            for j in compArr:
+                if j.id in dest:
+                    comp = j
+                    w = weight
+                    break
+            for j in inputNeurons:
+                if j.id in src:
+                    j.setWeight(w)
+                    j.setDestComp(comp)
+                    break
+            for j in outputNeurons:
+                if j.id in src:
+                    j.setWeight(w)
+                    j.setDestComp(comp)
+                    break
+
+        X_train = np.array([[0, 0, 1, 1], [0, 1, 0, 1]])  # dim x m
+        Y_train = np.array([[0, 1, 1, 0]])  # 1 x m
+        L, E = 0.15, 100
+        net = Network(inputNeurons, outputNeurons, X_train, Y_train, epochs=E, lr=L)
+        return net
+
+    def writeRobot(self, robot, name):
+        &#34;&#34;&#34;
+        Writes built Robot out to relevant files
+        Args:
+            `robot`: Robot to be written out (Robot)  
+            `name`: name of Robot JSON file (String)
+        &#34;&#34;&#34;
+        path = &#39;json/{}.json&#39;.format(name)
+        with open(path, &#39;w&#39;) as f:
+            json.dump(robot.__dict__, f)
+
+    def posParse(self):
+        &#34;&#34;&#34;
+        Parses robot positions from positions file
+        Returns:
+            `positions`: positions of Robots in scene (int[])
+        &#34;&#34;&#34;
+        positions = []
+        with open(self.pos_path, &#39;r&#39;) as f:
+            for line in f:
+                robot_position = []
+                line = line.split(&#39; &#39;)
+                robot_position.append(int(line[0]))                         # x value
+                robot_position.append(int(line[1]))                         # y value
+                robot_position.append(int(line[2]))                         # z value
+                positions.append(robot_position)
+        return positions
+
+    def configParse(self):
+        &#34;&#34;&#34;
+        Parses environment and swarm size from configuration file
+        Returns:
+            `configuration`: environment and swarm size (int[])
+        &#34;&#34;&#34;
+        configuration = []
+        with open(self.config_path, &#39;r&#39;) as f:
+            for line in f:
+                configuration.append(int(line))
+        return configuration
+
+    def robotParse(self, swarm_size, positions):
+        &#34;&#34;&#34;
+        Parses robot(s) from robot JSON file
+        Returns:
+            `robotArr`: all robots to be rendered in the scene (Robot[])
+        &#34;&#34;&#34;
+        robotArr = []
+        count = 0  # counting the positions
+        with open(self.robot_path, &#39;r&#39;) as f:
+            data = json.load(f)
+        if(&#34;swarm&#34; in data.keys()):
+            swarm = data[&#34;swarm&#34;]
+            #neurons = swarm[&#34;neuron&#34;]
+            #brain = swarm[&#34;connection&#34;]
+
+            for robot in swarm:
+                roboId = robot[&#34;id&#34;]
+                body = robot[&#34;body&#34;]
+
+                bodyComp = body[&#34;part&#34;]
+                compArr = []
+
+                for i in bodyComp:
+                    id = i[&#39;id&#39;]
+                    type = i[&#39;type&#39;]
+                    root = i[&#39;root&#39;]
+                    orient = i[&#39;orientation&#39;]
+                    if &#39;Hinge&#39; in type:
+                        newComp = Hinge(id, type, root, orient)                     # create new Hinge component
+                    else:
+                        newComp = Brick(id, type, root, orient)                     # create new Brick component
+
+                    compArr.append(newComp)
+
+                bodyConnect = body[&#34;connection&#34;]
+                connArr = []
+
+                for i in bodyConnect:
+                    src = i[&#39;src&#39;]
+                    # find the component that is the source
+                    for j in compArr:
+                        compare = j.id
+                        if src == compare:
+                            src = j
+
+                    dest = i[&#39;dest&#39;]
+                    # find the component that is the destination
+                    for j in compArr:
+                        if dest == (j.id):
+                            dest = j
+
+                    srcSlot = i[&#39;srcSlot&#39;]
+                    # find the component that is the source slot
+                    for j in compArr:
+                        if srcSlot == (j.id):
+                            srcSlot = j
+
+                    destSlot = i[&#39;destSlot&#39;]
+                    # find the component that is the destination slot
+                    for j in compArr:
+                        if destSlot == (j.id):
+                            srcSlot = j
+
+                    newCon = Connection(src, dest, srcSlot, destSlot)               # construct new connection
+                    connArr.append(newCon)                                          # add to list of connections
+
+                robot = Robot(roboId, connArr, positions[count - 1])
+                count += 1
+                robotArr.append(robot)
+                #ANN = createBrain(neurons, brain, compArr)
+
+                return robotArr
+        else:
+            roboId = data[&#34;id&#34;]
+            body = data[&#34;body&#34;]
+            bodyComp = body[&#34;part&#34;]
+            compArr = []
+            part2 = data[&#34;brain&#34;]
+            neurons = part2[&#34;neuron&#34;]
+            brain = part2[&#34;connection&#34;]
+
+            for i in bodyComp:
+                id = i[&#39;id&#39;]
+                type = i[&#39;type&#39;]
+                root = i[&#39;root&#39;]
+                orient = i[&#39;orientation&#39;]
+                if &#39;Hinge&#39; in type:
+                    newComp = Hinge(id, type, root, orient)                     # create new Hinge component
+                else:
+                    newComp = Brick(id, type, root, orient)                     # create new Brick component
+                compArr.append(newComp)
+
+            bodyConnect = body[&#34;connection&#34;]
+            connArr = []
+
+            for i in bodyConnect:
+                src = i[&#39;src&#39;]
+                # find the component that is the source
+                for j in compArr:
+                    compare = j.id
+                    if src == compare:
+                        src = j
+
+                dest = i[&#39;dest&#39;]
+                # find the component that is the destination
+                for j in compArr:
+                    if dest == (j.id):
+                        dest = j
+
+                srcSlot = i[&#39;srcSlot&#39;]
+                # find the component that is the source slot
+                for j in compArr:
+                    if srcSlot == (j.id):
+                        srcSlot = j
+
+                destSlot = i[&#39;destSlot&#39;]
+                # find the component that is the destination slot
+                for j in compArr:
+                    if destSlot == (j.id):
+                        srcSlot = j
+
+                newCon = Connection(src, dest, srcSlot, destSlot)
+                connArr.append(newCon)
+            #ANN = createBrain(neurons, brain, compArr)
+            for i in range(int(swarm_size)):                      # loop through robots in swarm
+                robotArr.append(Robot(i, connArr, positions[i]))
+            return robotArr</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="RoboViz.RobotUtils.collisionDetect"><code class="name flex">
+<span>def <span class="ident">collisionDetect</span></span>(<span>self, robots)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Determines if there are any possible collisions between robots in the scene
+Args:
+<code>robots</code>: list of all robots in the scene (Robot[])
+Returns
+<code>collisions</code>: possible collisions between robots (int[][])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def collisionDetect(self, robots):
+    &#34;&#34;&#34;
+    Determines if there are any possible collisions between robots in the scene
+        Args:
+            `robots`: list of all robots in the scene (Robot[])
+        Returns
+            `collisions`: possible collisions between robots (int[][])
+    &#34;&#34;&#34;
+    collisions = []
+    for i, first_robot in enumerate(robots):
+        for second_robot in robots[i + 1:]:
+            # if robots cross each other&#39;s z bounds
+            if first_robot.bounds[4] &gt;= second_robot.bounds[5] and first_robot.bounds[5] &lt;= second_robot.bounds[4]:
+                # if robots cross each other&#39;s x bounds
+                if first_robot.bounds[0] &gt;= second_robot.bounds[1] and first_robot.bounds[1] &lt;= second_robot.bounds[0]:
+                    # if robots cross each other&#39;s y bounds
+                    if first_robot.bounds[2] &gt;= second_robot.bounds[3] and first_robot.bounds[3] &lt;= second_robot.bounds[2]:
+                        collisions.append([first_robot.id, second_robot.id])
+    return collisions</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.RobotUtils.configParse"><code class="name flex">
+<span>def <span class="ident">configParse</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parses environment and swarm size from configuration file</p>
+<h2 id="returns">Returns</h2>
+<p><code>configuration</code>: environment and swarm size (int[])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def configParse(self):
+    &#34;&#34;&#34;
+    Parses environment and swarm size from configuration file
+    Returns:
+        `configuration`: environment and swarm size (int[])
+    &#34;&#34;&#34;
+    configuration = []
+    with open(self.config_path, &#39;r&#39;) as f:
+        for line in f:
+            configuration.append(int(line))
+    return configuration</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.RobotUtils.createBrain"><code class="name flex">
+<span>def <span class="ident">createBrain</span></span>(<span>self, neurons, brain, compArr)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates list of neurons based on JSON file ANN inputs</p>
+<h2 id="args">Args</h2>
+<p><code>neurons</code>: list of neurons and their info from JSON file (Neurons[])<br>
+<code>brain</code>: list of connections between neurons from JSON file (List)<br>
+<code>compArr</code>: list of components that neurons are connected to (RobotComp[])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def createBrain(self, neurons, brain, compArr):
+    &#34;&#34;&#34;
+    Creates list of neurons based on JSON file ANN inputs
+    Args:
+        `neurons`: list of neurons and their info from JSON file (Neurons[])  
+        `brain`: list of connections between neurons from JSON file (List)  
+        `compArr`: list of components that neurons are connected to (RobotComp[])
+    &#34;&#34;&#34;
+    inputNeurons = []
+    outputNeurons = []
+    other = []
+    for i in neurons:
+        id = i[&#39;id&#39;]
+        layer = i[&#39;layer&#39;]
+        type = i[&#39;type&#39;]
+        # read in json file
+        bodyPartId = i[&#39;bodyPartId&#39;]
+        for j in compArr:
+            if j.id == bodyPartId:
+                bodyPartId = j
+        # set the body part id to a specific component
+        ioId = i[&#39;ioId&#39;]
+        gain = i[&#39;gain&#39;]
+        if type == &#39;sigmoid&#39;:
+            bias = i[&#39;bias&#39;]
+            phaseOffset = 0
+            period = 0
+        elif type == &#39;oscillator&#39;:
+            phaseOffset = i[&#39;phaseOffset&#39;]
+            period = i[&#39;period&#39;]
+            bias = 0
+        else:
+            phaseOffset = 0
+            period = 0
+            bias = 0
+        neuron = Neuron(id, layer, type, bodyPartId, ioId, gain, bias, phaseOffset, period)
+        # create the neuron
+        if layer == &#39;input&#39;:
+            inputNeurons.append(neuron)
+        elif layer == &#39;output&#39;:
+            inputNeurons.append(neuron)
+        else:
+            other.append(neuron)
+            # in case there is a middle layer
+
+    # set up the weights &amp; destination comps
+    for i in brain:
+        src = i[&#39;src&#39;]
+        dest = i[&#39;dest&#39;]
+        weight = i[&#39;weight&#39;]
+        w = 0
+        comp = RobotComp(0, 0, 0, 0)
+        for j in compArr:
+            if j.id in dest:
+                comp = j
+                w = weight
+                break
+        for j in inputNeurons:
+            if j.id in src:
+                j.setWeight(w)
+                j.setDestComp(comp)
+                break
+        for j in outputNeurons:
+            if j.id in src:
+                j.setWeight(w)
+                j.setDestComp(comp)
+                break
+
+    X_train = np.array([[0, 0, 1, 1], [0, 1, 0, 1]])  # dim x m
+    Y_train = np.array([[0, 1, 1, 0]])  # 1 x m
+    L, E = 0.15, 100
+    net = Network(inputNeurons, outputNeurons, X_train, Y_train, epochs=E, lr=L)
+    return net</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.RobotUtils.posParse"><code class="name flex">
+<span>def <span class="ident">posParse</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parses robot positions from positions file</p>
+<h2 id="returns">Returns</h2>
+<p><code>positions</code>: positions of Robots in scene (int[])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def posParse(self):
+    &#34;&#34;&#34;
+    Parses robot positions from positions file
+    Returns:
+        `positions`: positions of Robots in scene (int[])
+    &#34;&#34;&#34;
+    positions = []
+    with open(self.pos_path, &#39;r&#39;) as f:
+        for line in f:
+            robot_position = []
+            line = line.split(&#39; &#39;)
+            robot_position.append(int(line[0]))                         # x value
+            robot_position.append(int(line[1]))                         # y value
+            robot_position.append(int(line[2]))                         # z value
+            positions.append(robot_position)
+    return positions</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.RobotUtils.robotParse"><code class="name flex">
+<span>def <span class="ident">robotParse</span></span>(<span>self, swarm_size, positions)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parses robot(s) from robot JSON file</p>
+<h2 id="returns">Returns</h2>
+<p><code>robotArr</code>: all robots to be rendered in the scene (Robot[])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def robotParse(self, swarm_size, positions):
+    &#34;&#34;&#34;
+    Parses robot(s) from robot JSON file
+    Returns:
+        `robotArr`: all robots to be rendered in the scene (Robot[])
+    &#34;&#34;&#34;
+    robotArr = []
+    count = 0  # counting the positions
+    with open(self.robot_path, &#39;r&#39;) as f:
+        data = json.load(f)
+    if(&#34;swarm&#34; in data.keys()):
+        swarm = data[&#34;swarm&#34;]
+        #neurons = swarm[&#34;neuron&#34;]
+        #brain = swarm[&#34;connection&#34;]
+
+        for robot in swarm:
+            roboId = robot[&#34;id&#34;]
+            body = robot[&#34;body&#34;]
+
+            bodyComp = body[&#34;part&#34;]
+            compArr = []
+
+            for i in bodyComp:
+                id = i[&#39;id&#39;]
+                type = i[&#39;type&#39;]
+                root = i[&#39;root&#39;]
+                orient = i[&#39;orientation&#39;]
+                if &#39;Hinge&#39; in type:
+                    newComp = Hinge(id, type, root, orient)                     # create new Hinge component
+                else:
+                    newComp = Brick(id, type, root, orient)                     # create new Brick component
+
+                compArr.append(newComp)
+
+            bodyConnect = body[&#34;connection&#34;]
+            connArr = []
+
+            for i in bodyConnect:
+                src = i[&#39;src&#39;]
+                # find the component that is the source
+                for j in compArr:
+                    compare = j.id
+                    if src == compare:
+                        src = j
+
+                dest = i[&#39;dest&#39;]
+                # find the component that is the destination
+                for j in compArr:
+                    if dest == (j.id):
+                        dest = j
+
+                srcSlot = i[&#39;srcSlot&#39;]
+                # find the component that is the source slot
+                for j in compArr:
+                    if srcSlot == (j.id):
+                        srcSlot = j
+
+                destSlot = i[&#39;destSlot&#39;]
+                # find the component that is the destination slot
+                for j in compArr:
+                    if destSlot == (j.id):
+                        srcSlot = j
+
+                newCon = Connection(src, dest, srcSlot, destSlot)               # construct new connection
+                connArr.append(newCon)                                          # add to list of connections
+
+            robot = Robot(roboId, connArr, positions[count - 1])
+            count += 1
+            robotArr.append(robot)
+            #ANN = createBrain(neurons, brain, compArr)
+
+            return robotArr
+    else:
+        roboId = data[&#34;id&#34;]
+        body = data[&#34;body&#34;]
+        bodyComp = body[&#34;part&#34;]
+        compArr = []
+        part2 = data[&#34;brain&#34;]
+        neurons = part2[&#34;neuron&#34;]
+        brain = part2[&#34;connection&#34;]
+
+        for i in bodyComp:
+            id = i[&#39;id&#39;]
+            type = i[&#39;type&#39;]
+            root = i[&#39;root&#39;]
+            orient = i[&#39;orientation&#39;]
+            if &#39;Hinge&#39; in type:
+                newComp = Hinge(id, type, root, orient)                     # create new Hinge component
+            else:
+                newComp = Brick(id, type, root, orient)                     # create new Brick component
+            compArr.append(newComp)
+
+        bodyConnect = body[&#34;connection&#34;]
+        connArr = []
+
+        for i in bodyConnect:
+            src = i[&#39;src&#39;]
+            # find the component that is the source
+            for j in compArr:
+                compare = j.id
+                if src == compare:
+                    src = j
+
+            dest = i[&#39;dest&#39;]
+            # find the component that is the destination
+            for j in compArr:
+                if dest == (j.id):
+                    dest = j
+
+            srcSlot = i[&#39;srcSlot&#39;]
+            # find the component that is the source slot
+            for j in compArr:
+                if srcSlot == (j.id):
+                    srcSlot = j
+
+            destSlot = i[&#39;destSlot&#39;]
+            # find the component that is the destination slot
+            for j in compArr:
+                if destSlot == (j.id):
+                    srcSlot = j
+
+            newCon = Connection(src, dest, srcSlot, destSlot)
+            connArr.append(newCon)
+        #ANN = createBrain(neurons, brain, compArr)
+        for i in range(int(swarm_size)):                      # loop through robots in swarm
+            robotArr.append(Robot(i, connArr, positions[i]))
+        return robotArr</code></pre>
+</details>
+</dd>
+<dt id="RoboViz.RobotUtils.writeRobot"><code class="name flex">
+<span>def <span class="ident">writeRobot</span></span>(<span>self, robot, name)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Writes built Robot out to relevant files</p>
+<h2 id="args">Args</h2>
+<p><code>robot</code>: Robot to be written out (Robot)<br>
+<code>name</code>: name of Robot JSON file (String)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def writeRobot(self, robot, name):
+    &#34;&#34;&#34;
+    Writes built Robot out to relevant files
+    Args:
+        `robot`: Robot to be written out (Robot)  
+        `name`: name of Robot JSON file (String)
+    &#34;&#34;&#34;
+    path = &#39;json/{}.json&#39;.format(name)
+    with open(path, &#39;w&#39;) as f:
+        json.dump(robot.__dict__, f)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="RoboViz.formatCollisions" href="#RoboViz.formatCollisions">formatCollisions</a></code></li>
+<li><code><a title="RoboViz.formatOutOfBounds" href="#RoboViz.formatOutOfBounds">formatOutOfBounds</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="RoboViz.Brick" href="#RoboViz.Brick">Brick</a></code></h4>
+</li>
+<li>
+<h4><code><a title="RoboViz.Connection" href="#RoboViz.Connection">Connection</a></code></h4>
+<ul class="">
+<li><code><a title="RoboViz.Connection.standardiseSlots" href="#RoboViz.Connection.standardiseSlots">standardiseSlots</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="RoboViz.Environment" href="#RoboViz.Environment">Environment</a></code></h4>
+<ul class="two-column">
+<li><code><a title="RoboViz.Environment.displayLabel" href="#RoboViz.Environment.displayLabel">displayLabel</a></code></li>
+<li><code><a title="RoboViz.Environment.enlargeLabel" href="#RoboViz.Environment.enlargeLabel">enlargeLabel</a></code></li>
+<li><code><a title="RoboViz.Environment.initialView" href="#RoboViz.Environment.initialView">initialView</a></code></li>
+<li><code><a title="RoboViz.Environment.moveCamera" href="#RoboViz.Environment.moveCamera">moveCamera</a></code></li>
+<li><code><a title="RoboViz.Environment.moveRobot" href="#RoboViz.Environment.moveRobot">moveRobot</a></code></li>
+<li><code><a title="RoboViz.Environment.renderRobot" href="#RoboViz.Environment.renderRobot">renderRobot</a></code></li>
+<li><code><a title="RoboViz.Environment.select" href="#RoboViz.Environment.select">select</a></code></li>
+<li><code><a title="RoboViz.Environment.switchFocus" href="#RoboViz.Environment.switchFocus">switchFocus</a></code></li>
+<li><code><a title="RoboViz.Environment.toggleBounding" href="#RoboViz.Environment.toggleBounding">toggleBounding</a></code></li>
+<li><code><a title="RoboViz.Environment.toggleLabels" href="#RoboViz.Environment.toggleLabels">toggleLabels</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="RoboViz.Hinge" href="#RoboViz.Hinge">Hinge</a></code></h4>
+</li>
+<li>
+<h4><code><a title="RoboViz.Robot" href="#RoboViz.Robot">Robot</a></code></h4>
+<ul class="">
+<li><code><a title="RoboViz.Robot.drawBounds" href="#RoboViz.Robot.drawBounds">drawBounds</a></code></li>
+<li><code><a title="RoboViz.Robot.outOfBoundsDetect" href="#RoboViz.Robot.outOfBoundsDetect">outOfBoundsDetect</a></code></li>
+<li><code><a title="RoboViz.Robot.setBounds" href="#RoboViz.Robot.setBounds">setBounds</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="RoboViz.RobotComp" href="#RoboViz.RobotComp">RobotComp</a></code></h4>
+<ul class="">
+<li><code><a title="RoboViz.RobotComp.calcPos" href="#RoboViz.RobotComp.calcPos">calcPos</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="RoboViz.RobotGUI" href="#RoboViz.RobotGUI">RobotGUI</a></code></h4>
+<ul class="">
+<li><code><a title="RoboViz.RobotGUI.build_window" href="#RoboViz.RobotGUI.build_window">build_window</a></code></li>
+<li><code><a title="RoboViz.RobotGUI.connection_window" href="#RoboViz.RobotGUI.connection_window">connection_window</a></code></li>
+<li><code><a title="RoboViz.RobotGUI.error_window" href="#RoboViz.RobotGUI.error_window">error_window</a></code></li>
+<li><code><a title="RoboViz.RobotGUI.runSim" href="#RoboViz.RobotGUI.runSim">runSim</a></code></li>
+<li><code><a title="RoboViz.RobotGUI.startGUI" href="#RoboViz.RobotGUI.startGUI">startGUI</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="RoboViz.RobotUtils" href="#RoboViz.RobotUtils">RobotUtils</a></code></h4>
+<ul class="two-column">
+<li><code><a title="RoboViz.RobotUtils.collisionDetect" href="#RoboViz.RobotUtils.collisionDetect">collisionDetect</a></code></li>
+<li><code><a title="RoboViz.RobotUtils.configParse" href="#RoboViz.RobotUtils.configParse">configParse</a></code></li>
+<li><code><a title="RoboViz.RobotUtils.createBrain" href="#RoboViz.RobotUtils.createBrain">createBrain</a></code></li>
+<li><code><a title="RoboViz.RobotUtils.posParse" href="#RoboViz.RobotUtils.posParse">posParse</a></code></li>
+<li><code><a title="RoboViz.RobotUtils.robotParse" href="#RoboViz.RobotUtils.robotParse">robotParse</a></code></li>
+<li><code><a title="RoboViz.RobotUtils.writeRobot" href="#RoboViz.RobotUtils.writeRobot">writeRobot</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
