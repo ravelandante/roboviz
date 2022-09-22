@@ -218,7 +218,7 @@ class RobotGUI:
                 config = [1000, 1000, 1]
                 if (values['-FILE-']):
                     self.utils.writeRobot(robot, values['-F_NAME-'])
-                self.runSim(config, [robot], file=False)
+                self.runSim(config=config, robots=[robot], file=False)
 
         window.close()
 
@@ -274,10 +274,10 @@ class RobotGUI:
 
         sg.theme(self.bgColour)
         window = sg.Window("RoboViz", layout, icon='resources/r_icon.ico')
-        auto_pack = False
 
         # Main Program Loop
         while True:
+            auto_pack = False
             event, values = window.read()
 
             if event == sg.WIN_CLOSED or event == 'Exit':
@@ -291,14 +291,12 @@ class RobotGUI:
                 self.build_window()
                 window.UnHide()
 
-            elif (event == "Submit" and values["-FILE_PATH-"] != "" and values["-FILE_PATH-2"] != "" and values["-A_PACK-"]):
-                auto_pack = True
             elif (event == "Submit" and values["-FILE_PATH-"] == ""):
                 configError.update(visible=True)
             else:
                 configError.update(visible=False)
 
-            if (event == "Submit" and values["-FILE_PATH-0"] == ""):
+            if (event == "Submit" and values["-FILE_PATH-0"] == "" and not values['-A_PACK-']):
                 posError.update(visible=True)
             else:
                 posError.update(visible=False)
@@ -308,7 +306,9 @@ class RobotGUI:
             else:
                 jsonError.update(visible=False)
 
-            if (event == "Submit" and values["-FILE_PATH-"] != "" and values["-FILE_PATH-0"] != "" and values["-FILE_PATH-2"] != ""):
+            if ((event == "Submit" and values["-FILE_PATH-"] != "" and values["-FILE_PATH-0"] != "" and values["-FILE_PATH-2"] != "") or (event == 'Submit' and values['-A_PACK-'])):
+                if values['-A_PACK-']:
+                    auto_pack = True
                 self.config_path = values["-FILE_PATH-"]
                 self.pos_path = values["-FILE_PATH-0"]
                 self.robot_path = values["-FILE_PATH-2"]
@@ -321,13 +321,9 @@ class RobotGUI:
                             f.write(' \n')
                 subprocess.check_call(["attrib", "+H", "LastRender.txt"])   # hide saved file paths file
 
-                # x = threading.Thread(target=self.runSim)
-                # x.start()
-                # x.join()
-
-                # window.hide()
-
+                window.hide()
                 self.runSim(auto_pack=auto_pack)
+                window.UnHide()
 
         window.close()
 
@@ -348,7 +344,7 @@ class RobotGUI:
             else:
                 positions = [[0, 0, 0]]*int(config[2])
             robots = self.utils.robotParse(int(config[2]), positions)
-
+        print(config)
         env = Environment(int(config[0]), int(config[1]), int(config[2]))
         for i, robot in enumerate(robots):                                      # loop through robots in swarm
             env.renderRobot(robot)                                  # render robot

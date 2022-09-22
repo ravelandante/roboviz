@@ -19,6 +19,7 @@ from copy import deepcopy
 
 CREATE_BRAIN = False
 PACK_BUFFER = 50
+INC_AMT = 100
 
 
 class RobotUtils:
@@ -334,9 +335,8 @@ class RobotUtils:
                     positions[i] = (positions[i][0] + core_pos[0] - bounds[1] - box_size[0]/2,
                                     positions[i][1] + core_pos[1] - bounds[3] - box_size[1]/2)
             except rpack.PackingImpossibleError:
-                print('Environment too small, retrying with larger bounds...')
-                x_length += 100
-                y_length += 100
+                x_length += INC_AMT
+                y_length += INC_AMT
                 continue
             else:
                 break
