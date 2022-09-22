@@ -133,10 +133,8 @@ class RobotGUI:
         layout = [[sg.Button('+', size=3), sg.Button('-', size=3), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key='-C_COMBO-'),
                    sg.InputText(key='-COMP_ID-', size=30, default_text='comp_id')],
                   [sg.Text('Components')],
-                  [sg.Tree(data=treedata, key="-COMP_TREE-", auto_size_columns=True, num_rows=20,
-                           headings=['Type', 'Orientation'], col0_width=30, expand_x=True, show_expanded=True), ],
-                  [sg.Button('Submit'), sg.Button('Help'), sg.Button('Back'),
-                  sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")], target='-LOAD-'),
+                  [sg.Tree(data=treedata, key="-COMP_TREE-", auto_size_columns=True, num_rows=20, headings=['Type', 'Orientation'], col0_width=30, expand_x=True, show_expanded=True), ],
+                  [sg.Button('Submit'), sg.Button('Help'), sg.Button('Back'), sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")], target='-LOAD-'),
                   sg.Input(key='-LOAD-', enable_events=True, visible=False), sg.Exit(), sg.Checkbox('Write to file', default=True, key='-FILE-'),
                   sg.InputText(key='-F_NAME-', size=30, default_text='robot_name')]]
         window = sg.Window("Build a Robot", layout, modal=True)

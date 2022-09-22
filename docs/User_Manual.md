@@ -227,6 +227,6 @@ _Note: The "brain" section can be left out if CREATE_BRAIN is set to False in ro
 
 ##### Example
 
-Two full example JSON files are given in the source code (homogenous + heterogeneous)
+Two full example JSON files are given in the source code (homogenous: _robot.json_, heterogeneous: _multipleRobots.json_)
 
 ****
