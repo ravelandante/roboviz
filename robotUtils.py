@@ -13,9 +13,11 @@ from robotComp import RobotComp
 
 import json
 import numpy as np
+import rpack
 
 
 CREATE_BRAIN = False
+PACK_BUFFER = 50
 
 
 class RobotUtils:
@@ -252,8 +254,7 @@ class RobotUtils:
                 robotArr.append(robot)
                 if CREATE_BRAIN:
                     ANN = self.createBrain(neurons, brain, compArr)
-
-                return robotArr
+            return robotArr
         else:
             roboId = data["id"]
             body = data["body"]
@@ -311,3 +312,22 @@ class RobotUtils:
             for i in range(int(swarm_size)):                      # loop through robots in swarm
                 robotArr.append(Robot(i, connArr, compArr, positions[i]))
             return robotArr
+
+    def autoPack(self, robots):
+        sizes = []
+        for robot in robots:
+            bounds = robot.bounds
+            width = int(bounds[0]) - int(bounds[1]) + PACK_BUFFER
+            height = int(bounds[2]) - int(bounds[3]) + PACK_BUFFER
+            sizes.append((width, height))
+
+        positions = rpack.pack(sizes)
+        box_size = rpack.bbox_size(sizes, positions)
+
+        for i, _ in enumerate(positions):
+            bounds = robots[i].bounds
+            core_pos = robot.core_pos
+            positions[i] = (positions[i][0] + core_pos[0] - bounds[1] - box_size[0]/2,
+                            positions[i][1] + core_pos[1] - bounds[3] - box_size[1]/2)
+
+        return positions

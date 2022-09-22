@@ -223,7 +223,7 @@ The format should be as follows:
 }
 ```
 
-_Note: The "brain" section can be left out if CREATE_BRAIN is set to False in robotHandler.py._
+_Note: The "brain" section can be left out if CREATE_BRAIN is set to False in robotUtils.py._
 
 ##### Example
 

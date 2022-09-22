@@ -241,7 +241,7 @@ class RobotGUI:
                 [sg.Text("Choose a robots file:", background_color=self.bgColour)],
                 [sg.InputText(key="-FILE_PATH-"),
                  sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")])], [jsonError],
-                [sg.Button('Submit'), sg.Button('Help'), sg.Button('Build'), sg.Exit()]
+                [sg.Button('Submit'), sg.Button('Help'), sg.Button('Build'), sg.Exit(), sg.Checkbox('Auto-pack', key='-A_PACK-')]
             ]
         else:
             LastRender = True
@@ -269,25 +269,31 @@ class RobotGUI:
                 [sg.Text("Choose a robots file:", background_color=self.bgColour)],
                 [sg.InputText(default_text=robot_path, key="-FILE_PATH-"),
                  sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")])], [jsonError],
-                [sg.Button('Submit'), sg.Button('Help'), sg.Button('Build'), sg.Exit()]
+                [sg.Button('Submit'), sg.Button('Help'), sg.Button('Build'), sg.Exit(), sg.Checkbox('Auto-pack', key='-A_PACK-')]
             ]
 
         sg.theme(self.bgColour)
         window = sg.Window("RoboViz", layout, icon='resources/r_icon.ico')
+        auto_pack = False
 
         # Main Program Loop
         while True:
             event, values = window.read()
+
             if event == sg.WIN_CLOSED or event == 'Exit':
                 break
-            if (event == "Help"):
+
+            elif (event == "Help"):
                 sg.popup("some help info\nsome more help stuff ig\neven more help text wowow", title="Help")
-            if (event == "Build"):
+
+            elif (event == "Build"):
                 window.hide()
                 self.build_window()
                 window.UnHide()
 
-            if (event == "Submit" and values["-FILE_PATH-"] == ""):
+            elif (event == "Submit" and values["-FILE_PATH-"] != "" and values["-FILE_PATH-2"] != "" and values["-A_PACK-"]):
+                auto_pack = True
+            elif (event == "Submit" and values["-FILE_PATH-"] == ""):
                 configError.update(visible=True)
             else:
                 configError.update(visible=False)
@@ -320,22 +326,26 @@ class RobotGUI:
                 # x.join()
 
                 # window.hide()
-                self.runSim()
+                self.runSim(auto_pack=auto_pack)
 
         window.close()
 
-    def runSim(self, config=0, robots=0, file=True):
+    def runSim(self, auto_pack=False, config=0, robots=0, file=True):
         """
         Creates the Environment and runs the simulation
         Args:
+            `auto_pack`: whether the packing algorithm will be used to auto-position the robots (Boolean) **optional**
             `config`: configuration parameters (int[]) **optional**, only used when building a robot  
             `robots`: array of Robots (Robot[]) **optional**, only used when building a robot  
             `file`: whether or not the robots have been loaded from a file (boolean) **optional**
         """
         if file:
             self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
-            positions = self.utils.posParse()
             config = self.utils.configParse()
+            if not auto_pack:
+                positions = self.utils.posParse()
+            else:
+                positions = [[0, 0, 0]]*int(config[2])
             robots = self.utils.robotParse(int(config[2]), positions)
 
         env = Environment(int(config[0]), int(config[1]), int(config[2]))
@@ -345,10 +355,12 @@ class RobotGUI:
             out_of_bounds = robot.outOfBoundsDetect(int(config[0]), int(config[1]))
             if out_of_bounds != 'none':
                 self.out_of_bounds_all.append([i, out_of_bounds])
+        if auto_pack:
+            env.auto_pack(self.utils.autoPack(robots))
         env.initialView()
-        self.collisions = self.utils.collisionDetect(robots)                  # get any possible collisions between robots
-
-        if len(self.collisions) > 0 or len(self.out_of_bounds_all) > 0:
-            self.error_window()
+        if not auto_pack:
+            self.collisions = self.utils.collisionDetect(robots)                  # get any possible collisions between robots
+            if len(self.collisions) > 0 or len(self.out_of_bounds_all) > 0:
+                self.error_window()
 
         env.run()
