@@ -296,7 +296,12 @@ class Environment(ShowBase):
         distance = bounds.getRadius() / math.tan(deg2rad(min(fov[0], fov[1]) * 0.6))    # calc distance needed to see all robots
         self.moveCamera(pos=centre, z_dist=distance)
 
-    def auto_pack(self, pack_info):
+    def reposition(self, pack_info):
+        """
+        Repositions Robots and resizes environment based on the info received from the robotUtils _auto_pack_ method
+        Args:
+            `pack_info`: contains positions of robots and dims of environment to fit them (Tuple)
+        """
         positions = pack_info[0]
         self.plane.setScale(pack_info[1], pack_info[2], 0)
         robots = self.robotNode.getChildren()

@@ -317,6 +317,15 @@ class RobotUtils:
             return robotArr
 
     def autoPack(self, robots, x_length, y_length):
+        """
+        Calculates automatic positioning of Robots to fit within certain bounds (resizes environment if not possible)
+        Args:
+            `robots`: Robots in the Environment (Robot[])  
+            `x_length`: current x-dim of the environment  
+            `y_length`: current y-dim of the environment
+        Returns:
+            `(positions, x_length, y_length)`: new positions of Robots + new dims of environment
+        """
         while True:
             try:
                 sizes = []

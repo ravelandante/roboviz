@@ -7,7 +7,6 @@ import PySimpleGUI as sg
 import os
 from os.path import exists
 import subprocess
-import threading
 
 from robotUtils import RobotUtils
 from environment import Environment
@@ -353,7 +352,7 @@ class RobotGUI:
             if out_of_bounds != 'none':
                 self.out_of_bounds_all.append([i, out_of_bounds])
         if auto_pack:
-            env.auto_pack(self.utils.autoPack(robots, config[0], config[1]))
+            env.reposition(self.utils.autoPack(robots, config[0], config[1]))
         env.initialView()
         if not auto_pack:
             self.collisions = self.utils.collisionDetect(robots)                  # get any possible collisions between robots
