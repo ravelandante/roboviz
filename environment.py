@@ -102,6 +102,7 @@ class Environment(ShowBase):
         self.accept('l', self.toggleLabels)
         self.accept('h', lambda: self.help_textNode.show() if self.help_textNode.isHidden() else self.help_textNode.hide())
         self.accept('mouse1', self.select)
+        self.accept('escape', self.stop_panda)
 
         # moving robots
         self.accept('arrow_up-repeat', self.moveRobot, [0])
@@ -121,9 +122,9 @@ class Environment(ShowBase):
         self.accept('control-arrow_left', lambda: self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + LVector3f(90, 0, 0)))
         self.accept('control-arrow_right', lambda: self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + LVector3f(-90, 0, 0)))
 
-    # def finalizeExit(self):
-        # self.closeWindow(self.win)
-        # self.destroy()
+    def stop_panda(self):
+        self.closeWindow(self.win)
+        self.destroy()
 
     def toggleLabels(self, first=False):
         """
