@@ -14,6 +14,7 @@ from robotComp import RobotComp
 import json
 import numpy as np
 import rpack
+from copy import deepcopy
 
 
 CREATE_BRAIN = False
@@ -310,6 +311,7 @@ class RobotUtils:
             if CREATE_BRAIN:
                 ANN = self.createBrain(neurons, brain, compArr)
             for i in range(int(swarm_size)):                      # loop through robots in swarm
+                connArr = deepcopy(connArr)
                 robotArr.append(Robot(i, connArr, compArr, positions[i]))
             return robotArr
 

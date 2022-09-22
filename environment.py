@@ -315,40 +315,39 @@ class Environment(ShowBase):
         for i, connection in enumerate(robot.connections):                      # loop through connections in robot
             if connection.src.root and i == 0:                                  # if source is the core component
                 src_path = './models/BAM/' + connection.src.type + '.bam'       # get path of source model file
-                self.src = self.loader.loadModel(src_path)                      # load model of source component
+                src = self.loader.loadModel(src_path)                      # load model of source component
                 # set core's position to robot core_pos
                 connection.src.pos = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
 
-                self.src.setPos(connection.src.pos)                             # set position of source model
-                self.src.reparentTo(self.robotNode)                             # set parent to robotNode
-                self.src.setName(str(robot.id) + connection.src.id)             # set name of node to component ID
-                self.src.setTag('robot', str(robot.id) + connection.src.id)
+                src.setPos(connection.src.pos)                             # set position of source model
+                src.reparentTo(self.robotNode)                             # set parent to robotNode
+                src.setName(str(robot.id) + connection.src.id)             # set name of node to component ID
+                src.setTag('robot', str(robot.id) + connection.src.id)
 
-                self.displayLabel(pos=connection.src.pos, text='Robot ' + str(robot.id), parent=self.src)   # display robot id label text
-                connection.src.node = self.src                                              # add Panda3D node to robotComp
+                self.displayLabel(pos=connection.src.pos, text='Robot ' + str(robot.id), parent=src)   # display robot id label text
+                connection.src.node = src                                              # add Panda3D node to robotComp
 
             dst_path = './models/BAM/' + connection.dst.type + '.bam'           # get path of destination model file
-            self.dst = self.loader.loadModel(dst_path)                          # load model of source component
-            self.dst.setName(connection.dst.id)
-            self.dst.setTag('robot', connection.dst.id)
-
+            dst = self.loader.loadModel(dst_path)                          # load model of source component
+            dst.setName(connection.dst.id)
+            dst.setTag('robot', connection.dst.id)
             connection.standardiseSlots()
 
             # calc position of dest comp based on source position
-            connection.dst.pos, heading = connection.dst.calcPos(self.src, self.dst, connection)
+            connection.dst.pos, heading = connection.dst.calcPos(src, dst, connection)
 
-            self.dst.setColor(connection.dst.colour)                            # set model to relevant colour
-            self.dst.reparentTo(connection.src.node)                            # reparent dst node to src node (add to tree)
+            dst.setColor(connection.dst.colour)                            # set model to relevant colour
+            dst.reparentTo(connection.src.node)                            # reparent dst node to src node (add to tree)
 
-            self.dst.setHpr(self.render, heading, 0, 0)                         # set heading of destination model
-            self.dst.setPos(self.render, connection.dst.pos)                    # set position of destination model
+            dst.setHpr(self.render, heading, 0, 0)                         # set heading of destination model
+            dst.setPos(self.render, connection.dst.pos)                    # set position of destination model
             if 'Hinge' in connection.dst.type:
                 connection.dst.orientation += connection.src.orientation
                 while connection.dst.orientation > 3:
                     connection.dst.orientation -= 4
-                self.dst.setR(self.render, ORIENTATION[connection.dst.orientation])
+                dst.setR(self.render, ORIENTATION[connection.dst.orientation])
 
-            connection.dst.node = self.dst                                      # add Panda3D node to robotComp
+            connection.dst.node = dst                                      # add Panda3D node to robotComp
 
             # print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
 

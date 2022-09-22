@@ -59,6 +59,8 @@ class RobotComp:
             src_slot += 4
 
         heading = SRC_SLOTS[src_slot] + DST_SLOTS[connection.dst_slot]  # heading of dst model, depending on src and dst slot
+        # if self.id == 'Hip3':
+        #    print(heading)
         connection.dst.direction = DIRECTION[heading]
         dst.setHpr(heading, 0, 0)
 
