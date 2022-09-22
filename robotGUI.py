@@ -326,6 +326,7 @@ class RobotGUI:
                 # x.join()
 
                 # window.hide()
+
                 self.runSim(auto_pack=auto_pack)
 
         window.close()
@@ -356,7 +357,7 @@ class RobotGUI:
             if out_of_bounds != 'none':
                 self.out_of_bounds_all.append([i, out_of_bounds])
         if auto_pack:
-            env.auto_pack(self.utils.autoPack(robots))
+            env.auto_pack(self.utils.autoPack(robots, config[0], config[1]))
         env.initialView()
         if not auto_pack:
             self.collisions = self.utils.collisionDetect(robots)                  # get any possible collisions between robots

@@ -315,21 +315,29 @@ class RobotUtils:
                 robotArr.append(Robot(i, connArr, compArr, positions[i]))
             return robotArr
 
-    def autoPack(self, robots):
-        sizes = []
-        for robot in robots:
-            bounds = robot.bounds
-            width = int(bounds[0]) - int(bounds[1]) + PACK_BUFFER
-            height = int(bounds[2]) - int(bounds[3]) + PACK_BUFFER
-            sizes.append((width, height))
+    def autoPack(self, robots, x_length, y_length):
+        while True:
+            try:
+                sizes = []
+                for robot in robots:
+                    bounds = robot.bounds
+                    width = int(bounds[0]) - int(bounds[1]) + PACK_BUFFER
+                    height = int(bounds[2]) - int(bounds[3]) + PACK_BUFFER
+                    sizes.append((width, height))
 
-        positions = rpack.pack(sizes)
-        box_size = rpack.bbox_size(sizes, positions)
+                positions = rpack.pack(sizes, max_width=y_length, max_height=x_length)
+                box_size = rpack.bbox_size(sizes, positions)
 
-        for i, _ in enumerate(positions):
-            bounds = robots[i].bounds
-            core_pos = robot.core_pos
-            positions[i] = (positions[i][0] + core_pos[0] - bounds[1] - box_size[0]/2,
-                            positions[i][1] + core_pos[1] - bounds[3] - box_size[1]/2)
-
-        return positions
+                for i, _ in enumerate(positions):
+                    bounds = robots[i].bounds
+                    core_pos = robot.core_pos
+                    positions[i] = (positions[i][0] + core_pos[0] - bounds[1] - box_size[0]/2,
+                                    positions[i][1] + core_pos[1] - bounds[3] - box_size[1]/2)
+            except rpack.PackingImpossibleError:
+                print('Environment too small, retrying with larger bounds...')
+                x_length += 100
+                y_length += 100
+                continue
+            else:
+                break
+        return (positions, x_length, y_length)

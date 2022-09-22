@@ -296,7 +296,9 @@ class Environment(ShowBase):
         distance = bounds.getRadius() / math.tan(deg2rad(min(fov[0], fov[1]) * 0.6))    # calc distance needed to see all robots
         self.moveCamera(pos=centre, z_dist=distance)
 
-    def auto_pack(self, positions):
+    def auto_pack(self, pack_info):
+        positions = pack_info[0]
+        self.plane.setScale(pack_info[1], pack_info[2], 0)
         robots = self.robotNode.getChildren()
         for i, robot in enumerate(robots):
             new_pos = LVector3f(positions[i][0], positions[i][1], 0)
