@@ -20,7 +20,7 @@ from direct.gui.DirectGui import *
 
 from numpy import deg2rad
 import math
-
+import sys
 
 SHIFT_VALUE = 5     # number of units robots will be moved by
 ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}
@@ -46,6 +46,7 @@ class Environment(ShowBase):
         proto_text = 'RoboViz Prototype'                                # add prototype text
         proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
                                       fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
+        #self.stderr_orig = sys.stderr
 
         props = WindowProperties()
         props.setTitle('RoboViz')
@@ -82,7 +83,7 @@ class Environment(ShowBase):
         self.camera.reparentTo(self.focus)
 
         self.plane = self.loader.loadModel('./models/BAM/plane.bam')    # load 'terrain' plane
-        self.plane.setScale(self.x_length, self.y_length, 0)            # scale up to specified dimensions
+        self.plane.setScale(self.x_length, self.y_length, 10)            # scale up to specified dimensions
         self.plane.reparentTo(self.render)
 
         alight = AmbientLight('alight')                                 # create ambient light
@@ -124,6 +125,7 @@ class Environment(ShowBase):
     def finalizeExit(self):
         self.closeWindow(self.win)
         self.destroy()
+        #sys.stderr = object
         raise KeyboardInterrupt
 
     def toggleLabels(self, first=False):
@@ -303,7 +305,8 @@ class Environment(ShowBase):
             `pack_info`: contains positions of robots and dims of environment to fit them (Tuple)
         """
         positions = pack_info[0]
-        self.plane.setScale(pack_info[1], pack_info[2], 0)
+        self.plane.setScale(pack_info[1], pack_info[2], 10)
+        print('Resized environment to {} by {} units'.format(pack_info[1], pack_info[2]))
         robots = self.robotNode.getChildren()
         for i, robot in enumerate(robots):
             new_pos = LVector3f(positions[i][0], positions[i][1], 0)

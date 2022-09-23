@@ -3,3 +3,4 @@ PySimpleGui==4.60.3
 numpy
 sympy
 scipy
+rectangle-packer==2.0.1

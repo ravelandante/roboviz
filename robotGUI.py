@@ -70,6 +70,20 @@ class RobotGUI:
         self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
         self.bgColour = "Black"
 
+    def help_window(self, type):
+        if type == 'file':
+            help = "To load a robot:\n  * browse for and choose a configuration, robot positions, and robot JSON file\n  * click on the 'Submit' button to start the simulation\n(file formats are available in './docs/User_Manual.md' under Appendix: File Formats)\n\nTo use auto-pack:\n  * toggle the 'auto-pack' check box\n  * browse for and choose a configuration and robot JSON file\n  * click on the 'Submit' button\n(positions will be automatically calculated and environment will be resized if needed)\n\nFull docs available under './docs/User_Manual.md'"
+        elif type == 'build':
+            help = "To add a component:\n  * click the desired parent component in the tree\n  * select the desired type of component from the dropdown\n  * give the component an ID in the text box ('comp_id')\n  * click the '+' button and fill in the source & destination slots and orientation\n  * click on the 'Submit' button to start the simulation\n\nTo load a robot from a JSON file click on the 'Browse' button and select a robot JSON file\n\nBuilt robots can also be saved by checking 'Write to file', giving it a name and clicking 'Submit'\n\nFull docs available under './docs/User_Manual.md'"
+        layout = [[sg.Multiline(default_text=help, disabled=True, size=(70, 15), no_scrollbar=True)],
+                  [sg.Button('Ok')]]
+        window = sg.Window('Help', layout, modal=True)
+        while True:
+            event, _ = window.read()
+            if event == sg.WIN_CLOSED or event == 'Ok':
+                break
+        window.close()
+
     def error_window(self):
         """Displays the error reporting window"""
         if len(self.collisions) > 0:
@@ -129,12 +143,12 @@ class RobotGUI:
         core = Brick('Core', 'CoreComponent', True, 0)
         components.append(core)
         treedata.insert(parent='', key=core.id, text=core.id, values=['CoreComponent', core.orientation])
-        layout = [[sg.Button('+', size=3), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key='-C_COMBO-'),
+        layout = [[sg.Button('+', size=3, tooltip='add component'), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key='-C_COMBO-', tooltip='component type'),
                    sg.InputText(key='-COMP_ID-', size=30, default_text='comp_id')],
                   [sg.Text('Components')],
                   [sg.Tree(data=treedata, key="-COMP_TREE-", auto_size_columns=True, num_rows=20, headings=['Type', 'Orientation'], col0_width=30, expand_x=True, show_expanded=True), ],
-                  [sg.Button('Submit'), sg.Button('Help'), sg.Button('Back'), sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")], target='-LOAD-'),
-                  sg.Input(key='-LOAD-', enable_events=True, visible=False), sg.Checkbox('Write to file', default=True, key='-FILE-'),
+                  [sg.Button('Submit', tooltip='start simulation'), sg.Button('Help', tooltip='help menu'), sg.Button('Back', tooltip='return to file menu'), sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")], target='-LOAD-', tooltip='load robot JSON'),
+                  sg.Input(key='-LOAD-', enable_events=True, visible=False), sg.Checkbox('Write to file', default=True, key='-FILE-', tooltip='write robot to JSON'),
                   sg.InputText(key='-F_NAME-', size=30, default_text='robot_name')]]
         window = sg.Window("Build a Robot", layout, modal=True)
         while True:
@@ -144,7 +158,7 @@ class RobotGUI:
             if event == 'Back':
                 break
             if event == 'Help':
-                sg.popup("some help info\nsome more help stuff ig\neven more help text wowow", title="Help")
+                self.help_window('build')
             if event == '-LOAD-':
                 if values['-LOAD-'] == '':
                     continue
@@ -240,7 +254,8 @@ class RobotGUI:
                 [sg.Text("Choose a robots file:", background_color=self.bgColour)],
                 [sg.InputText(key="-FILE_PATH-"),
                  sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")])], [jsonError],
-                [sg.Button('Submit'), sg.Button('Help'), sg.Button('Build'), sg.Exit(), sg.Checkbox('Auto-pack', key='-A_PACK-')]
+                [sg.Button('Submit', tooltip='start simulation'), sg.Button('Help', tooltip='help menu'), sg.Button(
+                    'Build', tooltip='open robot building menu'), sg.Exit(), sg.Checkbox('Auto-pack', key='-A_PACK-', tooltip='auto-position robots')]
             ]
         else:
             LastRender = True
@@ -268,7 +283,8 @@ class RobotGUI:
                 [sg.Text("Choose a robots file:", background_color=self.bgColour)],
                 [sg.InputText(default_text=robot_path, key="-FILE_PATH-"),
                  sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")])], [jsonError],
-                [sg.Button('Submit'), sg.Button('Help'), sg.Button('Build'), sg.Exit(), sg.Checkbox('Auto-pack', key='-A_PACK-')]
+                [sg.Button('Submit', tooltip='start simulation'), sg.Button('Help', tooltip='help menu'), sg.Button(
+                    'Build', tooltip='open robot building menu'), sg.Exit(), sg.Checkbox('Auto-pack', key='-A_PACK-', tooltip='auto-position robots')]
             ]
 
         sg.theme(self.bgColour)
@@ -283,7 +299,7 @@ class RobotGUI:
                 break
 
             elif (event == "Help"):
-                sg.popup("some help info\nsome more help stuff ig\neven more help text wowow", title="Help")
+                self.help_window('file')
 
             elif (event == "Build"):
                 window.hide()
@@ -344,18 +360,24 @@ class RobotGUI:
                 positions = [[0, 0, 0]]*int(config[2])
             robots = self.utils.robotParse(int(config[2]), positions)
         env = Environment(int(config[0]), int(config[1]), int(config[2]))
+        print('Rendering Robots...')
         for i, robot in enumerate(robots):                                      # loop through robots in swarm
             env.renderRobot(robot)                                  # render robot
             # get any out of bounds/collisions
             out_of_bounds = robot.outOfBoundsDetect(int(config[0]), int(config[1]))
             if out_of_bounds != 'none':
                 self.out_of_bounds_all.append([i, out_of_bounds])
+        print('...Done')
         if auto_pack:
+            print('Auto-packing Robots...')
             env.reposition(self.utils.autoPack(robots, config[0], config[1]))
+            print('...Done')
         env.initialView()
         if not auto_pack:
+            print('Detecting collisions...')
             self.collisions = self.utils.collisionDetect(robots)                  # get any possible collisions between robots
+            print('...Done')
             if len(self.collisions) > 0 or len(self.out_of_bounds_all) > 0:
                 self.error_window()
-
+        print('Rendering Environment...')
         env.run()
