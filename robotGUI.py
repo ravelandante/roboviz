@@ -77,6 +77,7 @@ class RobotGUI:
             help = "To add a component:\n  * click the desired parent component in the tree\n  * select the desired type of component from the dropdown\n  * give the component an ID in the text box ('comp_id')\n  * click the '+' button and fill in the source & destination slots and orientation\n  * click on the 'Submit' button to start the simulation\n\nTo load a robot from a JSON file click on the 'Browse' button and select a robot JSON file\n\nBuilt robots can also be saved by checking 'Write to file', giving it a name and clicking 'Submit'\n\nFull docs available under './docs/User_Manual.md'"
         layout = [[sg.Multiline(default_text=help, disabled=True, size=(70, 15), no_scrollbar=True)],
                   [sg.Button('Ok')]]
+        sg.theme(self.bgColour)
         window = sg.Window('Help', layout, modal=True)
         while True:
             event, _ = window.read()
@@ -105,6 +106,7 @@ class RobotGUI:
                       [sg.Multiline(size=(50, 7), default_text=out_of_bounds_text,  key='-OOB_BOX-', echo_stdout_stderr=True, disabled=True)],
                       [sg.Button('Continue'), sg.Button('Cancel')]]
 
+        sg.theme(self.bgColour)
         window = sg.Window("Errors", layout, modal=True)
         while True:
             event, _ = window.read()
@@ -125,6 +127,7 @@ class RobotGUI:
                   [sg.Text('DST Slot:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-DST_COMBO-')],
                   [sg.Text('Orientation:'), sg.Combo(values=[0, 1, 2, 3], default_value=0, key='-O_COMBO-')],
                   [sg.Button('Submit')]]
+        sg.theme(self.bgColour)
         window = sg.Window("Enter Slots", layout, modal=True)
         while True:
             event, values = window.read()
@@ -150,6 +153,7 @@ class RobotGUI:
                   [sg.Button('Submit', tooltip='start simulation'), sg.Button('Help', tooltip='help menu'), sg.Button('Back', tooltip='return to file menu'), sg.FileBrowse(initial_folder=self.working_directory, file_types=[("Robot file", "*.json")], target='-LOAD-', tooltip='load robot JSON'),
                   sg.Input(key='-LOAD-', enable_events=True, visible=False), sg.Checkbox('Write to file', default=True, key='-FILE-', tooltip='write robot to JSON'),
                   sg.InputText(key='-F_NAME-', size=30, default_text='robot_name')]]
+        sg.theme(self.bgColour)
         window = sg.Window("Build a Robot", layout, modal=True)
         while True:
             event, values = window.read()
