@@ -2,7 +2,6 @@
 # Created By: GMLMOG016, FLDCLA001, YNGFYN001
 # Created Date: 13/08/22
 # ---------------------------------------------------------------------------
-"""Contains various utility functions (such as file IO) for creating robots"""
 
 from hinge import Hinge
 from brick import Brick
@@ -23,6 +22,8 @@ INC_AMT = 100
 
 
 class RobotUtils:
+    """Contains various utility functions (such as file IO) for creating robots"""
+
     def __init__(self, config_path, pos_path, robot_path):
         """
         Constructor
