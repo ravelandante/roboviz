@@ -1,5 +1,17 @@
 # User Manual
 ****
+
+## Table of Contents
+
+1. [**Installation**](/docs/User_Manual##Installation)
+2. [**Usage**](/docs/User_Manual##Usage)
+    a. [Rendering a robot](/docs/User_Manual###Rendering-a-robot)
+    b. [Collisions and out of bounds](/docs/User_Manual###Collisions-and-out-of-bounds)
+    c. [Navigating the viewing window](/docs/User_Manual###Navigating-the-viewing-window)
+    d. [Building a robot](/docs/User_Manual###Building-a-robot)
+3. [**Appendix**](/docs/User_Manual##Appendix)
+    a. [File Formats](/docs/User_Manual###File-Formats)
+
 ## Installation
 ****
 ### Prerequisites:
@@ -46,12 +58,21 @@ The **Environment** will then be loaded and the **Robots** rendered, before the 
 
 ##### Auto-packing
 
-If you do not want to specify the positions for each **Robot** in the scene (e.g. if you have a great many **Robots** in your swarm), you can enable the **auto-pack** option from the bottom left of the main GUI window.
+If you do not want to specify the positions for each **Robot** in the scene (e.g. if you have a great many **Robots** in your swarm), you can enable the **auto-pack** option from the bottom left of the main GUI window (This means you will _not_ have to specify a **positions file**).
 
 This will attempt to fit all of the **Robots** into the environment of dimensions specified in the **configuration file**.
 
-If it cannot fit all the **Robots** into the specified environment, it will attempt to incrementally enlarge the environment (this increment can be changed by editing the _INCT_AMT_ constant in the _robotUtils.py_ file).
+If it cannot fit all the **Robots** into the specified environment, it will attempt to incrementally enlarge the environment until it can (this increment can be changed by editing the _INCT_AMT_ constant in the _robotUtils.py_ file).
 The buffer or spacing between these packed **Robots** can also be changed by editing the _BUFFER_ constant in the _robotUtils.py_ file.
+
+****
+
+### Collisions and out of bounds
+
+RoboViz has a system for detecting _possible_ collisions between **Robots** and any **Robots** that are out of the bounds of the **Environment**. If collisions or bound violations are detected, a window will appear after clicking the **'Submit'** button. This will list _possible_ collisions between **Robots** in the scene and any **Robots** that are out of bounds and the units by which they are.
+
+_Note: Collisions are reported as possible as the collision detection system simply uses the rectangular bounding boxes of the **Robots** and not their actual shapes. There may not be a collision after all as the actual components of 2 'colliding ' **Robots** may not actually collide while there bounding boxes do._
+_This method was chosen as it hardly introduces any overhead with regards to load times and was deemed all right for the application._
 
 ****
 
