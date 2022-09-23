@@ -129,7 +129,7 @@ class RobotGUI:
         core = Brick('Core', 'CoreComponent', True, 0)
         components.append(core)
         treedata.insert(parent='', key=core.id, text=core.id, values=['CoreComponent', core.orientation])
-        layout = [[sg.Button('+', size=3), sg.Button('-', size=3), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key='-C_COMBO-'),
+        layout = [[sg.Button('+', size=3), sg.Combo(values=COMPONENTS, default_value=COMPONENTS[0], key='-C_COMBO-'),
                    sg.InputText(key='-COMP_ID-', size=30, default_text='comp_id')],
                   [sg.Text('Components')],
                   [sg.Tree(data=treedata, key="-COMP_TREE-", auto_size_columns=True, num_rows=20, headings=['Type', 'Orientation'], col0_width=30, expand_x=True, show_expanded=True), ],
@@ -157,7 +157,7 @@ class RobotGUI:
                 components = robot.components
                 connections = robot.connections
 
-            if event == '-':
+            """if event == '-':
                 # delete selected component (NOT WORKING)
                 if len(values['-COMP_TREE-']) == 0:
                     sg.popup("Please select a component")
@@ -165,7 +165,7 @@ class RobotGUI:
                 else:
                     sel_comp = values['-COMP_TREE-'][0]
                 del_comp = next(comp for comp in components if comp.id == sel_comp)
-                components.remove(del_comp)
+                components.remove(del_comp)"""
 
             if event == '+':
                 # add new component
@@ -343,7 +343,6 @@ class RobotGUI:
             else:
                 positions = [[0, 0, 0]]*int(config[2])
             robots = self.utils.robotParse(int(config[2]), positions)
-        print(config)
         env = Environment(int(config[0]), int(config[1]), int(config[2]))
         for i, robot in enumerate(robots):                                      # loop through robots in swarm
             env.renderRobot(robot)                                  # render robot
