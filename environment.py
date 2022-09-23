@@ -85,6 +85,7 @@ class Environment(ShowBase):
         self.plane = self.loader.loadModel('./models/BAM/plane.bam')    # load 'terrain' plane
         self.plane.setScale(self.x_length, self.y_length, 10)            # scale up to specified dimensions
         self.plane.reparentTo(self.render)
+        self.plane.setZ(-20)
 
         alight = AmbientLight('alight')                                 # create ambient light
         alight.setColor((0.4, 0.4, 0.4, 1))
@@ -123,6 +124,7 @@ class Environment(ShowBase):
         self.accept('control-arrow_right', lambda: self.selected_robot.setHpr(self.render, self.selected_robot.getHpr(self.render) + LVector3f(-90, 0, 0)))
 
     def finalizeExit(self):
+        """Overrides Panda's base finalizeExit method to prevent it from closing Python"""
         self.closeWindow(self.win)
         self.destroy()
         #sys.stderr = object
@@ -232,6 +234,7 @@ class Environment(ShowBase):
             self.myHandler.sortEntries()                                # get closest object to mouse click
             pickedObj = self.myHandler.getEntry(0).getIntoNodePath()
             pickedObj = pickedObj.findNetTag('robot')                   # find object by tag
+            print(pickedObj)
             if not pickedObj.isEmpty():
                 if hasattr(self, 'selected_robot'):
                     self.toggleBounding()                               # hide old selection box

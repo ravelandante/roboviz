@@ -162,16 +162,20 @@ class RobotUtils:
         Returns:
             `positions`: positions of Robots in scene (int[])
         """
-        positions = []
-        with open(self.pos_path, 'r') as f:
-            for line in f:
-                robot_position = []
-                line = line.split(' ')
-                robot_position.append(int(line[0]))                         # x value
-                robot_position.append(int(line[1]))                         # y value
-                robot_position.append(int(line[2]))                         # z value
-                positions.append(robot_position)
-        return positions
+        try:
+            positions = []
+            with open(self.pos_path, 'r') as f:
+                for line in f:
+                    robot_position = []
+                    line = line.split(' ')
+                    robot_position.append(int(line[0]))  # x value
+                    robot_position.append(int(line[1]))  # y value
+                    robot_position.append(int(line[2]))  # z value
+                    positions.append(robot_position)
+            self.posCount = len(positions)
+            return positions
+        except:
+            return False
 
     def configParse(self):
         """
@@ -179,11 +183,14 @@ class RobotUtils:
         Returns:
             `configuration`: environment and swarm size (int[])
         """
-        configuration = []
-        with open(self.config_path, 'r') as f:
-            for line in f:
-                configuration.append(int(line))
-        return configuration
+        try:
+            configuration = []
+            with open(self.config_path, 'r') as f:
+                for line in f:
+                    configuration.append(int(line))
+            return configuration
+        except:
+            return False
 
     def robotParse(self, swarm_size, positions):
         """
@@ -191,22 +198,83 @@ class RobotUtils:
         Returns:
             `robotArr`: all robots to be rendered in the scene (Robot[])
         """
-        robotArr = []
-        count = 0  # counting the positions
-        with open(self.robot_path, 'r') as f:
-            data = json.load(f)
-        if("swarm" in data.keys()):
-            swarm = data["swarm"]
-            if CREATE_BRAIN:
-                neurons = swarm["neuron"]
-                brain = swarm["connection"]
+        try:
+            robotArr = []
+            count = 0  # counting the positions
+            with open(self.robot_path, 'r') as f:
+                data = json.load(f)
+            if("swarm" in data.keys()):
+                swarm = data["swarm"]
+                if CREATE_BRAIN:
+                    neurons = swarm["neuron"]
+                    brain = swarm["connection"]
 
-            for robot in swarm:
-                roboId = robot["id"]
-                body = robot["body"]
+                for robot in swarm:
+                    roboId = robot["id"]
+                    body = robot["body"]
 
+                    bodyComp = body["part"]
+                    compArr = []
+
+                    for i in bodyComp:
+                        id = i['id']
+                        type = i['type']
+                        root = i['root']
+                        orient = i['orientation']
+                        if 'Hinge' in type:
+                            newComp = Hinge(id, type, root, orient)                     # create new Hinge component
+                        else:
+                            newComp = Brick(id, type, root, orient)                     # create new Brick component
+
+                        compArr.append(newComp)
+
+                    bodyConnect = body["connection"]
+                    connArr = []
+
+                    for i in bodyConnect:
+                        src = i['src']
+                        # find the component that is the source
+                        for j in compArr:
+                            compare = j.id
+                            if src == compare:
+                                src = j
+
+                        dest = i['dest']
+                        # find the component that is the destination
+                        for j in compArr:
+                            if dest == (j.id):
+                                dest = j
+
+                        srcSlot = i['srcSlot']
+                        # find the component that is the source slot
+                        for j in compArr:
+                            if srcSlot == (j.id):
+                                srcSlot = j
+
+                        destSlot = i['destSlot']
+                        # find the component that is the destination slot
+                        for j in compArr:
+                            if destSlot == (j.id):
+                                srcSlot = j
+
+                        newCon = Connection(src, dest, srcSlot, destSlot)               # construct new connection
+                        connArr.append(newCon)                                          # add to list of connections
+
+                    robot = Robot(roboId, connArr, compArr, positions[count - 1])
+                    count += 1
+                    robotArr.append(robot)
+                    if CREATE_BRAIN:
+                        ANN = self.createBrain(neurons, brain, compArr)
+                return robotArr
+            else:
+                roboId = data["id"]
+                body = data["body"]
                 bodyComp = body["part"]
                 compArr = []
+                if CREATE_BRAIN:
+                    part2 = data["brain"]
+                    neurons = part2["neuron"]
+                    brain = part2["connection"]
 
                 for i in bodyComp:
                     id = i['id']
@@ -217,7 +285,6 @@ class RobotUtils:
                         newComp = Hinge(id, type, root, orient)                     # create new Hinge component
                     else:
                         newComp = Brick(id, type, root, orient)                     # create new Brick component
-
                     compArr.append(newComp)
 
                 bodyConnect = body["connection"]
@@ -249,73 +316,18 @@ class RobotUtils:
                         if destSlot == (j.id):
                             srcSlot = j
 
-                    newCon = Connection(src, dest, srcSlot, destSlot)               # construct new connection
-                    connArr.append(newCon)                                          # add to list of connections
-
-                robot = Robot(roboId, connArr, compArr, positions[count - 1])
-                count += 1
-                robotArr.append(robot)
+                    newCon = Connection(src, dest, srcSlot, destSlot)
+                    connArr.append(newCon)
                 if CREATE_BRAIN:
                     ANN = self.createBrain(neurons, brain, compArr)
-            return robotArr
-        else:
-            roboId = data["id"]
-            body = data["body"]
-            bodyComp = body["part"]
-            compArr = []
-            if CREATE_BRAIN:
-                part2 = data["brain"]
-                neurons = part2["neuron"]
-                brain = part2["connection"]
-
-            for i in bodyComp:
-                id = i['id']
-                type = i['type']
-                root = i['root']
-                orient = i['orientation']
-                if 'Hinge' in type:
-                    newComp = Hinge(id, type, root, orient)                     # create new Hinge component
-                else:
-                    newComp = Brick(id, type, root, orient)                     # create new Brick component
-                compArr.append(newComp)
-
-            bodyConnect = body["connection"]
-            connArr = []
-
-            for i in bodyConnect:
-                src = i['src']
-                # find the component that is the source
-                for j in compArr:
-                    compare = j.id
-                    if src == compare:
-                        src = j
-
-                dest = i['dest']
-                # find the component that is the destination
-                for j in compArr:
-                    if dest == (j.id):
-                        dest = j
-
-                srcSlot = i['srcSlot']
-                # find the component that is the source slot
-                for j in compArr:
-                    if srcSlot == (j.id):
-                        srcSlot = j
-
-                destSlot = i['destSlot']
-                # find the component that is the destination slot
-                for j in compArr:
-                    if destSlot == (j.id):
-                        srcSlot = j
-
-                newCon = Connection(src, dest, srcSlot, destSlot)
-                connArr.append(newCon)
-            if CREATE_BRAIN:
-                ANN = self.createBrain(neurons, brain, compArr)
-            for i in range(int(swarm_size)):                      # loop through robots in swarm
-                connArr = deepcopy(connArr)
-                robotArr.append(Robot(i, connArr, compArr, positions[i]))
-            return robotArr
+                for i in range(int(swarm_size)):                      # loop through robots in swarm
+                    connArr = deepcopy(connArr)
+                    robotArr.append(Robot(i, connArr, compArr, positions[i]))
+                return robotArr
+        except IndexError:
+            return True
+        except:
+            return False
 
     def autoPack(self, robots, x_length, y_length):
         """

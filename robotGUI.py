@@ -53,7 +53,7 @@ def formatOutOfBounds(out_of_bounds):
 class RobotGUI:
     """Initialises the GUI for inputting files, building robots and reporting errors"""
 
-    def __init__(self, config_path='', pos_path='', robot_path=''):
+    def __init__(self, config_path='', pos_path='', robot_path='', cli=False):
         """
         Constructor
         Args:
@@ -67,10 +67,18 @@ class RobotGUI:
         self.working_directory = os.getcwd()
         self.out_of_bounds_all = []
         self.collisions = []
+        self.cli = cli
         self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
         self.bgColour = "Black"
+        self.inputError = 0  # 1 = config error, 2 = pos error, 3 = robot error
+        self.logicError = 0  # 1 = config & pos don't match, 2 = config & robot dont match, 3 = pos & robot dont match
 
     def help_window(self, type):
+        """
+        Displays the help window
+        Args:
+            `type`: type of help info to display (file or build), (String)
+        """
         if type == 'file':
             help = "To load a robot:\n  * browse for and choose a configuration, robot positions, and robot JSON file\n  * click on the 'Submit' button to start the simulation\n(file formats are available in './docs/User_Manual.md' under Appendix: File Formats)\n\nTo use auto-pack:\n  * toggle the 'auto-pack' check box\n  * browse for and choose a configuration and robot JSON file\n  * click on the 'Submit' button\n(positions will be automatically calculated and environment will be resized if needed)\n\nFull docs available under './docs/User_Manual.md'"
         elif type == 'build':
@@ -243,9 +251,9 @@ class RobotGUI:
         """Displays the file input GUI window"""
 
         LastRender = False
-        configError = sg.Text("Configuration file not included!", visible=False, text_color='Red', background_color=self.bgColour)
-        posError = sg.Text("Positions file not included!", visible=False, text_color='Red', background_color=self.bgColour)
-        jsonError = sg.Text("Robots file not included!", visible=False, text_color='Red', background_color=self.bgColour)
+        configError = sg.Text("", visible=False, text_color='Red', background_color=self.bgColour)
+        posError = sg.Text("", visible=False, text_color='Red', background_color=self.bgColour)
+        jsonError = sg.Text("", visible=False, text_color='Red', background_color=self.bgColour)
 
         if(not exists('LastRender.txt')):
             layout = [
@@ -311,17 +319,17 @@ class RobotGUI:
                 window.UnHide()
 
             elif (event == "Submit" and values["-FILE_PATH-"] == ""):
-                configError.update(visible=True)
+                configError.update(value="Configuration file not included", visible=True)
             else:
                 configError.update(visible=False)
 
             if (event == "Submit" and values["-FILE_PATH-0"] == "" and not values['-A_PACK-']):
-                posError.update(visible=True)
+                posError.update(value="Positions file not included", visible=True)
             else:
                 posError.update(visible=False)
 
             if (event == "Submit" and values["-FILE_PATH-2"] == ""):
-                jsonError.update(visible=True)
+                jsonError.update(value="Robots file not included", visible=True)
             else:
                 jsonError.update(visible=False)
 
@@ -338,15 +346,50 @@ class RobotGUI:
                         for line in lines:
                             f.write(line)
                             f.write(' \n')
-                subprocess.check_call(["attrib", "+H", "LastRender.txt"])   # hide saved file paths file
+                    subprocess.check_call(["attrib", "+H", "LastRender.txt"])   # hide saved file paths file
 
-                window.hide()
-                self.runSim(auto_pack=auto_pack)
-                window.UnHide()
+                # GUI parsing and error checking
+                self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
+                config = self.utils.configParse()
+                if not config:
+                    configError.update(value="Incorrect configuration file format", visible=True)
+                    continue
+                else:
+                    configError.update(visible=False)
+                if not auto_pack:
+                    positions = self.utils.posParse()
+                    if not positions:
+                        posError.update(value="Incorrect positions file format", visible=True)
+                        continue
+                    else:
+                        posError.update(visible=False)
+                else:
+                    positions = [[0, 0, 0]]*int(config[2])
+                robots = self.utils.robotParse(int(config[2]), positions)
+                if not robots:
+                    jsonError.update(value="Incorrect robot file format", visible=True)
+                    continue
+                elif robots == True:
+                    posError.update(value="Incorrect amount of robot positions given", visible=True)
+                    continue
+                else:
+                    jsonError.update(visible=False)
+
+                if len(robots) != config[2]:
+                    configError.update(value="Mismatch between swarm size and number of robots given", visible=True)
+                    continue
+
+                if len(positions) != config[2]:
+                    posError.update(value="Mismatch between number of positions and swarm size given", visible=True)
+                    continue
+
+                window.hide()                                                   # hide GUI window
+                self.runSim(config, robots, auto_pack=auto_pack)                # start simulation (Panda)
+                window.UnHide()                                                 # show GUI window again after exiting Panda
 
         window.close()
 
-    def runSim(self, auto_pack=False, config=0, robots=0, file=True):
+    def runSim(self, config='', robots='', auto_pack=False):
         """
         Creates the Environment and runs the simulation
         Args:
@@ -355,22 +398,43 @@ class RobotGUI:
             `robots`: array of Robots (Robot[]) **optional**, only used when building a robot  
             `file`: whether or not the robots have been loaded from a file (boolean) **optional**
         """
-        if file:
-            self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
+        # CLI parsing and error checking
+        if self.cli:
             config = self.utils.configParse()
-            if not auto_pack:
-                positions = self.utils.posParse()
-            else:
-                positions = [[0, 0, 0]]*int(config[2])
+            if not config:
+                print("[ERROR] Incorrect configuration file format or file not found")
+                quit()
+
+            positions = self.utils.posParse()
+            if not positions:
+                print("[ERROR] Incorrect positions file format or file not found")
+                quit()
+
             robots = self.utils.robotParse(int(config[2]), positions)
+            if not robots:
+                print("[ERROR] Incorrect robot file format or file not found")
+                quit()
+            elif robots == True:
+                print('[ERROR] Incorrect amount of robot positions given')
+                quit()
+
+            if len(robots) != config[2]:
+                print('[ERROR] Mismatch between number of robots and swarm size given')
+                quit()
+
+            if len(positions) != config[2]:
+                print('[ERROR] Mismatch between number of positions and swarm size given')
+                quit()
+
         env = Environment(int(config[0]), int(config[1]), int(config[2]))
         print('Rendering Robots...')
         for i, robot in enumerate(robots):                                      # loop through robots in swarm
             env.renderRobot(robot)                                  # render robot
             # get any out of bounds/collisions
-            out_of_bounds = robot.outOfBoundsDetect(int(config[0]), int(config[1]))
-            if out_of_bounds != 'none':
-                self.out_of_bounds_all.append([i, out_of_bounds])
+            if not self.cli:
+                out_of_bounds = robot.outOfBoundsDetect(int(config[0]), int(config[1]))
+                if out_of_bounds != 'none':
+                    self.out_of_bounds_all.append([i, out_of_bounds])
         print('...Done')
         if auto_pack:
             print('Auto-packing Robots...')
@@ -378,10 +442,11 @@ class RobotGUI:
             print('...Done')
         env.initialView()
         if not auto_pack:
-            print('Detecting collisions...')
-            self.collisions = self.utils.collisionDetect(robots)                  # get any possible collisions between robots
-            print('...Done')
-            if len(self.collisions) > 0 or len(self.out_of_bounds_all) > 0:
-                self.error_window()
+            if not self.cli:
+                print('Detecting collisions...')
+                self.collisions = self.utils.collisionDetect(robots)                  # get any possible collisions between robots
+                print('...Done')
+                if len(self.collisions) > 0 or len(self.out_of_bounds_all) > 0:
+                    self.error_window()
         print('Rendering Environment...')
         env.run()
