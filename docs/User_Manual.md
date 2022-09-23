@@ -15,9 +15,9 @@ To install the required Python packages, from the root project directory run:
 
 RoboViz can be run in both command line (CLI) mode and graphical (GUI) mode.
 To load a **Robot** in the **Environment**, 3 files are required:
-- Configuration file (.txt) - contains the environment and robot swarm size
-- Positions file (.txt) - contains the <x, y, z> positions for each robot
-- Robot file (.json) - contains specs for one or many robots
+- **Configuration file (.txt)** - contains the environment and robot swarm size
+- **Positions file (.txt)** - contains the <x, y, z> positions for each robot
+- **Robot file (.json)** - contains specs for one or many robots
 
 _Formats for these files are provided in the Appendix_
 ****
@@ -39,16 +39,25 @@ To use the GUI, simply run the script without any args:
 `python robotHandler.py`
 
 Then:
-1. Select the 3 required files by clicking the 'Browse' buttons
-2. Click on the 'Submit' button
+1. Select the 3 required files by clicking the **'Browse'** buttons
+2. Click on the **'Submit'** button
 
 The **Environment** will then be loaded and the **Robots** rendered, before the viewing window appears.
+
+##### Auto-packing
+
+If you do not want to specify the positions for each **Robot** in the scene (e.g. if you have a great many **Robots** in your swarm), you can enable the **auto-pack** option from the bottom left of the main GUI window.
+
+This will attempt to fit all of the **Robots** into the environment of dimensions specified in the **configuration file**.
+
+If it cannot fit all the **Robots** into the specified environment, it will attempt to incrementally enlarge the environment (this increment can be changed by editing the _INCT_AMT_ constant in the _robotUtils.py_ file).
+The buffer or spacing between these packed **Robots** can also be changed by editing the _BUFFER_ constant in the _robotUtils.py_ file.
 
 ****
 
 ### Navigating the viewing window
 
-The Camera is automatically centered on the first **Robot** to be loaded
+The camera is automatically centered on the first **Robot** to be loaded
 
 ##### Camera Controls:
 - Orbit: Hold **'middle mouse button'** and drag
@@ -76,9 +85,41 @@ With a **Robot** selected:
 
 ### Building a robot
 
+_Note: The Robot Builder currently only supports the building and loading of single Robots._
+
 You can create your own **Robots** using the file formats specified in the Appendix. Alternatively, you can use the **Robot builder**, accessed by clicking on the 'Build' button on the initial GUI window.
 
-To start creating a **Robot**, **DO STUFF HERE!!!!!!!!**
+A _CoreComponent_ will be pre-loaded into the **Robot** tree.
+To add additional components:
+- select a 'parent' component by clicking on it (at first this will only be the _CoreComponent_)
+- select a component type from the **dropdown**
+- give it a name in the **text box**
+- click on the **'+'** button in the top left
+
+A new dialog will then appear, requiring you to select a **source slot**, **destination slot**, and **orientation** for the component. 
+Clicking on **'Submit'** will then add the component to the tree.
+
+To render the **Robot**, simply click on the **'Submit'** button and the viewing window will appear. If you would like to save your custom **Robot** to a JSON file, make sure the **'Write to file'** box is checked to the right of the lower buttons (and name your custom **Robot** file using the text box to the right of that).
+
+You can also load and edit a pre-existing **Robot** from a file by clicking on the **'Load'** button and selecting a **Robot JSON** file.
+
+##### A note on orientation and slots
+
+[RoboGen's](https://robogen.org/docs/guidelines-for-writing-a-robot-text-file/) system for orientation and slot naming is slightly confusing at first, so here's how it works:
+- **slot numbers** for components are labelled as follows:
+    - 0 - front (side closest to viewer)
+    - 1 - back (side furthest from viewer)
+    - 2 - right (side to right of viewer)
+    - 3 - left (side to left of viewer)
+```
+ BRICK          HINGE
+   1              1         Note that hinges only have
+3 |B| 2          |H|        slots 0 and 1 available
+   0              0
+ viewer         viewer
+```
+
+- **orientation** refers to the roll of a component and is based on the orientation of the component it is connected to (its 'parent' component). Orientation is visually applied to hinges, but not to bricks.
 
 ****
 
@@ -223,10 +264,10 @@ The format should be as follows:
 }
 ```
 
-_Note: The "brain" section can be left out if CREATE_BRAIN is set to False in robotUtils.py._
+_Note: The "brain" section can be left out if CREATE_BRAIN is set to False in robotHandler.py._
 
 ##### Example
 
-Two full example JSON files are given in the source code (homogenous: _robot.json_, heterogeneous: _multipleRobots.json_)
+Two full example JSON files are given in the source code (homogenous + heterogeneous)
 
 ****
