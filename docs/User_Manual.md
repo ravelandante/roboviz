@@ -71,7 +71,7 @@ The buffer or spacing between these packed **Robots** can also be changed by edi
 
 RoboViz has a system for detecting _possible_ collisions between **Robots** and any **Robots** that are out of the bounds of the **Environment**. If collisions or bound violations are detected, a window will appear after clicking the **'Submit'** button. This will list _possible_ collisions between **Robots** in the scene and any **Robots** that are out of bounds and the units by which they are.
 
-_Note: Collisions are reported as possible as the collision detection system simply uses the rectangular bounding boxes of the **Robots** and not their actual shapes. There may not be a collision after all as the actual components of 2 'colliding ' **Robots** may not actually collide while there bounding boxes do._
+_Note: Collisions are reported as possible as the collision detection system simply uses the rectangular bounding boxes of the **Robots** and not their actual shapes. There may not be a collision after all as the actual components of 2 'colliding' **Robots** may not actually collide while there bounding boxes do._
 _This method was chosen as it hardly introduces any overhead with regards to load times and was deemed all right for the application._
 
 ****
@@ -108,7 +108,7 @@ With a **Robot** selected:
 
 _Note: The Robot Builder currently only supports the building and loading of single Robots._
 
-You can create your own **Robots** using the file formats specified in the Appendix. Alternatively, you can use the **Robot builder**, accessed by clicking on the 'Build' button on the initial GUI window.
+You can create your own **Robots** using the file formats specified in the Appendix. Alternatively, you can use the **Robot builder**, accessed by clicking on the **'Build'** button on the initial GUI window.
 
 A _CoreComponent_ will be pre-loaded into the **Robot** tree.
 To add additional components:

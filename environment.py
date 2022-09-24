@@ -140,6 +140,7 @@ class Environment(ShowBase):
             for label in self.labels:
                 label.node().setTextColor(1, 1, 1, 1)                   # set label colours after node flattening
                 label.node().setCardColor(1, 1, 1, 0.3)
+                label.setLightOff()
                 label.hide()                                            # hide labels
         elif self.label_toggle == True:                                 # if labels are 'on'
             for label in self.labels:
@@ -234,7 +235,6 @@ class Environment(ShowBase):
             self.myHandler.sortEntries()                                # get closest object to mouse click
             pickedObj = self.myHandler.getEntry(0).getIntoNodePath()
             pickedObj = pickedObj.findNetTag('robot')                   # find object by tag
-            print(pickedObj)
             if not pickedObj.isEmpty():
                 if hasattr(self, 'selected_robot'):
                     self.toggleBounding()                               # hide old selection box
