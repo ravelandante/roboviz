@@ -226,7 +226,7 @@ class RobotGUI:
                 else:
                     comp = Brick(id, type, False, orientation)
 
-                treedata.Insert(parent=sel_comp, key=id, text=id, values=[type, orientation])
+                treedata.Insert(parent=sel_comp, key=id, text=id, values=[type, orientation])   # insert new node
                 window.Element('-COMP_TREE-').update(treedata)
 
                 components.append(comp)
