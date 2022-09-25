@@ -292,3 +292,22 @@ _Note: The "brain" section can be left out if CREATE_BRAIN is set to False in ro
 Two full example JSON files are given in the source code (homogenous + heterogeneous)
 
 ****
+
+### Panda Versioning
+
+****
+
+For this project, Panda3D version 1.10.11 was used. This is not currently the latest version but it is recommended for two reasons:
+- To keep current Panda3D code from breaking with potential new additions
+- To keep the BAM model files for each component compatible
+    -  Panda can use 2 types of model files, .egg or .bam files. BAM files are optimised versions of EGG files and are faster to load. However, they are often version-specific.
+    -  To update Panda3D one would have to use [YABEE](https://github.com/09th/YABEE) to export the Blender models to EGG files and then use [egg2bam](https://docs.panda3d.org/1.10/python/tools/model-export/converting-egg-to-bam) to convert those EGG files into BAM files if desired.
+
+
+
+
+
+
+
+
+

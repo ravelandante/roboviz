@@ -70,8 +70,6 @@ class RobotGUI:
         self.cli = cli
         self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
         self.bgColour = "Black"
-        self.inputError = 0  # 1 = config error, 2 = pos error, 3 = robot error
-        self.logicError = 0  # 1 = config & pos don't match, 2 = config & robot dont match, 3 = pos & robot dont match
 
     def help_window(self, type):
         """

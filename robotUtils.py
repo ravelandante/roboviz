@@ -7,11 +7,9 @@ from hinge import Hinge
 from brick import Brick
 from connection import Connection
 from robot import Robot
-from brain import Neuron, Network
-from robotComp import RobotComp
+from brain import ann
 
 import json
-import numpy as np
 import rpack
 from copy import deepcopy
 
@@ -56,79 +54,52 @@ class RobotUtils:
                             collisions.append([first_robot.id, second_robot.id])
         return collisions
 
-    def createBrain(self, neurons, brain, compArr):
+    def createBrain(self, components, brain, neurons):
         """
         Creates list of neurons based on JSON file ANN inputs
         Args:
-            `neurons`: list of neurons and their info from JSON file (Neurons[])  
-            `brain`: list of connections between neurons from JSON file (List)  
-            `compArr`: list of components that neurons are connected to (RobotComp[])
+            `components`: components in Robot (RobotComp[])
+            `brain`: connections in Robot brain (dict)
+            `neurons`: neurons in Robot brain (dict)
         """
-        inputNeurons = []
-        outputNeurons = []
-        other = []
+        inputNeurons = 0
+        outputNeurons = 0
+        outputPortIds = []
+        params = []
+        types = []
         for i in neurons:
-            id = i['id']
-            layer = i['layer']
             type = i['type']
             # read in json file
-            bodyPartId = i['bodyPartId']
-            for j in compArr:
-                if j.id == bodyPartId:
-                    bodyPartId = j
-            # set the body part id to a specific component
-            ioId = i['ioId']
             gain = i['gain']
+            params.append(gain)
             if type == 'sigmoid':
                 bias = i['bias']
-                phaseOffset = 0
-                period = 0
+                params.append(bias)
+                types.append(1)
+                outputNeurons = outputNeurons + 1
+                outputPortIds.append(i['bodyPartId'])
             elif type == 'oscillator':
                 phaseOffset = i['phaseOffset']
                 period = i['period']
-                bias = 0
+                params.append(period)
+                params.append(phaseOffset)
+                types.append(3)
+                outputNeurons = outputNeurons + 1
+                outputPortIds.append(i['bodyPartId'])
             else:
-                phaseOffset = 0
-                period = 0
-                bias = 0
-            neuron = Neuron(id, layer, type, bodyPartId, ioId, gain, bias, phaseOffset, period)
-            # create the neuron
-            if layer == 'input':
-                inputNeurons.append(neuron)
-            elif layer == 'output':
-                inputNeurons.append(neuron)
-            else:
-                other.append(neuron)
-                # in case there is a middle layer
-
+                inputNeurons = inputNeurons+1
+        weightArr = []
+        destComps = []
         # set up the weights & destination comps
+        count = 0
+        for j in components:
+            for k in outputPortIds:
+                if j.id in k:
+                    destComps.append(j)
         for i in brain:
-            src = i['src']
-            dest = i['dest']
             weight = i['weight']
-            w = 0
-            comp = RobotComp(0, 0, 0, 0)
-            for j in compArr:
-                if j.id in dest:
-                    comp = j
-                    w = weight
-                    break
-            for j in inputNeurons:
-                if j.id in src:
-                    j.setWeight(w)
-                    j.setDestComp(comp)
-                    break
-            for j in outputNeurons:
-                if j.id in src:
-                    j.setWeight(w)
-                    j.setDestComp(comp)
-                    break
-
-        X_train = np.array([[0, 0, 1, 1], [0, 1, 0, 1]])  # dim x m
-        Y_train = np.array([[0, 1, 1, 0]])  # 1 x m
-        L, E = 0.15, 100
-        net = Network(inputNeurons, outputNeurons, X_train, Y_train, epochs=E, lr=L)
-        return net
+            weightArr.append(weight)
+        return ann(destComps, inputNeurons, outputNeurons, weightArr, params, types)
 
     def writeRobot(self, robot, name):
         """
@@ -172,7 +143,6 @@ class RobotUtils:
                     robot_position.append(int(line[1]))  # y value
                     robot_position.append(int(line[2]))  # z value
                     positions.append(robot_position)
-            self.posCount = len(positions)
             return positions
         except:
             return False
@@ -271,10 +241,6 @@ class RobotUtils:
                 body = data["body"]
                 bodyComp = body["part"]
                 compArr = []
-                if CREATE_BRAIN:
-                    part2 = data["brain"]
-                    neurons = part2["neuron"]
-                    brain = part2["connection"]
 
                 for i in bodyComp:
                     id = i['id']
@@ -319,7 +285,10 @@ class RobotUtils:
                     newCon = Connection(src, dest, srcSlot, destSlot)
                     connArr.append(newCon)
                 if CREATE_BRAIN:
-                    ANN = self.createBrain(neurons, brain, compArr)
+                    network = data["brain"]
+                    neurons = network["neuron"]
+                    brain = network["connection"]
+                    ann = self.createBrain(compArr, brain, neurons)
                 for i in range(int(swarm_size)):                      # loop through robots in swarm
                     connArr = deepcopy(connArr)
                     robotArr.append(Robot(i, connArr, compArr, positions[i]))

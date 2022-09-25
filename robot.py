@@ -21,6 +21,7 @@ class Robot:
         Args:
             `id`: ID of robot (int)  
             `connections`: connections between components that make up the robot (Connection[])  
+            `components`: every component in the Robot
             `core_pos`: positions of the core component of the robot (int[])
         """
         self.id = id
@@ -91,6 +92,51 @@ class Robot:
             return out_of_bounds
         else:
             return 'none'
+
+    def step(self, time, nodes, states):
+        """
+        As the neural network is stepped, the robot components are stepped to update their positions.
+
+        Calculates the change in position of each component according to the output of the output neurons.
+        Resets the positions of all the components in the robot accordingly.
+
+        Args:
+            `time`: amount of time elapsed since the neural network was fed with data (float)
+            `nodes`: array of output nodes in the ann (RobotComp[])
+            `states`: array of output data from the output ports (double[])
+        """
+        # step the robot
+        count = len(states)-1
+        # counts the position in the state array
+        for comp in reversed(self.components):
+            # count backwards
+            for n in nodes:
+                if comp == n:
+                    # find the output node
+                    a = comp.calcAccelaration()
+                    # calculate the accelaration from the weight & gravity
+                    # multiply the accelaration by the output of the ann
+                    comp.deltaX = 0.5*a*time*time*states[count]
+                    # the states array and node array should correspond in position
+                    # iterate backward to avoid having to traverse entire array of components before finding output ports
+                    count = count-1
+                    # calculate the change in distance
+                    comp.dst_pos = comp.dst_pos+comp.deltaX
+                    # change the destination of the component
+            if comp not in nodes:
+                # if not an output node
+                a = comp.calcAccelaration()
+                # calculate the accelaration
+                comp.deltaX = 0.5 * a * time * time
+                # calculate the change in distance from the acceleration
+                # find the destination component & get that deltaX
+                for connection in self.connections:
+                    if comp == connection.src:
+                        comp.deltaX = comp.deltaX*(connection.src.deltaX*0.1)
+                        # reduce the affect of the destination component's deltaX on the src component's deltaX by a factor of 10%
+                comp.dst_pos = comp.dst_pos+comp.deltaX
+                # update the position of the components
+                # calculate acceleration but only change position by smaller and smaller as goes to core
 
     def __str__(self):
         count = 0

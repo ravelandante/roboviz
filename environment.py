@@ -21,6 +21,7 @@ from direct.gui.DirectGui import *
 from numpy import deg2rad
 import math
 import sys
+import time
 
 SHIFT_VALUE = 5     # number of units robots will be moved by
 ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}
@@ -370,3 +371,26 @@ class Environment(ShowBase):
         robot.drawBounds()
         robot.connections[0].src.node.flattenStrong()                                               # hide labels and set colours after flattening
         self.toggleLabels(first=True)
+
+    def stepNetwork(self, ann, robot):
+        """
+        Steps the neural network according to how much time has passed since being fed data.
+
+        Feeds the ANN with sensor data and starts the clock. When the output from the neural network is obtained, the time is calculated,
+        The robot is then stepped, which changes the positions of each of the components starting from the outwardmost output node and working toward the core component.
+        The change in positon for each node corresponds to the state of the node according to the neural network.
+
+        Args:
+            `ann`: the neural network/brain of the robot (ANN)  
+            `robot`: the robot the brain belongs to (Robot)
+        """
+        startTime = time.time()
+        ann.feed([1, 0, 1, 0, 1, 0])
+        # feed the input nodes sensor data
+        ann.step(startTime)
+        # step the network
+        out = ann.fetch()
+        # fetch the outputs
+        newTime = time.time() - startTime
+        # time elapsed, feed this with the output nodes into robot & step it
+        robot.step(newTime, ann.outputPorts, out)

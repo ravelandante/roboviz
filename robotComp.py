@@ -21,13 +21,22 @@ class RobotComp:
             `id`: ID of Brick (String)  
             `type`: type of brick component (String)  
             `root`: whether this brick is the core of the robot or not (boolean)  
-            `orientation`: orientation (roll) of this component relative to its parent (int)
+            `orientation`: orientation (roll) of this component relative to its parent (int)  
+            `dst_pos`: the destination coordinates of the component (LVector3f)  
+            `deltaX`: the amount by which the component's destination is offset when the neural network is being fed (double)  
+            `mass`: the mass of the component, determined by whether it is a brick or a hinge (int)
         """
         self.id = id
         self.type = type                # component type
         self.root = root                # component is the root of the robot component tree
         self.orientation = orientation  # global orientation
-        self.direction = 0
+        self.direction = 0              # global heading
+        self.dst_pos = 0                # save the destination position to be changed with robot stepping in ann
+        self.deltaX = 0
+        if type in ['FixedBrick', 'CoreComponent']:
+            self.mass = 50
+        else:
+            self.mass = 20
 
     def calcPos(self, src, dst, connection):
         """
@@ -81,6 +90,15 @@ class RobotComp:
         elif src_slot == 3:
             dst_pos = src_pos + LVector3f(src_dim + dst_dim, 0, 0)
         return (dst_pos, heading)
+
+    def calcAccelaration(self):
+        """
+        Calculates the accelaration of the component with regards to its mass and gravity
+        Returns:
+            `a`: the accelaration (double)
+        """
+        a = self.mass*9.8
+        return a
 
     def as_dict(self):
         dict = {}

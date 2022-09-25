@@ -2,214 +2,164 @@
 # Created By: GMLMOG016, FLDCLA001, YNGFYN001
 # Created Date: 23/08/22
 # ---------------------------------------------------------------------------
-"""Represents the robot's 'brain' as an ANN"""
 
-import numpy as np
-import sympy as sym
 import math
-from scipy.special import expit
-from robotComp import RobotComp
 
 
-def sigmoid(x):
-    # applying the sigmoid function
-    return expit(x)
+class ann:
+    """This class handles all functionality for the brain of the robot."""
 
+    def __init__(self, components, inputs, outputs, weights, params, type):
+        """
+        Constructor for the neural network.
 
-def sigmoid_derivative(x):
-    # computing derivative to the Sigmoid function
-    f = expit(x)
-    return f * (1 - f)
+        Initializes parameters.
 
+        Args:
+            `components`: the components that make up the output ports (RobotComp[])  
+            `inputs`: the number of input neurons (int)  
+            `outputs`: the number of output neurons (int)  
+            `weights`: array of weights that go from the beginning to the end of the network (double[])  
+            `params`: bias, gain, period and offset for output neurons (double[])  
+            `type`: sigmoid/oscillator/input neuron (String[])
 
-def simple_derivative(x):
-    # computing derivative to the linear function
-    return sym.diff(x)
+        """
+        # max is either (bias, tau, gain) or (phase offset, period, gain)
+        self.MAX_PARAMS = 3
 
+        # Branch Hip1 0 to D9
+        D9 = 0
+        # Branch Hip2 0 to D10
+        D10 = 0
+        # Branch Hip3 0 to D5
+        D5 = 0
+        # Branch Knee2 0 to D6
+        D6 = 0
+        # Branch myid1001 0 to D11
+        D11 = 0
+        # Branch myid1003 0 to D13
+        D13 = 0
+        # Branch myid1007 0 to ROLL
+        ROLL = 0
+        # Branch myid1018 0 to PITCH
+        PITCH = 0
+        self.outputPorts = []
 
-def oscil(x, phaseOffset, period):
-    # applying the cos function
-    for i in x:
-        i = period*i - phaseOffset
-        cos = math.cos(i)
-        cos = cos*i
-        if cos > 0:
-            i = 1
-        elif cos < 0:
-            i = -1
-        else:
-            i = 0
+        for i in components:
+            self.outputPorts.append(i)
 
-    return x
+        NB_LIGHTSENSORS = 0
+        NB_TOUCH_SENSORS = 0
+        NB_IR_SENSORS = 0
+        NB_SERVO_MOTORS = outputs
+        NB_ROTATION_MOTORS = 0
+        NB_ACC_GYRO_SENSORS = inputs
 
+        # input ports: 0 for lightSensor,
+        # type of input: 2 for Accelerometer and Gyroscope
+        inputTab = []
+        x = [0, 2]
+        for i in range(inputs):
+            inputTab.append(x)
 
-def oscil_derivative(x):
-    # computing derivative to the cos function
-    return math.cos(x)-x*math.sin(x)
+        # FALSE if not irSensor, otherwise index of irSensor
+        irIndices = [False, False, False, False, False, False]
 
+        # first arg = value of the output port
+        # second arg = type of the output:
+        # 0 for position control, and 1 for velocity control
 
-class Neuron:
-    def __init__(self, id, layer, type, bodyPartid, ioId, gain, bias, period, phase):
-        self.id = id
-        self.layer = layer
-        self.type = type
-        self.srcComp = bodyPartid
-        # the src component is set to the specific component in robot
-        self.ioId = ioId
-        # this may be the slot number
-        self.gain = gain
-        self.bias = bias
-        self.period = period
-        self.phase = phase
-        self.weight = 0
-        self.destComp = RobotComp(0, 0, 0, 0)
+        outputTab = []
+        for o in range(outputs):
+            outputTab.append([self.outputPorts[o], 0])
 
-    def setWeight(self, w):
-        self.weight = w
+        self.inputs = inputs
+        self.outputs = outputs
+        self.weights = weights
+        self.params = params
 
-    def setDestComp(self, comp):
-        self.component = comp
+        # for sigmoid: bias, tau(input or time?), gain
+        # for oscilator: period, phase offset (from a central clock), gain
+        # oscillator neurons do not receive any input, but rather output a sinusoid oscillation as a function of time
+        self.Types = type
+        # 1 = sigmoid, 3 = oscillator
+        self.initNetwork()
 
+    def initNetwork(self):
+        """
+        Initializes the input and output states in the neural network to 0.
 
-class Network:
-    def InitializeWeight(self, inputArr, outputArr):
-        weights = []
-        for i in inputArr:
-            weights.append(i.weight)
-        for j in outputArr:
-            weights.append(j.weight)
-        return weights
+        The state is the output of each neuron in the network.
+        """
+        self.state = []
+        # Initialize states
+        for o in range(self.outputs):
+            self.state.append(0.0)
 
-    def ForwardPropagation(self, x, inputLayer, outputLayer):
-        activations, layer_input = [x], x
-        for j in inputLayer:
-            if j.type == 'sigmoid':
-                activation = sigmoid(np.dot(layer_input, j.weight))
-            elif j.type == 'oscillator':
-                activation = oscil(np.dot(layer_input, j.weight), j.phase, j.period)
-            else:
-                activation = np.dot(layer_input, j.weight)
-            activations.append(activation)
-            layer_input = np.append(1, activation)
-        for j in outputLayer:
-            if j.type == 'sigmoid':
-                activation = sigmoid(np.dot(layer_input, j.weight))
-            elif j.type == 'oscillator':
-                activation = oscil(np.dot(layer_input, j.weight), j.phase, j.period)
-            else:
-                activation = np.dot(layer_input, j.weight)
-            activations.append(activation)
-            layer_input = np.append(1, activation)
+        # Initialize inputs
+        for i in range(self.inputs):
+            self.state.append(0.0)
 
-        return activations
+    def feed(self, input):
+        """
+        Feeds the network with an array of inputs from the sensors. Only initializes the network's current input variable.
 
-    def BackPropagation(self, y, activations, weights, inputLayer, outputLayer):
-        outputFinal = activations[-1]
+        Args:
+            `input`: the number of input neurons (int[])
+        """
+        self.input = []
+        print("Creating brain . . .")
+        print("Input from sensors: ", input)
+        for i in range(self.inputs):
+            self.input.append(input[i])
 
-        # error = np.matrix(y - outputFinal)  # Error after 1 cycle
-        count = 0
-        for i in enumerate(inputLayer):
-            currActivation = activations[-1][i]
-            if (i > 1):
-                # Append previous
-                prevActivation = np.append(1, activations[i-1])
-            else:
-                # First hidden layer
-                prevActivation = activations[0]
+    def step(self, time):
+        """
+        Feeds the input data into the neural network. For each input from a sensor, the data is fed into the corresponding neuron and transformed via its activation function.
+        This data is propogated through the network to the output layer. The state of each neuron is changed accordingly.
 
-            if inputLayer[i].type == 'sigmoid':
-                delta = np.multiply(error, sigmoid_derivative(currActivation))
-            elif inputLayer[i].type == 'oscillator':
-                delta = np.multiply(error, oscil_derivative(currActivation))
-            else:
-                delta = np.multiply(error, simple_derivative(currActivation))
+        Args:
+            `time`: from the python.time() library, used to set the state for the oscillator neurons (float)
+        """
+        PI = math.pi
+        baseIndexOutputWeights = (self.outputs)*(self.inputs)
+        # For each hidden and output neuron, sum the state of all incoming connections
+        self.activations = []
+        for o in range(self.outputs):
+            self.activations.append(o)
+            for i in range(self.inputs):
+                self.activations[o] = self.activations[o]+self.weights[(self.outputs-1)*i+o]*self.state[i]
+            for i in range(self.outputs):
+                self.activations[o] = self.activations[o]+self.weights[baseIndexOutputWeights]+(self.outputs-1)*i+o*self.state[i]
+        # Add in biases and calculate new network state/do appropriate operation for neuron type
 
-            weights[i-1] += self.lr * np.multiply(delta.T, prevActivation)
-            wc = np.delete(weights[i-1], [0], axis=1)
-            error = np.dot(delta, wc)  # current layer error
-            count+1
-        for j in enumerate(outputLayer):
-            currActivation = activations[j]
-            if (j > 1):
-                # Append previous
-                prevActivation = np.append(1, activations[j - 1])
-            else:
-                # First hidden layer
-                prevActivation = activations[0]
+        for o in range(self.outputs):
+            # save the next state
+            if self.Types[o] == 1:
+                # params are bias and gain
+                self.activations[o] = self.activations[o]-self.params[self.MAX_PARAMS*o]
+                self.state[o] = (1.0/(1.0 + math.exp(-1*(self.params[self.MAX_PARAMS*o+1]))))*self.activations[o]
+            elif self.Types[o] == 0:
+                # linear, params are bias and gain
+                self.activations[o] = self.activations[o]-self.params[self.MAX_PARAMS*o]
+                self.state[o] = self.params[self.MAX_PARAMS*o+1]*self.activations[o]
+            elif(self.Types[o] == 3):
+                # params are period, phase offset, gain (amplitude)
+                period = self.params[self.MAX_PARAMS * o]
+                phaseOffset = self.params[self.MAX_PARAMS * o + 1]
+                gain = self.params[self.MAX_PARAMS * o + 2]
+                self.state[o] = ((math.sin((2.0 * PI / period)*(time - period * phaseOffset))) + 1.0) / 2.0
+                self.state[o] = (0.5 - (gain / 2.0) + self.state[o] * gain)
 
-            if outputLayer[j].type == 'sigmoid':
-                delta = np.multiply(self.lr, sigmoid_derivative(currActivation))
-            elif inputLayer[j].type == 'oscillator':
-                delta = np.multiply(self.lr, oscil_derivative(currActivation))
-            else:
-                delta = np.multiply(self.lr, simple_derivative(currActivation))
-
-            weights[j - 1] += self.lr * np.multiply(delta.T, prevActivation)
-
-            wc = np.delete(weights[j - 1], [0], axis=1)
-            error = np.dot(delta, wc)  # current layer error
-        return weights
-
-    def Train(self, X, Y, weights, inputLayer, outputLayer):
-        layers = len(weights)
-        for i in range(len(X)):
-            x = X[i]
-
-            x = np.matrix(np.append(1, x))
-
-            activations = self.ForwardPropagation(x, inputLayer, outputLayer)
-            #weights = self.BackPropagation(Y, activations, weights, inputLayer, outputLayer)
-            count = 0
-            for i in inputLayer:
-                i.weight = weights[count]
-                count = count+1
-            for j in outputLayer:
-                j.weight = weights[count]
-                count = count+1
-        return weights
-
-    def FindMaxActivation(self, output):
-        m, index = output[0], 0
-        for i in range(1, len(output)):
-            if (output[i] > m):
-                m, index = output[i], i
-
-        return index
-
-    def Predict(self, item, weights):
-        layers = len(weights)
-        item = np.append(1, item)
-
-        # Forward prop.
-        activations = self.ForwardPropagation(item, self.inputLayer, self.outputLayer)
-
-        Foutput = activations[-1]
-        index = self.FindMaxActivation(Foutput)
-
-        y = [0 for j in range(len(Foutput))]
-        y[index] = 1
-
-        return y
-
-    def Accuracy(self, X, Y, weights):
-        correct = 0
-        for i in range(len(X)):
-            x, y = X[i], Y
-            guess = self.Predict(x, weights)
-            if (y == guess):
-                # Right prediction
-                correct += 1
-        return correct / len(X)
-
-    def __init__(self, inputLayer, outputLayer, X_train, Y_train, epochs=10, lr=0.15):
-        self.inputLayer = inputLayer
-        self.outputLayer = outputLayer
-        weights = self.InitializeWeight(inputLayer, outputLayer)
-        self.lr = lr
-
-        for epoch in range(1, epochs+1):
-            weights = self.Train(X_train, Y_train, weights, inputLayer, outputLayer)
-
-            # if(epoch % 20 == 0):
-            #print("Epoch {}".format(epoch))
-            #print("Training Accuracy:{}".format(self.Accuracy(X_train, Y_train, weights)))
+    def fetch(self):
+        """
+        Concatenates the states of each neuron for this forward pass into an array.
+        Returns:
+            `output`: control values to be sent to motors (double[])
+        """
+        output = []
+        for o in range(self.outputs):
+            output.append(self.state[o])
+        # returns the output from all output nodes
+        print("Output from outputPorts: ", output)
+        return output
