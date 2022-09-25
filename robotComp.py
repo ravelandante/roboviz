@@ -49,7 +49,8 @@ class RobotComp:
         src_dims = (src_max - src_min)/2                                # get distance from centre of source model to edge
         src_pos = connection.src.pos
 
-        src_dims -= BUFFER                                              # buffer to slot hinges and bricks together
+        if connection.dst.type in ['FixedBrick', 'CoreComponent'] or connection.src.type in ['FixedBrick', 'CoreComponent']:
+            src_dims -= BUFFER                                              # buffer to slot hinges and bricks together
 
         dst_min, dst_max = connection.dst.bounds[0], connection.dst.bounds[1]
         dst_dims = (dst_max - dst_min)/2                                # get distance from centre of dest model to edge
@@ -59,8 +60,6 @@ class RobotComp:
             src_slot += 4
 
         heading = SRC_SLOTS[src_slot] + DST_SLOTS[connection.dst_slot]  # heading of dst model, depending on src and dst slot
-        # if self.id == 'Hip3':
-        #    print(heading)
         connection.dst.direction = DIRECTION[heading]
         dst.setHpr(heading, 0, 0)
 
