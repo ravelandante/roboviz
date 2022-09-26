@@ -39,7 +39,8 @@ class RobotComp:
         Args:
             `src`: source Panda3D node in connection (PandaNode)  
             `dst`: destination Panda3D node in connection (PandaNode)  
-            `connection`: the Connection in question (Connection)
+            `connection`: the Connection in question (Connection)  
+            `test`: whether method is being tested or not (boolean) **optional**, only used when called from _test_method.py_
         Returns:
             `(dst_pos, heading)`: position and heading that component should be placed at in the scene (LVector3f, int)
         """

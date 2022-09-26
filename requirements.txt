@@ -4,3 +4,4 @@ numpy
 sympy
 scipy
 rectangle-packer==2.0.1
+pytest

@@ -3,13 +3,14 @@
 
 ## Table of Contents
 
-1. [**Installation**](/docs/User_Manual##Installation)
-2. [**Usage**](/docs/User_Manual##Usage)
-    a. [Rendering a robot](/docs/User_Manual###Rendering-a-robot)
-    b. [Collisions and out of bounds](/docs/User_Manual###Collisions-and-out-of-bounds)
-    c. [Navigating the viewing window](/docs/User_Manual###Navigating-the-viewing-window)
-    d. [Building a robot](/docs/User_Manual###Building-a-robot)
-3. [**Appendix**](/docs/User_Manual##Appendix)
+1. [**Installation**](/docs/User_Manual##Installation)  
+2. [**Usage**](/docs/User_Manual##Usage)  
+    a. [Rendering a robot](/docs/User_Manual###Rendering-a-robot)  
+    b. [Collisions and out of bounds](/docs/User_Manual###Collisions-and-out-of-bounds)  
+    c. [Navigating the viewing window](/docs/User_Manual###Navigating-the-viewing-window)  
+    d. [Building a robot](/docs/User_Manual###Building-a-robot)  
+3. [**Testing**](/docs/User_Manual##Testing) 
+4. [**Appendix**](/docs/User_Manual##Appendix)  
     a. [File Formats](/docs/User_Manual###File-Formats)
 
 ## Installation
@@ -17,7 +18,7 @@
 ### Prerequisites:
 - Python 3.10.2 or higher
 - Pip
-- RoboViz source  
+- RoboViz source code  
 
 ### Installing Required Packages
 To install the required Python packages, from the root project directory run:
@@ -31,7 +32,7 @@ To load a **Robot** in the **Environment**, 3 files are required:
 - **Positions file (.txt)** - contains the <x, y, z> positions for each robot
 - **Robot file (.json)** - contains specs for one or many robots
 
-_Formats for these files are provided in the Appendix_
+_Formats for these files are provided in the [Appendix](/docs/User_Manual###File-Formats)._
 ****
 ### Rendering a robot
 
@@ -55,6 +56,8 @@ Then:
 2. Click on the **'Submit'** button
 
 The **Environment** will then be loaded and the **Robots** rendered, before the viewing window appears.
+
+_Note: the last used file paths will be saved and loaded the next time the program opens. These are stored in the file _LastRender.txt__.
 
 ##### Auto-packing
 
@@ -141,6 +144,21 @@ You can also load and edit a pre-existing **Robot** from a file by clicking on t
 ```
 
 - **orientation** refers to the roll of a component and is based on the orientation of the component it is connected to (its 'parent' component). Orientation is visually applied to hinges, but not to bricks.
+
+****
+
+### The Brain
+
+The 'brain' of the Robot will be constructed into an ANN if the _CREATE_BRAIN_ constant in _robotUtils.py_ is set to **True**. While this does construct an ANN, it currently serves no purpose and is meant only for future development. Furthermore, the methods _step_ in _robot.py_, _stepNetwork_ in _environment.py_, _calcAccelaration_ in _robotComp.py_ and other class attributes are unused and merely written for future extension.
+
+****
+
+## Testing
+
+Tests were created with [unittest](https://docs.python.org/3/library/unittest.html) and [pytest](https://docs.pytest.org/en/7.1.x/) in 2 different suites. First there is the activation suite (_test_activation.py_) for testing the initialisation of classes and the second is the method suite (_test_method.py_) for testing class methods.
+
+To run the activation tests, use ```python test_activation.py``` from the root directory.
+To run the method tests, use ```pytest -q test_method.py``` from the root directory to run the automatic tests and ```python test_method.py``` to run the manual, visual tests.
 
 ****
 
@@ -302,12 +320,4 @@ For this project, Panda3D version 1.10.11 was used. This is not currently the la
 - To keep the BAM model files for each component compatible
     -  Panda can use 2 types of model files, .egg or .bam files. BAM files are optimised versions of EGG files and are faster to load. However, they are often version-specific.
     -  To update Panda3D one would have to use [YABEE](https://github.com/09th/YABEE) to export the Blender models to EGG files and then use [egg2bam](https://docs.panda3d.org/1.10/python/tools/model-export/converting-egg-to-bam) to convert those EGG files into BAM files if desired.
-
-
-
-
-
-
-
-
 

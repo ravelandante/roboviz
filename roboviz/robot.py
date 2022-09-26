@@ -73,7 +73,8 @@ class Robot:
         Determines if robot exceeds the dimensions of the environment
         Args:
             `x_length`: x length of the environment (int)  
-            `y_length`: y length of the environment (int)
+            `y_length`: y length of the environment (int)  
+            `test`: whether method is being tested or not (boolean) **optional**, only used when called from _test_method.py_
         Returns:
             `out_of_bounds`: x and y values of how far the robot is out of bounds (LVector3f), returns `'none'` if not out of bounds
         """

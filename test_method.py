@@ -5,14 +5,13 @@ from roboviz.connection import Connection
 from roboviz.robot import Robot
 from roboviz.robotUtils import RobotUtils
 from roboviz.robotGUI import RobotGUI
+
 import pytest
 import os
+
 from panda3d.core import LPoint3f
 from panda3d.core import LVector2f
 from panda3d.core import LVector3f
-
-
-sys.path.append('../')
 
 
 class TestClass():
@@ -179,11 +178,36 @@ class TestClass():
 ###########################################################################################################################################################################
 
 
-"""Visual tests, invoke with 'python test_method.py'"""
+"""Manual, visual tests, invoke with 'python test_method.py'"""
 if __name__ == '__main__':
+    # 1 robot
+    config_path = 'config/config.txt'
+    pos_path = 'positions/pos.txt'
+    robot_path = 'json/robot.json'
+
+    window = RobotGUI(config_path=config_path, pos_path=pos_path, robot_path=robot_path, cli=True)
+    window.runSim()
+
+    # 4 heterogeneous robots
     config_path = 'config/config4.txt'
     pos_path = 'positions/pos4.txt'
     robot_path = 'json/multipleRobots.json'
+
+    window = RobotGUI(config_path=config_path, pos_path=pos_path, robot_path=robot_path, cli=True)
+    window.runSim()
+
+    # 100 homogenous robots
+    config_path = 'config/config100.txt'
+    pos_path = 'positions/pos100.txt'
+    robot_path = 'json/robot.json'
+
+    window = RobotGUI(config_path=config_path, pos_path=pos_path, robot_path=robot_path, cli=True)
+    window.runSim()
+
+    # 4 homogenous robots colliding + out of bounds
+    config_path = 'config/config4.txt'
+    pos_path = 'positions/pos4.txt'
+    robot_path = 'json/robot.json'
 
     window = RobotGUI(config_path=config_path, pos_path=pos_path, robot_path=robot_path, cli=True)
     window.runSim()

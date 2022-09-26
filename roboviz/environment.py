@@ -93,7 +93,7 @@ class Environment(ShowBase):
         alnp = self.render.attachNewNode(alight)
         self.render.setLight(alnp)
 
-        help_text = 'Controls:\nC - switch camera focus\nL - toggle component labels\nH - hide this help menu'  # add help text
+        help_text = 'Controls:\nC - switch camera focus\nL - toggle component labels\nK - return to initial view\nH - hide this help menu'  # add help text
         self.help_textNode = OnscreenText(text=help_text, pos=(1, 0.7), scale=0.04,
                                           fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=0)
         sel_text = 'Selected Robot: none\nSelected Component: none'                                             # add selected text
@@ -105,6 +105,7 @@ class Environment(ShowBase):
         self.accept('l', self.toggleLabels)
         self.accept('h', lambda: self.help_textNode.show() if self.help_textNode.isHidden() else self.help_textNode.hide())
         self.accept('mouse1', self.select)
+        self.accept('k', self.initialView)
 
         # moving robots
         self.accept('arrow_up-repeat', self.moveRobot, [0])
@@ -168,7 +169,7 @@ class Environment(ShowBase):
         while self.focus_switch_counter > self.swarm_size - 1:          # loop 1 around to start of list
             self.focus_switch_counter -= self.swarm_size
         # print(f'Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}')
-        self.moveCamera(pos=list(self.robot_pos.values())[self.focus_switch_counter], z_dist=400)      # move camera to next robot
+        self.moveCamera(pos=list(self.robot_pos.values())[self.focus_switch_counter], z_dist=800)      # move camera to next robot
         self.focus_switch_counter += 1
 
     def moveCamera(self, pos, z_dist):
