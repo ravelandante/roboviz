@@ -8,12 +8,12 @@ import os
 from os.path import exists
 import subprocess
 
-from robotUtils import RobotUtils
-from environment import Environment
-from hinge import Hinge
-from brick import Brick
-from connection import Connection
-from robot import Robot
+from roboviz.robotUtils import RobotUtils
+from roboviz.environment import Environment
+from roboviz.hinge import Hinge
+from roboviz.brick import Brick
+from roboviz.connection import Connection
+from roboviz.robot import Robot
 
 COMPONENTS = ['FixedBrick', 'ActiveHinge', 'PassiveHinge']
 
@@ -57,10 +57,9 @@ class RobotGUI:
         """
         Constructor
         Args:
-            `config_path`: file path of configuration text file (String) **optional**, only used when running in CLI  
-            `pos_path`: file path of robot positions text file (String) **optional**, only used when running in CLI
-            `robot_path`: file path of robot JSON file (String) **optional**, only used when running in CLI
-            `cli`: whether running in CLi mode or not (boolean) **optional**
+            `config_path`: file path of configuration text file (String) **optional**, only used when building a robot  
+            `pos_path`: file path of robot positions text file (String) **optional**, only used when building a robot  
+            `robot_path`: file path of robot JSON file (String) **optional**, only used when building a robot
         """
         self.config_path = config_path
         self.pos_path = pos_path
@@ -339,11 +338,13 @@ class RobotGUI:
                 self.pos_path = values["-FILE_PATH-0"]
                 self.robot_path = values["-FILE_PATH-2"]
 
-                lines = [self.pos_path, self.config_path, self.robot_path]
-                with open('LastRender.txt', 'w') as f:
-                    for line in lines:
-                        f.write(line)
-                        f.write(' \n')
+                if (not LastRender):
+                    lines = [self.pos_path, self.config_path, self.robot_path]
+                    with open('LastRender.txt', 'w') as f:
+                        for line in lines:
+                            f.write(line)
+                            f.write(' \n')
+                    subprocess.check_call(["attrib", "+H", "LastRender.txt"])   # hide saved file paths file
 
                 # GUI parsing and error checking
                 self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)

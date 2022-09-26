@@ -22,7 +22,6 @@ class RobotComp:
             `type`: type of brick component (String)  
             `root`: whether this brick is the core of the robot or not (boolean)  
             `orientation`: orientation (roll) of this component relative to its parent (int)  
-            `dst_pos`: the destination coordinates of the component (LVector3f)  
             `deltaX`: the amount by which the component's destination is offset when the neural network is being fed (double)  
             `mass`: the mass of the component, determined by whether it is a brick or a hinge (int)
         """
@@ -38,7 +37,7 @@ class RobotComp:
         else:
             self.mass = 20
 
-    def calcPos(self, src, dst, connection):
+    def calcPos(self, src, dst, connection, test=False):
         """
         Calculates the position that the component should be placed at in the scene based on the source's position
         Args:
@@ -48,9 +47,10 @@ class RobotComp:
         Returns:
             `(dst_pos, heading)`: position and heading that component should be placed at in the scene (LVector3f, int)
         """
-        connection.dst.bounds = dst.getTightBounds()
+        if not test:
+            connection.dst.bounds = dst.getTightBounds()
 
-        if connection.src.root == True:
+        if connection.src.root == True and not test:
             connection.src.bounds = src.getTightBounds()
             connection.src.root = False
 
@@ -70,7 +70,6 @@ class RobotComp:
 
         heading = SRC_SLOTS[src_slot] + DST_SLOTS[connection.dst_slot]  # heading of dst model, depending on src and dst slot
         connection.dst.direction = DIRECTION[heading]
-        dst.setHpr(heading, 0, 0)
 
         if connection.src_slot in [0, 2]:                               # which dims to use to calculate new pos
             src_dim = src_dims[1]

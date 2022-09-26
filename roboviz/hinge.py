@@ -3,7 +3,7 @@
 # Created Date: 16/08/22
 # ---------------------------------------------------------------------------
 
-from robotComp import RobotComp
+from roboviz.robotComp import RobotComp
 
 
 class Hinge(RobotComp):

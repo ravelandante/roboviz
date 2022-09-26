@@ -121,7 +121,7 @@ class Robot:
                     # iterate backward to avoid having to traverse entire array of components before finding output ports
                     count = count-1
                     # calculate the change in distance
-                    comp.dst_pos = comp.dst_pos+comp.deltaX
+                    comp.pos = comp.pos+comp.deltaX
                     # change the destination of the component
             if comp not in nodes:
                 # if not an output node
@@ -134,7 +134,7 @@ class Robot:
                     if comp == connection.src:
                         comp.deltaX = comp.deltaX*(connection.src.deltaX*0.1)
                         # reduce the affect of the destination component's deltaX on the src component's deltaX by a factor of 10%
-                comp.dst_pos = comp.dst_pos+comp.deltaX
+                comp.pos = comp.pos+comp.deltaX
                 # update the position of the components
                 # calculate acceleration but only change position by smaller and smaller as goes to core
 

@@ -3,11 +3,11 @@
 # Created Date: 13/08/22
 # ---------------------------------------------------------------------------
 
-from hinge import Hinge
-from brick import Brick
-from connection import Connection
-from robot import Robot
-from brain import ann
+from roboviz.hinge import Hinge
+from roboviz.brick import Brick
+from roboviz.connection import Connection
+from roboviz.robot import Robot
+from roboviz.brain import ann
 
 import json
 import rpack
@@ -233,8 +233,6 @@ class RobotUtils:
                     robot = Robot(roboId, connArr, compArr, positions[count - 1])
                     count += 1
                     robotArr.append(robot)
-                    if CREATE_BRAIN:
-                        ANN = self.createBrain(neurons, brain, compArr)
                 return robotArr
             else:
                 roboId = data["id"]
