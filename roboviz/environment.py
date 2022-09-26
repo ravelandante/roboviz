@@ -51,7 +51,6 @@ class Environment(ShowBase):
 
         props = WindowProperties()
         props.setTitle('RoboViz')
-        #props.setSize(1200, 780)
         props.setIconFilename('resources/r_icon.ico')
         self.win.requestProperties(props)
 
@@ -100,7 +99,7 @@ class Environment(ShowBase):
         self.sel_textNode = OnscreenText(text=sel_text, pos=(1, 0.8), scale=0.04,
                                          fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=1)
 
-        # KEYPRESSES
+        # KEYPRESS EVENTS
         self.accept('c', self.switchFocus)
         self.accept('l', self.toggleLabels)
         self.accept('h', lambda: self.help_textNode.show() if self.help_textNode.isHidden() else self.help_textNode.hide())
