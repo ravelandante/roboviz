@@ -32,10 +32,6 @@ class RobotComp:
         self.direction = 0              # global heading
         self.dst_pos = 0                # save the destination position to be changed with robot stepping in ann
         self.deltaX = 0
-        if type in ['FixedBrick', 'CoreComponent']:
-            self.mass = 50
-        else:
-            self.mass = 20
 
     def calcPos(self, src, dst, connection, test=False):
         """

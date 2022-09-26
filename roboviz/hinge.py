@@ -20,3 +20,4 @@ class Hinge(RobotComp):
         """
         super().__init__(id, type, root, orientation)
         self.colour = (0, 1, 0, 1)                      # colour of component
+        self.mass = 20

@@ -20,7 +20,6 @@ class TestGUI(unittest.TestCase):
         self.assertEqual(fakeGUI.config_path, '')
         self.assertEqual(fakeGUI.pos_path, '')
         self.assertEqual(fakeGUI.robot_path, '')
-        self.assertEqual(fakeGUI.ANN, True)
         print("\nGUI passed all tests")
 
 
@@ -47,18 +46,6 @@ class TestEnv(unittest.TestCase):
 
 
 class testComp(unittest.TestCase):
-    def test_comp_activation(self):
-        fakeComp = RobotComp(0, 'Fake', True, 0)
-        self.assertEqual(fakeComp.id, 0)
-        self.assertEqual(fakeComp.type, 'Fake')
-        self.assertTrue(fakeComp.root)
-        self.assertEqual(fakeComp.orientation, 0)
-        self.assertEqual(fakeComp.direction, 0)
-        self.assertEqual(fakeComp.dst_pos, 0)
-        self.assertEqual(fakeComp.deltaX, 0)
-        self.assertEqual(fakeComp.mass, 20)
-        self.assertEqual(fakeComp.calcAccelaration(), 196)
-        print("\nComp passed all tests")
 
     def test_hinge_activation(self):
         fakeHinge = Hinge(0, 'Fake', True, 0)
@@ -141,10 +128,10 @@ class testBrain(unittest.TestCase):
         fakeBrain = ann(compArr, 1, 2, weights, params, type)
         self.assertEqual(fakeBrain.MAX_PARAMS, 3)
         self.assertEqual(fakeBrain.outputPorts, compArr)
-        self.assertEqual(fakeBrain.INPUTS, 1)
-        self.assertEqual(fakeBrain.OUTPUTS, 2)
-        self.assertEqual(fakeBrain.Weights, weights)
-        self.assertEqual(fakeBrain.Params, params)
+        self.assertEqual(fakeBrain.inputs, 1)
+        self.assertEqual(fakeBrain.outputs, 2)
+        self.assertEqual(fakeBrain.weights, weights)
+        self.assertEqual(fakeBrain.params, params)
         self.assertEqual(fakeBrain.Types, type)
         self.assertEqual(fakeBrain.state, [0.0, 0.0, 0.0])
         fakeBrain.feed([0.0])
