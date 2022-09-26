@@ -101,6 +101,11 @@ class RobotComp:
         return a
 
     def as_dict(self):
+        """
+        Represents a RobotComp object as a dictionary, for use in the RobotUtils **writeRobot** method
+        Returns:
+            `dict`: contains all RobotComp fields as a dict
+        """
         dict = {}
         dict['id'] = self.id
         dict['type'] = self.type

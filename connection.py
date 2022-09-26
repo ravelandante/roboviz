@@ -43,6 +43,11 @@ class Connection:
                 self.dst_slot = 2
 
     def as_dict(self):
+        """
+        Represents a Connection object as a dictionary, for use in the RobotUtils **writeRobot** method
+        Returns:
+            `dict`: contains all Connection fields as a dict
+        """
         dict = {}
         dict["src"] = self.src.id
         dict["dest"] = self.dst.id
