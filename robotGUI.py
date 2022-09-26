@@ -338,13 +338,11 @@ class RobotGUI:
                 self.pos_path = values["-FILE_PATH-0"]
                 self.robot_path = values["-FILE_PATH-2"]
 
-                if (not LastRender):
-                    lines = [self.pos_path, self.config_path, self.robot_path]
-                    with open('LastRender.txt', 'w') as f:
-                        for line in lines:
-                            f.write(line)
-                            f.write(' \n')
-                    subprocess.check_call(["attrib", "+H", "LastRender.txt"])   # hide saved file paths file
+                lines = [self.pos_path, self.config_path, self.robot_path]
+                with open('LastRender.txt', 'w') as f:
+                    for line in lines:
+                        f.write(line)
+                        f.write(' \n')
 
                 # GUI parsing and error checking
                 self.utils = RobotUtils(self.config_path, self.pos_path, self.robot_path)
