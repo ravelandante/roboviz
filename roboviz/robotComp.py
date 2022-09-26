@@ -87,7 +87,7 @@ class RobotComp:
             dst_pos = src_pos + LVector3f(src_dim + dst_dim, 0, 0)
         return (dst_pos, heading)
 
-    def calcAccelaration(self):
+    def calcAcceleration(self):
         """
         Calculates the accelaration of the component with regards to its mass and gravity
         Returns:

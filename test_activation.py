@@ -57,7 +57,7 @@ class testComp(unittest.TestCase):
         self.assertEqual(fakeHinge.dst_pos, 0)
         self.assertEqual(fakeHinge.deltaX, 0)
         self.assertEqual(fakeHinge.mass, 20)
-        self.assertEqual(fakeHinge.calcAccelaration(), 196)
+        self.assertEqual(fakeHinge.calcAcceleration(), 196)
         self.assertEqual(fakeHinge.colour, (0, 1, 0, 1))
         print("\nHinge passed all tests")
 
@@ -71,7 +71,7 @@ class testComp(unittest.TestCase):
         self.assertEqual(fakeBrick.dst_pos, 0)
         self.assertEqual(fakeBrick.deltaX, 0)
         self.assertEqual(fakeBrick.mass, 50)
-        self.assertAlmostEqual(fakeBrick.calcAccelaration(), 490)
+        self.assertAlmostEqual(fakeBrick.calcAcceleration(), 490)
         self.assertEqual(fakeBrick.colour, (1, 0, 0, 1))
         print("\nBrick passed all tests")
 
