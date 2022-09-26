@@ -57,9 +57,10 @@ class RobotGUI:
         """
         Constructor
         Args:
-            `config_path`: file path of configuration text file (String) **optional**, only used when building a robot  
-            `pos_path`: file path of robot positions text file (String) **optional**, only used when building a robot  
-            `robot_path`: file path of robot JSON file (String) **optional**, only used when building a robot
+            `config_path`: file path of configuration text file (String) **optional**, only used when running in CLI  
+            `pos_path`: file path of robot positions text file (String) **optional**, only used when running in CLI
+            `robot_path`: file path of robot JSON file (String) **optional**, only used when running in CLI
+            `cli`: whether running in CLi mode or not (boolean) **optional**
         """
         self.config_path = config_path
         self.pos_path = pos_path

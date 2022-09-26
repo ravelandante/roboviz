@@ -68,7 +68,7 @@ class Robot:
         self.bounding_box.reparentTo(root_node)                             # reparent bounding box to robot root
         self.bounding_box.hide()                                            # hide bounding box
 
-    def outOfBoundsDetect(self, x_length, y_length):
+    def outOfBoundsDetect(self, x_length, y_length, test=False):
         """
         Determines if robot exceeds the dimensions of the environment
         Args:
@@ -77,8 +77,8 @@ class Robot:
         Returns:
             `out_of_bounds`: x and y values of how far the robot is out of bounds (LVector3f), returns `'none'` if not out of bounds
         """
-        self.setBounds()                                                    # calc & set bounds of robot
-
+        if not test:
+            self.setBounds()                                                    # calc & set bounds of robot
         out_of_bounds = LVector2f(0, 0)
         if self.bounds[0] > x_length/2:                                     # if over +x
             out_of_bounds[0] = int(self.bounds[0] - x_length/2)
