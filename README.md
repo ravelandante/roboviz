@@ -68,6 +68,8 @@ This will attempt to fit all of the **Robots** into the environment of dimension
 If it cannot fit all the **Robots** into the specified environment, it will attempt to incrementally enlarge the environment until it can (this increment can be changed by editing the _INCT_AMT_ constant in the _robotUtils.py_ file).
 The buffer or spacing between these packed **Robots** can also be changed by editing the _BUFFER_ constant in the _robotUtils.py_ file.
 
+Any combination of configuration and robot files can be used as long as auto-pack is enabled (provided that, for a hetergeneous robot file, the swarm size in config matches the number of hetergeneous robots).
+
 ****
 
 ### Collisions and out of bounds
@@ -151,6 +153,8 @@ You can also load and edit a pre-existing **Robot** from a file by clicking on t
 
 The 'brain' of the Robot will be constructed into an ANN if the _CREATE_BRAIN_ constant in _robotUtils.py_ is set to **True**. While this does construct an ANN, it currently serves no purpose and is meant only for future development. Furthermore, the methods _step_ in _robot.py_, _stepNetwork_ in _environment.py_, _calcAccelaration_ in _robotComp.py_ and other class attributes are unused and merely written for future extension.
 
+_Note: the brain can only be constructed for a homogeneous swarm_
+
 ****
 
 ## Testing
@@ -163,6 +167,17 @@ To run the method tests, use ```pytest -q test_method.py``` from the root direct
 ****
 
 ## Appendix
+
+****
+
+### All Included Examples
+
+Listed below are all included example files that can be used in combination:
+1. config/config.txt, positions/pos.txt, json/robot.json - simple 1 robot scene
+2. config/config4.txt, positions/pos4.txt, json/multipleRobots.json - 4 hetergeneous robots with out of bounds & collision errors
+3. config/config100.txt, -, json/robot.json (with auto-pack enabled) - 100 homogeneous robots
+
+As stated before, any combination of configuration and robot files can be used as long as auto-pack is enabled (provided that, for a hetergeneous robot file, the swarm size in config matches the number of hetergeneous robots).
 
 ****
 
@@ -219,7 +234,7 @@ x y z   # etc.
 The **robot file** contains the specifications for one or many **Robots**. It should be a **JSON (.json)** file.
 
 The format should be as follows:
-**Single Robot (Homogenous)**
+**Single Robot (Homogeneous)**
 
 ```
 {
@@ -307,7 +322,7 @@ _Note: The "brain" section can be left out if CREATE_BRAIN is set to False in ro
 
 ##### Example
 
-Two full example JSON files are given in the source code (homogenous + heterogeneous)
+Two full example JSON files are given in the source code (homogeneous + heterogeneous)
 
 ****
 
