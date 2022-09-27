@@ -31,7 +31,7 @@ class Connection:
             `src`: source ('parent') component (RobotComp)  
             `dst`: destination ('child') component (RobotComp)  
             `src_slot`: side of source component to attach dest. to (int)  
-            `dst_slot`: side of dest. component to attach source to (int)
+            `dst_slot`: side of dest. component to attach source to (int)  
             `standardised`: whether or not the connection's slots have been standardised (boolean) **optional**
         """
         self.src = src                  # source robotComp

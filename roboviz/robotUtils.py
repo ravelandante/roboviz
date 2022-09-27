@@ -58,8 +58,8 @@ class RobotUtils:
         """
         Creates list of neurons based on JSON file ANN inputs
         Args:
-            `components`: components in Robot (RobotComp[])
-            `brain`: connections in Robot brain (dict)
+            `components`: components in Robot (RobotComp[])  
+            `brain`: connections in Robot brain (dict)  
             `neurons`: neurons in Robot brain (dict)
         """
         inputNeurons = 0
@@ -171,8 +171,8 @@ class RobotUtils:
         """
         Parses robot(s) from robot JSON file
         Args:
-            `swarm_size`: number of robots in swarm (int)
-            `positions`: positions of each robot in swarm (int[])
+            `swarm_size`: number of robots in swarm (int)  
+            `positions`: positions of each robot in swarm (int[])  
             `build`: whether or not robot is being loaded into builder (boolean) **optional**
         Returns:
             `robotArr`: all robots to be rendered in the scene (Robot[])

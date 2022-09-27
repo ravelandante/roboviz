@@ -104,8 +104,8 @@ class Robot:
         Resets the positions of all the components in the robot accordingly.
 
         Args:
-            `time`: amount of time elapsed since the neural network was fed with data (float)
-            `nodes`: array of output nodes in the ann (RobotComp[])
+            `time`: amount of time elapsed since the neural network was fed with data (float)  
+            `nodes`: array of output nodes in the ann (RobotComp[])  
             `states`: array of output data from the output ports (double[])
         """
         # step the robot
