@@ -119,6 +119,7 @@ class RobotUtils:
             for i, component in enumerate(components):
                 components[i] = component.as_dict()
             for i, connection in enumerate(connections):
+                connections[i].unStandardiseSlots()
                 connections[i] = connection.as_dict()
 
             # construct JSON file sections

@@ -260,10 +260,10 @@ class RobotGUI:
                     continue
                 robot = Robot(0, connections, components, [0, 0, 0])
                 config = [1000, 1000, 1]                                # default config for 1 robot
-                if (values['-FILE-']):
-                    self.utils.writeRobot(robot, values['-F_NAME-'])    # write custom robot to JSON file
                 window.hide()
                 self.runSim(config=config, robots=[robot], build=True)  # run environment simulation with custom robot
+                if (values['-FILE-']):
+                    self.utils.writeRobot(robot, values['-F_NAME-'])    # write custom robot to JSON file
                 window.UnHide()
 
         window.close()

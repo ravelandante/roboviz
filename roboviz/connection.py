@@ -4,21 +4,31 @@
 # ---------------------------------------------------------------------------
 
 
-def slotSwap(slot):
+def slotSwap(slot, dir):
     """
     Convert RoboGen slots to RoboViz system
     Args:
         `slot`: slot number to be swapped (int)
+        `dir`: direction of swap, standardise or unstandardise
     Returns:
         `slot`: swapped slot number (int)
     """
-    if slot == 3:
-        slot = 1
-    elif slot == 2:
-        slot = 3
-    elif slot == 1:
-        slot = 2
-    return slot
+    if dir == 0:
+        if slot == 3:
+            slot = 1
+        elif slot == 2:
+            slot = 3
+        elif slot == 1:
+            slot = 2
+        return slot
+    elif dir == 1:
+        if slot == 1:
+            slot = 3
+        elif slot == 3:
+            slot = 2
+        elif slot == 2:
+            slot = 1
+        return slot
 
 
 class Connection:
@@ -28,10 +38,10 @@ class Connection:
         """
         Constructor
         Args:
-            `src`: source ('parent') component (RobotComp)  
-            `dst`: destination ('child') component (RobotComp)  
-            `src_slot`: side of source component to attach dest. to (int)  
-            `dst_slot`: side of dest. component to attach source to (int)  
+            `src`: source ('parent') component (RobotComp)
+            `dst`: destination ('child') component (RobotComp)
+            `src_slot`: side of source component to attach dest. to (int)
+            `dst_slot`: side of dest. component to attach source to (int)
             `standardised`: whether or not the connection's slots have been standardised (boolean) **optional**
         """
         self.src = src                  # source robotComp
@@ -49,10 +59,24 @@ class Connection:
             self.dst_slot = 2
         # standardise brick slots (1=2, 3=1, 2=3)
         if self.src.type == 'FixedBrick' or self.src.type == 'CoreComponent':   # source brick slots
-            self.src_slot = slotSwap(self.src_slot)
+            self.src_slot = slotSwap(self.src_slot, 0)
         if self.dst.type == 'FixedBrick' or self.dst.type == 'CoreComponent':   # dest. brick slots
-            self.dst_slot = slotSwap(self.dst_slot)
+            self.dst_slot = slotSwap(self.dst_slot, 0)
         self.standardised = True
+
+    def unStandardiseSlots(self):
+        """Converts back to RoboGen system for writing to file"""
+        # unstandardise hinge slots
+        if 'Hinge' in self.src.type and self.src_slot == 2:                     # source hinge slots
+            self.src_slot = 1
+        if 'Hinge' in self.dst.type and self.dst_slot == 2:                     # dest. hinge slots
+            self.dst_slot = 1
+        # unstandardise brick slots
+        if self.src.type == 'FixedBrick' or self.src.type == 'CoreComponent':   # source brick slots
+            self.src_slot = slotSwap(self.src_slot, 1)
+        if self.dst.type == 'FixedBrick' or self.dst.type == 'CoreComponent':   # dest. brick slots
+            self.dst_slot = slotSwap(self.dst_slot, 1)
+        self.standardised = False
 
     def as_dict(self):
         """
