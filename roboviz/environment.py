@@ -23,8 +23,9 @@ import math
 import sys
 import time
 
-SHIFT_VALUE = 5     # number of units robots will be moved by
-ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}
+SHIFT_VALUE = 5                                 # number of units robots will be moved by
+ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}     # roll in degrees relating to orientation values
+# vector shifts related to directions of robot movement
 SHIFT_DIRECTION = {0: LVector3f(0, SHIFT_VALUE, 0), 2: LVector3f(0, -SHIFT_VALUE, 0), 3: LVector3f(-SHIFT_VALUE, 0, 0),
                    1: LVector3f(SHIFT_VALUE, 0, 0), 4: LVector3f(0, 0, SHIFT_VALUE), 5: LVector3f(0, 0, -SHIFT_VALUE), }
 
@@ -44,19 +45,9 @@ class Environment(ShowBase):
 
         # DEBUG/PROTOTYPE OPTIONS
         self.setFrameRateMeter(True)
-        proto_text = 'RoboViz Prototype'                                # add prototype text
-        proto_textNode = OnscreenText(text=proto_text, pos=(0.95, 0.85), scale=0.04,
-                                      fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
         #self.stderr_orig = sys.stderr
 
-        props = WindowProperties()
-        props.setTitle('RoboViz')
-        props.setIconFilename('resources/r_icon.ico')
-        self.win.requestProperties(props)
-
-        self.robotNode = NodePath('robotNode')
-        self.robotNode.reparentTo(self.render)
-
+        # CLASS ATTRIBUTES
         self.x_length = x_length
         self.y_length = y_length
         self.swarm_size = swarm_size
@@ -67,31 +58,46 @@ class Environment(ShowBase):
         self.robot_pos = {}                                             # positions of robot cores
         self.focus_switch_counter = 0
 
+        # WINDOW PROPERTIES
+        props = WindowProperties()
+        props.setTitle('RoboViz')
+        props.setIconFilename('resources/r_icon.ico')
+        self.win.requestProperties(props)
+
+        # ROBOT SELECTION
         self.myHandler = CollisionHandlerQueue()
         self.myTraverser = CollisionTraverser()
 
-        pickerNode = CollisionNode('mouseRay')                          # for selecting robots
+        # attach collision ray to mouse
+        pickerNode = CollisionNode('mouseRay')
         pickerNP = self.camera.attachNewNode(pickerNode)
         pickerNode.setFromCollideMask(GeomNode.getDefaultCollideMask())
         self.pickerRay = CollisionRay()
         pickerNode.addSolid(self.pickerRay)
         self.myTraverser.addCollider(pickerNP, self.myHandler)
 
-        self.set_background_color(0.6, 0.6, 0.6, 1)                     # set background colour to a lighter grey
+        # NODES
+        self.robotNode = NodePath('robotNode')                          # parent node to all robots in scene to
+        self.robotNode.reparentTo(self.render)                          # allow for zooming out to view all robots
+
         self.focus = NodePath('focus')                                  # create focus point (origin) of camera
-        self.focus.reparentTo(self.render)
+        self.focus.reparentTo(self.render)                              # for the switching of robot focus
         self.camera.reparentTo(self.focus)
 
+        # PLANE
+        self.set_background_color(0.6, 0.6, 0.6, 1)                     # set background colour to a lighter grey
         self.plane = self.loader.loadModel('./models/BAM/plane.bam')    # load 'terrain' plane
-        self.plane.setScale(self.x_length, self.y_length, 10)            # scale up to specified dimensions
+        self.plane.setScale(self.x_length, self.y_length, 10)           # scale up to specified dimensions
         self.plane.reparentTo(self.render)
-        self.plane.setZ(-20)
+        self.plane.setZ(-20)                                            # push down so that robots render on top of it
 
-        alight = AmbientLight('alight')                                 # create ambient light
+        # LIGHTING
+        alight = AmbientLight('alight')
         alight.setColor((0.4, 0.4, 0.4, 1))
         alnp = self.render.attachNewNode(alight)
         self.render.setLight(alnp)
 
+        # ONSCREEN TEXT
         help_text = 'Controls:\nC - switch camera focus\nL - toggle component labels\nK - return to initial view\nH - hide this help menu'  # add help text
         self.help_textNode = OnscreenText(text=help_text, pos=(1, 0.7), scale=0.04,
                                           fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=0)
@@ -100,6 +106,7 @@ class Environment(ShowBase):
                                          fg=(1, 1, 1, 1), bg=(0.3, 0.3, 0.3, 0.6), align=TextNode.ACenter, mayChange=1)
 
         # KEYPRESS EVENTS
+        # misc.
         self.accept('c', self.switchFocus)
         self.accept('l', self.toggleLabels)
         self.accept('h', lambda: self.help_textNode.show() if self.help_textNode.isHidden() else self.help_textNode.hide())
@@ -129,7 +136,7 @@ class Environment(ShowBase):
         self.closeWindow(self.win)
         self.destroy()
         #sys.stderr = object
-        raise KeyboardInterrupt
+        raise KeyboardInterrupt                                         # to exit Panda window
 
     def toggleLabels(self, first=False):
         """
@@ -141,13 +148,15 @@ class Environment(ShowBase):
             for label in self.labels:
                 label.node().setTextColor(1, 1, 1, 1)                   # set label colours after node flattening
                 label.node().setCardColor(1, 1, 1, 0.3)
-                label.setLightOff()
+                label.setLightOff()                                     # remove lighting on labels
                 label.hide()                                            # hide labels
-        elif self.label_toggle == True:                                 # if labels are 'on'
+        # if labels are 'on'
+        elif self.label_toggle == True:
             for label in self.labels:
                 label.hide()                                            # hide labels
             self.label_toggle = False                                   # set to 'off'
-        else:                                                           # if labels are 'off'
+        # if labels are 'off'
+        else:
             for label in self.labels:
                 label.show()                                            # show labels
             self.label_toggle = True                                    # set to 'on'
@@ -165,7 +174,7 @@ class Environment(ShowBase):
 
     def switchFocus(self):
         """Switches camera focus (origin) between robots in scene"""
-        while self.focus_switch_counter > self.swarm_size - 1:          # loop 1 around to start of list
+        while self.focus_switch_counter > self.swarm_size - 1:          # loop around to start of list
             self.focus_switch_counter -= self.swarm_size
         # print(f'Moving camera to robot {self.focus_switch_counter} at {list(self.robot_pos.values())[self.focus_switch_counter]}')
         self.moveCamera(pos=list(self.robot_pos.values())[self.focus_switch_counter], z_dist=800)      # move camera to next robot
@@ -181,8 +190,9 @@ class Environment(ShowBase):
         self.focus.setPos(pos)                                          # move focus of camera
         self.disableMouse()
         self.camera.setPos(LVector3f(0, 0, z_dist))                     # move camera relative to focus
-        self.camera.setHpr(0, -90, 0)
+        self.camera.setHpr(0, -90, 0)                                   # make camera look down
 
+        # make sure camera stays after mouse is enabled
         mat = Mat4(self.camera.getMat())
         mat.invertInPlace()
         self.mouseInterfaceNode.setMat(mat)
@@ -195,13 +205,15 @@ class Environment(ShowBase):
             `pickedObj`: newly selected component (PandaNode)
         """
         for child in pickedObj.getChildren():
-            if child.getName() == 'id_label':                           # find label of newly selected component
-                child.setScale(6, 6, 6)
+            # find currently selected component
+            if child.getName() == 'id_label':
+                child.setScale(6, 6, 6)                                 # enlarge label
                 break
+        # find previously selected component if it exists
         if hasattr(self, 'selected_comp'):
             for child in self.selected_comp.getChildren():
-                if child.getName() == 'id_label':                       # find label of old selected component
-                    child.setScale(3, 3, 3)
+                if child.getName() == 'id_label':
+                    child.setScale(3, 3, 3)                             # return to original size
                     break
 
     def displayLabel(self, pos, text, parent):
@@ -212,19 +224,21 @@ class Environment(ShowBase):
             `text`: text of label (String)  
             `parent`: parent of label (NodePath)
         """
-        label = TextNode('id_label')                                    # add text node
+        # add text node
+        label = TextNode('id_label')
         label.setText(text)
         label.setAlign(TextNode.ACenter)
         label.setCardAsMargin(0, 0, 0, 0)
         label.setCardDecal(True)
 
-        self.text3d = NodePath(label)                                   # add text to node
-        self.text3d.setScale(3, 3, 3)
-        self.text3d.setTwoSided(True)
-        self.text3d.setBillboardPointEye()                              # make text billboard (move with camera)
-        self.text3d.reparentTo(parent)
-        self.text3d.setPos(self.render, pos + LVector3f(0, 0, 20))      # set pos above component model
-        self.labels.append(self.text3d)
+        # add node path in scene for label
+        text3d = NodePath(label)                                   # add text to node
+        text3d.setScale(3, 3, 3)
+        text3d.setTwoSided(True)
+        text3d.setBillboardPointEye()                              # make text billboard (move with camera)
+        text3d.reparentTo(parent)
+        text3d.setPos(self.render, pos + LVector3f(0, 0, 20))      # set pos above component model
+        self.labels.append(text3d)
 
     def select(self):
         """Determines which robot is selected (by mouse click), updates self.selected_robot to represent this"""
@@ -232,17 +246,20 @@ class Environment(ShowBase):
         self.pickerRay.setFromLens(self.camNode, mpos.getX(), mpos.getY())
 
         self.myTraverser.traverse(self.render)
+        # get objects close to mouse click
         if self.myHandler.getNumEntries() > 0:
-            self.myHandler.sortEntries()                                # get closest object to mouse click
-            pickedObj = self.myHandler.getEntry(0).getIntoNodePath()
-            pickedObj = pickedObj.findNetTag('robot')                   # find object by tag
+            self.myHandler.sortEntries()
+            pickedObj = self.myHandler.getEntry(0).getIntoNodePath()    # = closest to mouse click
+            pickedObj = pickedObj.findNetTag('robot')                   # find selectable objects (pre-tagged 'robot')
             if not pickedObj.isEmpty():
+                # if a robot was previously selected
                 if hasattr(self, 'selected_robot'):
                     self.toggleBounding()                               # hide old selection box
 
                 self.enlargeLabel(pickedObj)
                 self.selected_comp = pickedObj
 
+                # find Core comp. of robot in which the comp. is currently selected
                 while True:
                     if 'Core' not in pickedObj.getName():
                         pickedObj = pickedObj.parent
@@ -250,6 +267,7 @@ class Environment(ShowBase):
                         break
                 self.selected_robot = pickedObj                         # set class attribute to selected robot core
                 self.toggleBounding()                                   # show new selection box
+                # update selected robot and component displays
                 if self.selected_robot.getName()[0].isdigit() and self.selected_robot.getName()[1].isdigit():
                     sel_text = 'Selected Robot: ' + self.selected_robot.getName()[0:2] + '\nSelected Component: ' + self.selected_comp.getName()
                 else:
@@ -265,6 +283,7 @@ class Environment(ShowBase):
         """
         heading = int(self.camera.getHpr()[0])
         rotation = int(self.camera.getHpr()[2])
+        # trying to get the direction fo the camera and change the direction of movement so it's relative to it
         if direction not in [4, 5]:                                         # if moving along xy plane
             if heading in range(-45, 45):
                 heading = 0
@@ -274,7 +293,7 @@ class Environment(ShowBase):
                 heading = 2
             elif heading in range(-135, -45):
                 heading = 3
-            if rotation in range(90, 181) or rotation in range(-180, -90):  # if camera is rotated around 180
+            if rotation in range(90, 181) or rotation in range(-180, -90):  # if camera is rotated around 180 (i.e. upside down)
                 if direction in [1, 3]:
                     if direction == 1:
                         direction = 3
@@ -285,12 +304,14 @@ class Environment(ShowBase):
                 direction += 4
         else:                                                               # if moving along z axis
             if rotation in range(90, 181) or rotation in range(-180, -90):  # if camera is rotated around 180
-                if direction == 4:                                          # switch up and down
+                if direction == 4:                                          # switch up and down directions
                     direction = 5
                 elif direction == 5:
                     direction = 4
         shift = SHIFT_DIRECTION[direction]                                  # get direction of shift
+        # move robot
         self.selected_robot.setPos(self.render, self.selected_robot.getPos(self.render) + shift)
+        # update robot position
         self.robot_pos[int(self.selected_robot.getName()[0])] = self.selected_robot.getPos(self.render)
 
     def initialView(self):
@@ -309,13 +330,14 @@ class Environment(ShowBase):
             `pack_info`: contains positions of robots and dims of environment to fit them (Tuple)
         """
         positions = pack_info[0]
-        self.plane.setScale(pack_info[1], pack_info[2], 10)
+        self.plane.setScale(pack_info[1], pack_info[2], 10)                             # resize environment to fit all robots
         print('Resized environment to {} by {} units'.format(pack_info[1], pack_info[2]))
         robots = self.robotNode.getChildren()
+        # iterate through all robots in scene and reposition
         for i, robot in enumerate(robots):
             new_pos = LVector3f(positions[i][0], positions[i][1], 0)
             robot.setPos(self.render, new_pos)
-            self.robot_pos[i] = new_pos
+            self.robot_pos[i] = new_pos                                                 # update robot position
 
     def renderRobot(self, robot):
         """
@@ -325,51 +347,58 @@ class Environment(ShowBase):
         """
         # add position of robot core to list (for camera focus switching)
         self.robot_pos[robot.id] = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
-        robot.connections[0].src.root = True  # !!!!!CHANGE!!!!!
-        for i, connection in enumerate(robot.connections):                      # loop through connections in robot
-            if connection.src.root and i == 0:                                  # if source is the core component
-                src_path = './models/BAM/' + connection.src.type + '.bam'       # get path of source model file
-                src = self.loader.loadModel(src_path)                      # load model of source component
+        robot.connections[0].src.root = True
+        # loop through connections in robot
+        for i, connection in enumerate(robot.connections):
+            # if src comp. is the core comp.
+            if connection.src.root and i == 0:
+                src_path = './models/BAM/' + connection.src.type + '.bam'   # get path of src model file
+                src = self.loader.loadModel(src_path)                       # load model of src component
                 # set core's position to robot core_pos
                 connection.src.pos = LVector3f(robot.core_pos[0], robot.core_pos[1], robot.core_pos[2])
 
-                src.setPos(connection.src.pos)                             # set position of source model
-                src.reparentTo(self.robotNode)                             # set parent to robotNode
-                src.setName(str(robot.id) + connection.src.id)             # set name of node to component ID
-                src.setTag('robot', str(robot.id) + connection.src.id)
+                src.setPos(connection.src.pos)                              # set position of src comp.
+                src.reparentTo(self.robotNode)                              # set parent to robotNode
+                src.setName(str(robot.id) + connection.src.id)              # set name of node to component ID
+                src.setTag('robot', str(robot.id) + connection.src.id)      # tag as selectable
 
-                self.displayLabel(pos=connection.src.pos, text='Robot ' + str(robot.id), parent=src)   # display robot id label text
-                connection.src.node = src                                              # add Panda3D node to robotComp
+                # display robot id label text
+                self.displayLabel(pos=connection.src.pos, text='Robot ' + str(robot.id), parent=src)
+                connection.src.node = src                                   # add Panda3D node to RobotComp
 
-            dst_path = './models/BAM/' + connection.dst.type + '.bam'           # get path of destination model file
-            dst = self.loader.loadModel(dst_path)                          # load model of source component
+            dst_path = './models/BAM/' + connection.dst.type + '.bam'       # get path of destination model file
+            dst = self.loader.loadModel(dst_path)                           # load model of source component
+
+            connection.standardiseSlots()                                   # standardise slots
+
+            dst.reparentTo(connection.src.node)                             # reparent dst node to src node (add to tree)
             dst.setName(connection.dst.id)
-            dst.setTag('robot', connection.dst.id)
-            connection.standardiseSlots()
+            dst.setTag('robot', connection.dst.id)                          # tag as selectable
+            dst.setColor(connection.dst.colour)                             # set model to relevant colour
 
             # calc position of dest comp based on source position
             connection.dst.pos, heading = connection.dst.calcPos(src, dst, connection)
 
-            dst.setColor(connection.dst.colour)                            # set model to relevant colour
-            dst.reparentTo(connection.src.node)                            # reparent dst node to src node (add to tree)
+            dst.setHpr(self.render, heading, 0, 0)                          # set heading of dest. comp.
+            dst.setPos(self.render, connection.dst.pos)                     # set position of dest. comp.
 
-            dst.setHpr(self.render, heading, 0, 0)                         # set heading of destination model
-            dst.setPos(self.render, connection.dst.pos)                    # set position of destination model
+            # apply orientation if comp. is a hinge
             if 'Hinge' in connection.dst.type:
                 connection.dst.orientation += connection.src.orientation
-                while connection.dst.orientation > 3:
+                while connection.dst.orientation > 3:                       # scale orientation back to 0->3
                     connection.dst.orientation -= 4
                 dst.setR(self.render, ORIENTATION[connection.dst.orientation])
 
             connection.dst.node = dst                                      # add Panda3D node to robotComp
 
-            # print(f'Rendered \'{connection.dst.id}\' of type \'{connection.dst.type}\' at {connection.dst.pos}')
-
+        # add all comp. labels
         for i, connection in enumerate(robot.connections):
             node = connection.dst.node
             self.displayLabel(pos=node.getPos(self.render), text=node.getName(), parent=node)
         robot.drawBounds()
-        robot.connections[0].src.node.flattenStrong()                                               # hide labels and set colours after flattening
+        # flatten nodes into one node per robot (performance optimisation)
+        robot.connections[0].src.node.flattenStrong()
+        # hide labels and set colours after flattening
         self.toggleLabels(first=True)
 
     def stepNetwork(self, ann, robot):

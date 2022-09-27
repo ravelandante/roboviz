@@ -14,9 +14,9 @@ import rpack
 from copy import deepcopy
 
 
-CREATE_BRAIN = False
-PACK_BUFFER = 50
-INC_AMT = 100
+CREATE_BRAIN = False        # create brain or not
+PACK_BUFFER = 50            # buffer between auto-packed robots
+INC_AMT = 100               # amount to increase environment dims by in auto-pack if unable to fit all robots
 
 
 class RobotUtils:
@@ -103,7 +103,7 @@ class RobotUtils:
 
     def writeRobot(self, robot, name):
         """
-        Writes built Robot out to relevant files
+        Writes custom built Robot out to relevant files
         Args:
             `robot`: Robot to be written out (Robot)  
             `name`: name of Robot JSON file (String)
@@ -115,16 +115,19 @@ class RobotUtils:
         components = list(robot.components)
 
         with open(path, 'w') as f:
+            # get all components & connections as dicts
             for i, component in enumerate(components):
                 components[i] = component.as_dict()
             for i, connection in enumerate(connections):
                 connections[i] = connection.as_dict()
 
+            # construct JSON file sections
             dict_inner["part"] = components
             dict_inner["connection"] = connections
             dict_outer["id"] = robot.id
             dict_outer["body"] = dict_inner
 
+            # write to JSON file
             json.dump(dict_outer, f, indent=4)
 
     def posParse(self):
@@ -145,6 +148,7 @@ class RobotUtils:
                     positions.append(robot_position)
             return positions
         except:
+            # format error or file not found
             return False
 
     def configParse(self):
@@ -160,6 +164,7 @@ class RobotUtils:
                     configuration.append(int(line))
             return configuration
         except:
+            # format error or file not found
             return False
 
     def robotParse(self, swarm_size, positions):
@@ -173,11 +178,9 @@ class RobotUtils:
             count = 0  # counting the positions
             with open(self.robot_path, 'r') as f:
                 data = json.load(f)
+            # HETERGENEOUS SWARM
             if("swarm" in data.keys()):
                 swarm = data["swarm"]
-                if CREATE_BRAIN:
-                    neurons = swarm["neuron"]
-                    brain = swarm["connection"]
 
                 for robot in swarm:
                     roboId = robot["id"]
@@ -191,10 +194,11 @@ class RobotUtils:
                         type = i['type']
                         root = i['root']
                         orient = i['orientation']
+                        # determine component type
                         if 'Hinge' in type:
-                            newComp = Hinge(id, type, root, orient)                     # create new Hinge component
+                            newComp = Hinge(id, type, root, orient)     # create new Hinge component
                         else:
-                            newComp = Brick(id, type, root, orient)                     # create new Brick component
+                            newComp = Brick(id, type, root, orient)     # create new Brick component
 
                         compArr.append(newComp)
 
@@ -234,6 +238,7 @@ class RobotUtils:
                     count += 1
                     robotArr.append(robot)
                 return robotArr
+            # HOMOGENOUS SWARM
             else:
                 roboId = data["id"]
                 body = data["body"]
@@ -292,8 +297,10 @@ class RobotUtils:
                     robotArr.append(Robot(i, connArr, compArr, positions[i]))
                 return robotArr
         except IndexError:
+            # means incorrect number of positions given
             return True
         except:
+            # format error or file not found
             return False
 
     def autoPack(self, robots, x_length, y_length):
@@ -309,21 +316,27 @@ class RobotUtils:
         while True:
             try:
                 sizes = []
+                # get bounding box sizes for all robots
                 for robot in robots:
                     bounds = robot.bounds
                     width = int(bounds[0]) - int(bounds[1]) + PACK_BUFFER
                     height = int(bounds[2]) - int(bounds[3]) + PACK_BUFFER
                     sizes.append((width, height))
 
+                # calculate optimal packing positions
                 positions = rpack.pack(sizes, max_width=y_length, max_height=x_length)
-                box_size = rpack.bbox_size(sizes, positions)
+                box_size = rpack.bbox_size(sizes, positions)    # size of packed robots
 
+                # adjust positions so that they're at the centre of each robot bounding box
+                # (originally put at bottom left corner)
                 for i, _ in enumerate(positions):
                     bounds = robots[i].bounds
                     core_pos = robot.core_pos
                     positions[i] = (positions[i][0] + core_pos[0] - bounds[1] - box_size[0]/2,
                                     positions[i][1] + core_pos[1] - bounds[3] - box_size[1]/2)
             except rpack.PackingImpossibleError:
+                # can't pack into environment dims
+                # resize environment and try again
                 x_length += INC_AMT
                 y_length += INC_AMT
                 continue

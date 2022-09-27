@@ -25,41 +25,43 @@ class Robot:
             `core_pos`: positions of the core component of the robot (int[])
         """
         self.id = id
-        self.connections = connections
+        self.connections = connections      # list of Connections in Robot
         self.core_pos = core_pos            # position (x, y, z) of robot core component
-        self.components = components
+        self.components = components        # list of RobotComps in Robot
 
-        self.ls = LineSegs()
+        self.ls = LineSegs()                # for use in drawing bounding/selection box
         self.ls.setThickness(LINE_THICKNESS)
         self.ls.setColor(1, 1, 1, 1)
 
     def setBounds(self):
         """Calculates and sets the bounds (bounding box) of the robot"""
-        root_node = self.connections[0].src.node
+        root_node = self.connections[0].src.node                            # get root node
 
-        robot_min, robot_max = root_node.getTightBounds()
+        robot_min, robot_max = root_node.getTightBounds()                   # root node bounds
         box = BoundingBox(robot_min, robot_max)
-        vertices = box.getPoints()
+        vertices = box.getPoints()                                          # get 8 corners of bounding box
 
         # calc bounds of robot bounding box
         x_max, x_min, y_max, y_min, z_max, z_min = vertices[4][0], vertices[0][0], vertices[2][1], vertices[0][1], vertices[1][2], vertices[2][2]
-        self.bounds = [x_max, x_min, y_max, y_min, z_max, z_min]       # set bounds of robot
+        self.bounds = [x_max, x_min, y_max, y_min, z_max, z_min]            # set bounds of robot
 
     def drawBounds(self):
         """Draws LineSegs between all points of the robot bounding box"""
-        root_node = self.connections[0].src.node                            # root node
-        robot_min, robot_max = root_node.getTightBounds(root_node)          # get bounds of robot
+        root_node = self.connections[0].src.node                            # get root node
+        robot_min, robot_max = root_node.getTightBounds(root_node)          # get bounds of whole robot
         box = BoundingBox(robot_min, robot_max)
         vertices = box.getPoints()                                          # get points of robot bounding box
 
-        for z in range(0, len(vertices), 4):                                # draw 'side' boxes
+        # draw 'side' parts of selection box
+        for z in range(0, len(vertices), 4):
             self.ls.moveTo(vertices[z])
             self.ls.drawTo(vertices[z + 1])
             self.ls.drawTo(vertices[z + 3])
             self.ls.drawTo(vertices[z + 2])
             self.ls.drawTo(vertices[z])
 
-        for xy in range(0, len(vertices)//2):                               # draw 'top and bottom' boxes
+        # draw 'top and bottom' parts of selection box
+        for xy in range(0, len(vertices)//2):
             self.ls.moveTo(vertices[xy])
             self.ls.drawTo(vertices[xy + len(vertices)//2])
 
@@ -79,20 +81,20 @@ class Robot:
             `out_of_bounds`: x and y values of how far the robot is out of bounds (LVector3f), returns `'none'` if not out of bounds
         """
         if not test:
-            self.setBounds()                                                    # calc & set bounds of robot
+            self.setBounds()                                                # calc & set bounds of robot
         out_of_bounds = LVector2f(0, 0)
-        if self.bounds[0] > x_length/2:                                     # if over +x
+        if self.bounds[0] > x_length/2:                                     # if over +x edge
             out_of_bounds[0] = int(self.bounds[0] - x_length/2)
-        elif self.bounds[1] < -x_length/2:                                  # if over -x
+        elif self.bounds[1] < -x_length/2:                                  # if over -x edge
             out_of_bounds[0] = int(x_length/2 + self.bounds[1])
-        if self.bounds[2] > y_length/2:                                     # if over +y
+        if self.bounds[2] > y_length/2:                                     # if over +y edge
             out_of_bounds[1] = int(self.bounds[2] - y_length/2)
-        elif self.bounds[3] < -y_length/2:                                  # if over -y
+        elif self.bounds[3] < -y_length/2:                                  # if over -y edge
             out_of_bounds[1] = int(y_length/2 + self.bounds[3])
-        if out_of_bounds != LVector2f(0, 0):
+        if out_of_bounds != LVector2f(0, 0):                                # if out of bounds detected
             return out_of_bounds
         else:
-            return 'none'
+            return 'none'                                                   # if no out of bounds detected
 
     def step(self, time, nodes, states):
         """
@@ -140,6 +142,11 @@ class Robot:
                 # calculate acceleration but only change position by smaller and smaller as goes to core
 
     def __str__(self):
+        """
+        toString for Robot object
+        Returns:
+            `s`: Robot in String form (String)
+        """
         count = 0
         s = f"ID: {self.id}, Connections: "
         for i in self.connections:

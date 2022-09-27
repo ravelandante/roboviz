@@ -13,6 +13,8 @@ from panda3d.core import LPoint3f
 from panda3d.core import LVector2f
 from panda3d.core import LVector3f
 
+"""For testing the class methods"""
+
 
 class TestClass():
     """Automatic testing class, invoke with 'pytest -q test_method.py'"""

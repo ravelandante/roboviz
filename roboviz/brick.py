@@ -20,4 +20,4 @@ class Brick(RobotComp):
         """
         super().__init__(id, type, root, orientation)
         self.colour = (1, 0, 0, 1)                      # colour of component
-        self.mass = 50
+        self.mass = 50                                  # made up mass of component

@@ -5,10 +5,10 @@
 
 from panda3d.core import LVector3f
 
-SRC_SLOTS = {0: 180, 1: 90, 2: 0, 3: 270}
-DST_SLOTS = {0: 0, 1: 90, 2: 180, 3: 270}
-DIRECTION = {0: 0, 90: 1, 180: 2, 270: 3, 360: 0}
-BUFFER = LVector3f(1.5, 1.5, 0)
+SRC_SLOTS = {0: 180, 1: 90, 2: 0, 3: 270}           # headings related to each source slots
+DST_SLOTS = {0: 0, 1: 90, 2: 180, 3: 270}           # headings related to each dest. slot
+DIRECTION = {0: 0, 90: 1, 180: 2, 270: 3, 360: 0}   # directions related to each heading
+BUFFER = LVector3f(1.5, 1.5, 0)                     # negative space between hinges and bricks
 
 
 class RobotComp:
@@ -30,7 +30,6 @@ class RobotComp:
         self.root = root                # component is the root of the robot component tree
         self.orientation = orientation  # global orientation
         self.direction = 0              # global heading
-        self.dst_pos = 0                # save the destination position to be changed with robot stepping in ann
         self.deltaX = 0
 
     def calcPos(self, src, dst, connection, test=False):
@@ -47,28 +46,31 @@ class RobotComp:
         if not test:
             connection.dst.bounds = dst.getTightBounds()
 
+        # only get new bounds for src comp. if it's the 'root' comp. Otherwise just use connection.src.bounds
         if connection.src.root == True and not test:
             connection.src.bounds = src.getTightBounds()
             connection.src.root = False
 
         src_min, src_max = connection.src.bounds[0], connection.src.bounds[1]
-        src_dims = (src_max - src_min)/2                                # get distance from centre of source model to edge
+        src_dims = (src_max - src_min)/2                                        # get distance from centre of source model to edge
         src_pos = connection.src.pos
 
+        # if hinge connected to a brick, use buffer to 'slot' together cleanly (otherwise leaves an awkward space)
         if connection.dst.type in ['FixedBrick', 'CoreComponent'] or connection.src.type in ['FixedBrick', 'CoreComponent']:
-            src_dims -= BUFFER                                              # buffer to slot hinges and bricks together
+            src_dims -= BUFFER
 
         dst_min, dst_max = connection.dst.bounds[0], connection.dst.bounds[1]
-        dst_dims = (dst_max - dst_min)/2                                # get distance from centre of dest model to edge
+        dst_dims = (dst_max - dst_min)/2                                        # get distance from centre of dest model to edge
 
-        src_slot = connection.src_slot - connection.src.direction       # get slot number relative to orientation of model
-        if src_slot < 0:                                                # wrap slots around (4 -> 0 etc.)
+        src_slot = connection.src_slot - connection.src.direction               # get slot number relative to direction of src comp. ('global' slot number)
+        if src_slot < 0:                                                        # wrap slots around (-1=3 etc.)
             src_slot += 4
 
-        heading = SRC_SLOTS[src_slot] + DST_SLOTS[connection.dst_slot]  # heading of dst model, depending on src and dst slot
+        heading = SRC_SLOTS[src_slot] + DST_SLOTS[connection.dst_slot]          # heading of dst model, dependent on src and dst slot
         connection.dst.direction = DIRECTION[heading]
 
-        if connection.src_slot in [0, 2]:                               # which dims to use to calculate new pos
+        # which dims to use to calculate new pos (x or y)
+        if connection.src_slot in [0, 2]:
             src_dim = src_dims[1]
         else:
             src_dim = src_dims[0]
@@ -77,14 +79,16 @@ class RobotComp:
         else:
             dst_dim = dst_dims[0]
 
-        if src_slot == 0:                                               # use src slot to determine which side to place dest model
-            dst_pos = src_pos + LVector3f(0, -(src_dim + dst_dim), 0)
+        # use src slot to determine which side of src comp. to place dest comp. on
+        # LVector3f(x, y, z)
+        if src_slot == 0:
+            dst_pos = src_pos + LVector3f(0, -(src_dim + dst_dim), 0)           # -y (bottom)
         elif src_slot == 1:
-            dst_pos = src_pos + LVector3f(-(src_dim + dst_dim), 0, 0)
+            dst_pos = src_pos + LVector3f(-(src_dim + dst_dim), 0, 0)           # -x (left)
         elif src_slot == 2:
-            dst_pos = src_pos + LVector3f(0, src_dim + dst_dim, 0)
+            dst_pos = src_pos + LVector3f(0, src_dim + dst_dim, 0)              # +y (top)
         elif src_slot == 3:
-            dst_pos = src_pos + LVector3f(src_dim + dst_dim, 0, 0)
+            dst_pos = src_pos + LVector3f(src_dim + dst_dim, 0, 0)              # +x (right)
         return (dst_pos, heading)
 
     def calcAcceleration(self):
@@ -110,4 +114,9 @@ class RobotComp:
         return dict
 
     def __str__(self):
+        """
+        toString for RobotComp object
+        Returns:
+            RobotComp in String form (String)
+        """
         return f"ID: {self.id}, Type: {self.type}, root: {self.root}, orient: {self.orientation}"

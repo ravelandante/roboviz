@@ -12,6 +12,8 @@ fakeGUI = RobotGUI()
 fakeUtil = RobotUtils('', '', '')
 fakeEnv = Environment(0, 0, 0)
 
+"""For testing the initialisation/activation of object classes"""
+
 
 class TestGUI(unittest.TestCase):
 
