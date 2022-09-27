@@ -3,6 +3,10 @@
 # Created Date: 13/08/22
 # ---------------------------------------------------------------------------
 
+from numpy import deg2rad
+import math
+import sys
+import time
 from panda3d.core import CollisionTraverser
 from panda3d.core import CollisionHandlerQueue
 from panda3d.core import CollisionRay
@@ -17,12 +21,11 @@ from panda3d.core import WindowProperties
 from direct.showbase.ShowBase import ShowBase
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import *
+from panda3d.core import loadPrcFileData
+loadPrcFileData("", "window-type none")
 
-from numpy import deg2rad
-import math
-import sys
-import time
 
+KEY_ERR = True                                  # suppress KeyboardInterrupt error when Panda exits
 SHIFT_VALUE = 5                                 # number of units robots will be moved by
 ORIENTATION = {0: 0, 1: 90, 2: 180, 3: 270}     # roll in degrees relating to orientation values
 # vector shifts related to directions of robot movement
@@ -42,6 +45,10 @@ class Environment(ShowBase):
             `swarm_size`: the number of Robots in the swarm (int)
         """
         ShowBase.__init__(self)
+
+        # open window without outputs
+        self.makeDefaultPipe(printPipeTypes=False)
+        self.openDefaultWindow()
 
         # DEBUG/PROTOTYPE OPTIONS
         self.setFrameRateMeter(True)
@@ -135,7 +142,9 @@ class Environment(ShowBase):
         """Overrides Panda's base finalizeExit method to prevent it from closing Python"""
         self.closeWindow(self.win)
         self.destroy()
-        #sys.stderr = object
+        # suppress KeyboardInterrupt error on Panda exit
+        if KEY_ERR:
+            sys.stderr = object
         raise KeyboardInterrupt                                         # to exit Panda window
 
     def toggleLabels(self, first=False):
