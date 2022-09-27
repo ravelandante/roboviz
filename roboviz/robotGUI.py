@@ -193,7 +193,7 @@ class RobotGUI:
                     continue
                 self.utils.robot_path = values['-LOAD-']
                 # parse robot in from chosen file
-                robot = self.utils.robotParse(1, [[0, 0, 0]])[0]
+                robot = self.utils.robotParse(1, [[0, 0, 0]], build=True)[0]
                 for connection in robot.connections:
                     dst = connection.dst
                     # append components to the tree
@@ -262,7 +262,9 @@ class RobotGUI:
                 config = [1000, 1000, 1]                                # default config for 1 robot
                 if (values['-FILE-']):
                     self.utils.writeRobot(robot, values['-F_NAME-'])    # write custom robot to JSON file
-                self.runSim(config=config, robots=[robot])  # run environment simulation with custom robot
+                window.hide()
+                self.runSim(config=config, robots=[robot], build=True)  # run environment simulation with custom robot
+                window.UnHide()
 
         window.close()
 
@@ -418,13 +420,14 @@ class RobotGUI:
 
         window.close()
 
-    def runSim(self, config='', robots='', auto_pack=False):
+    def runSim(self, config='', robots='', auto_pack=False, build=False):
         """
         Creates the Environment and runs the simulation
         Args:
-            `auto_pack`: whether the packing algorithm will be used to auto-position the robots (Boolean) **optional**
-            `config`: configuration parameters (int[]) **optional**, only used when building a robot  
-            `robots`: array of Robots (Robot[]) **optional**, only used when building a robot  
+            `auto_pack`: whether the packing algorithm will be used to auto-position the robots (Boolean) **optional**  
+            `config`: configuration parameters (int[]) **optional**, only used when building a robot  **optional**  
+            `robots`: array of Robots (Robot[]) **optional**, only used when building a robot  **optional**  
+            `build`: whether or not simulation is being run from robot builder (boolean) **optional**
         """
         # CLI parsing and error checking
         if self.cli:
@@ -462,7 +465,7 @@ class RobotGUI:
         for i, robot in enumerate(robots):                          # loop through robots in swarm
             env.renderRobot(robot)                                  # render robot
             # get any out of bounds robots
-            if not self.cli:
+            if not self.cli and not build:
                 out_of_bounds = robot.outOfBoundsDetect(int(config[0]), int(config[1]))
                 if out_of_bounds != 'none':
                     self.out_of_bounds_all.append([i, out_of_bounds])
@@ -473,14 +476,13 @@ class RobotGUI:
             env.reposition(self.utils.autoPack(robots, config[0], config[1]))
             print('...Done')
         env.initialView()                                           # zoom camera out to look at all robots in scene
-        if not auto_pack:
-            if not self.cli:
-                print('Detecting collisions...')
-                # get any possible collisions between robots
-                self.collisions = self.utils.collisionDetect(robots)
-                print('...Done')
-                # show error window if collisions or out of bounds are detected
-                if len(self.collisions) > 0 or len(self.out_of_bounds_all) > 0:
-                    self.error_window()
+        if not auto_pack and not self.cli and not build:
+            print('Detecting collisions...')
+            # get any possible collisions between robots
+            self.collisions = self.utils.collisionDetect(robots)
+            print('...Done')
+            # show error window if collisions or out of bounds are detected
+            if len(self.collisions) > 0 or len(self.out_of_bounds_all) > 0:
+                self.error_window()
         print('Rendering Environment...')
         env.run()

@@ -372,13 +372,14 @@ class Environment(ShowBase):
             if not connection.standardised:                                 # if connection isn't standardised
                 connection.standardiseSlots()                               # standardise slots
 
-            dst.reparentTo(connection.src.node)                             # reparent dst node to src node (add to tree)
             dst.setName(connection.dst.id)
             dst.setTag('robot', connection.dst.id)                          # tag as selectable
             dst.setColor(connection.dst.colour)                             # set model to relevant colour
 
             # calc position of dest comp based on source position
             connection.dst.pos, heading = connection.dst.calcPos(src, dst, connection)
+
+            dst.reparentTo(connection.src.node)                             # reparent dst node to src node (add to tree)
 
             dst.setHpr(self.render, heading, 0, 0)                          # set heading of dest. comp.
             dst.setPos(self.render, connection.dst.pos)                     # set position of dest. comp.

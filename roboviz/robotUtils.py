@@ -167,9 +167,13 @@ class RobotUtils:
             # format error or file not found
             return False
 
-    def robotParse(self, swarm_size, positions):
+    def robotParse(self, swarm_size, positions, build=False):
         """
         Parses robot(s) from robot JSON file
+        Args:
+            `swarm_size`: number of robots in swarm (int)
+            `positions`: positions of each robot in swarm (int[])
+            `build`: whether or not robot is being loaded into builder (boolean) **optional**
         Returns:
             `robotArr`: all robots to be rendered in the scene (Robot[])
         """
@@ -293,7 +297,8 @@ class RobotUtils:
                     brain = network["connection"]
                     ann = self.createBrain(compArr, brain, neurons)
                 for i in range(int(swarm_size)):                      # loop through robots in swarm
-                    connArr = deepcopy(connArr)
+                    if not build:
+                        connArr = deepcopy(connArr)
                     robotArr.append(Robot(i, connArr, compArr, positions[i]))
                 return robotArr
         except IndexError:
