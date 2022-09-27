@@ -49,14 +49,19 @@ def calcPos(src, dst, connection):
 
 
 class Environment(ShowBase):
-    def __init__(self, x_length, y_length, swarm_size):
+    def __init__(self):
         ShowBase.__init__(self)
+
+        #Claire Addition - added spinning camera
+        self.disableMouse()
+        self.taskMgr.add(self.spinCameraTask, "SpinCameraTask")
 
         self.set_background_color(0.6, 0.6, 0.6, 1)                     # set background colour to a lighter grey
 
-        self.x_length = x_length
-        self.y_length = y_length
-        self.swarm_size = swarm_size
+        # this is where the read config file code would be (maybe even in a separate method)
+        self.x_length = 1000
+        self.y_length = 1000
+        self.swarm_size = 1
 
         self.plane = self.loader.loadModel('./models/BAM/plane.bam')    # load 'terrain' plane
         self.plane.setScale(self.x_length, self.y_length, 0)            # scale up to specified dimensions
@@ -67,9 +72,9 @@ class Environment(ShowBase):
         alnp = self.render.attachNewNode(alight)
         self.render.setLight(alnp)
 
-        # self.useDrive()                                               # enable use of arrow keys
+        # self.useDrive()                                 # enable use of arrow keys
 
-        bk_text = "RoboViz Prototype"                                   # add prototype text
+        bk_text = "RoboViz Prototype"                                           # add prototype text
         textObject = OnscreenText(text=bk_text, pos=(0.85, 0.85), scale=0.07,
                                   fg=(1, 0.5, 0.5, 1), align=TextNode.ACenter, mayChange=0)
 
