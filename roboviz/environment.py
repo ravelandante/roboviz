@@ -369,7 +369,8 @@ class Environment(ShowBase):
             dst_path = './models/BAM/' + connection.dst.type + '.bam'       # get path of destination model file
             dst = self.loader.loadModel(dst_path)                           # load model of source component
 
-            connection.standardiseSlots()                                   # standardise slots
+            if not connection.standardised:                                 # if connection isn't standardised
+                connection.standardiseSlots()                               # standardise slots
 
             dst.reparentTo(connection.src.node)                             # reparent dst node to src node (add to tree)
             dst.setName(connection.dst.id)

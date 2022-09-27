@@ -262,7 +262,7 @@ class RobotGUI:
                 config = [1000, 1000, 1]                                # default config for 1 robot
                 if (values['-FILE-']):
                     self.utils.writeRobot(robot, values['-F_NAME-'])    # write custom robot to JSON file
-                self.runSim(config=config, robots=[robot], file=False)  # run environment simulation with custom robot
+                self.runSim(config=config, robots=[robot])  # run environment simulation with custom robot
 
         window.close()
 
@@ -425,7 +425,6 @@ class RobotGUI:
             `auto_pack`: whether the packing algorithm will be used to auto-position the robots (Boolean) **optional**
             `config`: configuration parameters (int[]) **optional**, only used when building a robot  
             `robots`: array of Robots (Robot[]) **optional**, only used when building a robot  
-            `file`: whether or not the robots have been loaded from a file (boolean) **optional**
         """
         # CLI parsing and error checking
         if self.cli:

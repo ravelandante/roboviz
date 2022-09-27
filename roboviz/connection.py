@@ -24,19 +24,21 @@ def slotSwap(slot):
 class Connection:
     """Represents a connection between 2 robot components"""
 
-    def __init__(self, src, dst, src_slot, dst_slot):
+    def __init__(self, src, dst, src_slot, dst_slot, standardised=False):
         """
         Constructor
         Args:
             `src`: source ('parent') component (RobotComp)  
             `dst`: destination ('child') component (RobotComp)  
             `src_slot`: side of source component to attach dest. to (int)  
-            `dst_slot`: side of dset. component to attach source to (int)
+            `dst_slot`: side of dest. component to attach source to (int)
+            `standardised`: whether or not the connection's slots have been standardised (boolean) **optional**
         """
         self.src = src                  # source robotComp
         self.dst = dst                  # destination robotComp
         self.src_slot = src_slot        # side of connection at source
         self.dst_slot = dst_slot        # side of connection at destination
+        self.standardised = standardised
 
     def standardiseSlots(self):
         """Converts RoboGen's funky slot system to a more reasonable one (sides numbered clockwise 0->3 starting from side closest to viewer)"""
@@ -50,6 +52,7 @@ class Connection:
             self.src_slot = slotSwap(self.src_slot)
         if self.dst.type == 'FixedBrick' or self.dst.type == 'CoreComponent':   # dest. brick slots
             self.dst_slot = slotSwap(self.dst_slot)
+        self.standardised = True
 
     def as_dict(self):
         """
