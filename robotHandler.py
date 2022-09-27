@@ -3,10 +3,17 @@ from environment import Environment
 from robotComp import RobotComp
 from connection import Connection
 from robot import Robot
+from hinge import Hinge
+from brick import Brick
 
 import json
 import sys
 
+comp1 = Brick('comp1', 'CoreComponent', True, 0)
+comp2 = Brick('comp2', 'FixedBrick', False, 0)
+comp3 = Brick('comp3', 'FixedBrick', False, 0)
+comp4 = Hinge('comp4', 'ActiveHinge', False, 0)
+comp5 = Hinge('comp5', 'PassiveHinge', False, 0)
 
 positions = []  # this will store a bunch of smaller position arrays
 configuration = []  # this stores the x,y and z of the environment + the swarm size
